@@ -15,6 +15,8 @@
     "tests"
   ],
   "dependencies": {
-    "studentcare-components": "git://github.com/kphongph/studentcare-components.git#master"
+    "studentcare-components": "git://github.com/kphongph/studentcare-components.git#master",
+    "app-layout": "PolymerElements/app-layout#^1.0.1",
+    "app-route": "PolymerElements/app-route#^1.0.0"
   }
 }

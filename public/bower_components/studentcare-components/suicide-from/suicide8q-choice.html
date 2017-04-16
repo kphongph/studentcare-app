@@ -1,0 +1,109 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<dom-module id="suicide8q-choice">
+  <template>
+  <style include="iron-flex iron-flex-alignment iron-flex-factors">
+  :host {
+    @apply(--paper-font-display);
+    @apply(--layout-vertical);
+    display: block;
+    border-bottom:1px solid #bfbfbf;
+    padding:5px;
+  }
+
+  iron-icon {
+    margin:3px;
+    padding:0px;
+    background-color:white
+  }
+
+  .invalid {
+    border: 1px solid #ee0000;
+  }
+  paper-radio-group {
+    background:#efefef;
+  }
+  </style>
+  <div id="main" class="layout horizontal center">
+    <span class="flex" id="label">{{label}}</span>
+    <span class="valueText"><b>{{_valueStr}}</b></span>
+  </div>
+  <div hidden$="{{!hovered}}" class="layout horizontal">
+    <paper-radio-group selected="{{value}}"
+    class="flex"
+    aria-labelledby="label">
+    <paper-radio-button name="n">ไม่ใช่</paper-radio-button>
+    <paper-radio-button name="y">ใช่</paper-radio-button>
+  </paper-radio-group>
+</div>
+</template>
+
+<script>
+Polymer({
+  is: 'suicide8q-choice',
+  listeners : {
+    'mouseover':'_onHovered',
+    'mouseout':'_onUnhovered'
+  },
+  properties: {
+    value:{
+      type:String,
+      notify:true,
+      observer:'_valueChanged'
+    },
+    hovered: {
+      type:Boolean,
+      readOnly:true,
+      value:false
+    },
+    label:{
+      type:String
+    },
+    disabled: {
+      type:Boolean,
+      value:false
+    },
+    required:{
+      type:Boolean,
+      value:false,
+      reflectToAttribute:true
+    },
+    _valueStr:{
+      type:String,
+      computed:'_labelValue(value)'
+    }
+  },
+  behaviors:[
+    Polymer.IronValidatableBehavior
+  ],
+  _onHovered:function(e) {
+    this._setHovered(true);
+  },
+  _onUnhovered:function(e) {
+    this._setHovered(false);
+  },
+  _valueChanged:function() {
+    if(this.value == 'y' || this.value == 'm') {
+      this.type='check';
+    } else {
+      if(this.value) {
+        this.type='clear';
+      } else {
+        this.type='';
+      }
+    }
+  },
+  _labelValue:function(value) {
+    var dict = {
+      'n':'ไม่ใช่',
+      'y':'ใช่'
+    };
+    return dict[value];
+  }
+});
+</script>
+</dom-module>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>app-leveldb demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../app-storage/app-localstorage/app-localstorage-document.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-ajax/iron-ajax.html">
+    <link rel="import" href="../../paper-button/paper-button.html">
+    <link rel="import" href="../app-leveldb-query.html">
+    <link rel="import" href="../app-leveldb-sync.html">
+    <link rel="import" href="../app-leveldb.html">
+    <link rel="import" href="../app-leveldb-document.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic app-leveldb-sync demo</h3>
+      <demo-snippet>
+        <template>
+          <template is="dom-bind">
+          <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+          </app-localstorage-document>
+
+          <app-leveldb
+            name="test"
+            url="http://maas.nuqlis.com:44300"
+            db-name="dmc59_1"
+            app="{{app}}"
+            jwt-token="{{jwtToken.token}}">
+          </app-leveldb>
+
+          <app-leveldb-document 
+            app="{{app}}"
+            key="290298c3a11511e6aaf557119381496d"
+            value="{{value}}">
+          </app-leveldb-document>
+
+          <app-leveldb-query
+            app="{{app}}"
+            view-name="hostid"
+            query='{"start":["30070132"],"end":["30070133"],"limit":-1}'
+            data="{{data}}">
+          </app-leveldb-query>
+          
+          <app-leveldb-sync
+            name="dmc_30070132"
+            total="{{total}}"
+            synced="{{sync}}"
+            app="{{app}}"
+            schema='{}'
+            index="{{data}}">
+          </app-leveldb-sync>
+  
+
+          <p>
+          <span>{{total}}</span>
+          <span>{{sync}}</span>
+          <p>
+            From app-leveldb-document<br>
+            <span>{{value.CODE}}</span>
+            <span>{{value.S_NAME}}</span>
+          </p>
+          </p>
+          <paper-button>Refresh</paper-button>
+          <script>
+            document.querySelector('paper-button').addEventListener('tap',function(e) {
+              var db = document.querySelector('app-leveldb-sync').db;
+              console.log(db);
+              db.delete().then(function() {
+                console.log('rerun');
+                db.open();
+                var query = document.querySelector('app-leveldb-query');
+                query.query={"start":["30070132"],"end":["30070133"],"limit":-1};
+              });
+            });
+          </script>
+          
+          </template>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>

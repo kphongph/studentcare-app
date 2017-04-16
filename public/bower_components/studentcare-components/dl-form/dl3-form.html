@@ -1,0 +1,85 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../paper-tabs/paper-tabs.html">
+<link rel="import" href="../../paper-tabs/paper-tab.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-pages/iron-pages.html">
+<link rel="import" href="../../app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../../paper-toast/paper-toast.html">
+<link rel="import" href="../../app-leveldb/app-leveldb.html">
+<link rel="import" href="../../app-leveldb/app-leveldb-document.html">
+<link rel="import" href="sdqself-form-choice.html">
+<link rel="import" href="sdq-form-student.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+
+
+<dom-module id="dl3-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      @media (min-width:320px) {
+        #toastsave{
+          --paper-toast-background-color: green;
+          --paper-toast-color: white;
+            bottom: 0;
+            left: 0;
+            height: 20px;
+            width: 100%;
+        }
+      }
+      paper-tabs {
+        background:var(--paper-green-300);
+        color:white;
+        height:40px;
+      }
+    </style>
+
+    <form-control id="control"
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div class="description">
+        <p>เลือกคำตอบเพียงข้อเดียวในแต่ละข้อคำถามที่ใกล้เคียงกับพฤติกรรมของนักเรียนที่เกิดขึ้นในช่วง  6  เดือนที่ผ่านมา</p>
+      </div>
+      <div class="formEntry">
+
+        <paper-tabs selected="{{part}}" class="flex">
+          <paper-tab>หน้าแรก</paper-tab>
+          <paper-tab>หน้าหลัง</paper-tab>
+        </paper-tabs>
+    
+        <iron-pages selected="{{part}}">
+          <sdqself-form-choice id="formChoiceId"
+            value="{{document.value.form_value.first}}">
+          </sdqself-form-choice>      
+          <sdq-form-student id="formStudent" 
+            value="{{document.value.form_value.second}}">
+          </sdq-form-student>      
+        </iron-pages>
+      </div>
+    </form-control> 
+    
+  </template>
+  <script>
+    Polymer({
+      is: 'dl3-form',
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        StudentcareFormBehavior
+      ],
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบประเมินพฤติกรรมนักเรียน (SDQ) ฉบับนักเรียนประเมินตนเอง"
+        },
+        part:{
+          type:Number,
+          value:0
+        }
+      }
+    });
+  </script>
+</dom-module>

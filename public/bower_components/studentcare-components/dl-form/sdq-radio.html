@@ -1,0 +1,155 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-selector/iron-selector.html">
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../paper-styles/typography.html">
+
+<dom-module id="sdq-radio">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      
+      :host {
+        @apply(--paper-font-caption);
+        display: block;
+      }
+
+      iron-icon {
+        margin:3px;
+        padding:0px;
+        background-color:white
+      }
+
+      div {
+        background-color:var(--paper-grey-100);
+      }
+      div.y {
+        background-color:var(--paper-green-100);
+      }
+      div.m {
+        background-color:var(--paper-yellow-100);
+      }
+      div.n {
+        background-color:var(--paper-red-100);
+      }
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+      .valueText {
+        margin-right:10px;
+      }
+      
+      @media (min-width:400px) {
+      :host {
+        @apply(--paper-font-body1);
+        display: block;
+      }
+      iron-icon {
+        padding:2px;
+        background-color:white
+      }
+      iron-icon.y {
+        fill:green;
+      }
+      iron-icon.m {
+        fill:grey;
+      }
+      iron-icon.n {
+        fill:red;
+      }
+      div {
+        background-color:var(--paper-grey-100);
+      }
+      div.y {
+        background-color:var(--paper-green-100);
+      }
+      div.m {
+        background-color:var(--paper-yellow-100);
+      }
+      div.n {
+        background-color:var(--paper-red-100);
+      }
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+    }
+    </style>
+
+    <div id="main" class$="{{value}} layout horizontal center">
+      <iron-icon icon="{{type}}" class$="{{value}}"></iron-icon>
+      <span class="flex"><content></content></span>
+      <span class="valueText"><b>{{_valueStr}}</b></span>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'sdq-radio',
+      listeners : {
+        'tap':'regularTap'
+      },
+      properties: {
+        value:{
+          type:String,
+          notify:true,
+          observer:'_valueChanged'
+        },
+        label:{
+          type:String
+        },
+        disabled: {
+          type:Boolean,
+          value:false
+        },
+        required:{
+          type:Boolean,
+          value:false,
+          reflectToAttribute:true
+        },
+        _valueStr:{
+          type:String,
+          computed:'_labelValue(value)'
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior
+      ],
+      validate:function() {
+        if(this.required) {
+          this.invalid = this.value?false:true;
+          if(this.invalid) {
+            this.$.main.classList.add('invalid');
+            return false;
+          } else {
+            this.$.main.classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      regularTap:function(e) {
+        if(!this.disabled) {
+          var value_list = ['y','m','n'];
+          var idx = value_list.indexOf(this.value)+1; 
+          this.set('value',idx<3?value_list[idx]:value_list[0]);
+          this.fire('change',{});
+        }
+      },
+      _valueChanged:function() {
+        if(this.value == 'y' || this.value == 'm') { 
+          this.type='check';
+        } else {
+          if(this.value) {
+            this.type='clear';
+          } else {
+            this.type='';
+          }
+        }
+       // this.validate();
+      },
+      _labelValue:function(value) {
+        var dict = {'m':'ค่อนข้างจริง','y':'จริง','n':'ไม่จริง'};
+        return dict[value];
+      }
+    });
+  </script>
+</dom-module>

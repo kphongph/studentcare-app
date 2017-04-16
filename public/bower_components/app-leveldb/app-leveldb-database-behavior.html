@@ -1,0 +1,71 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-request.html">
+<link rel="import" href="./app-leveldb-common-behavior.html">
+
+<script src="../dexie/dist/dexie.min.js"></script>
+<!--
+<script src="../dexie/addons/Dexie.Observable/dist/dexie-observable.min.js"></script>
+-->
+
+
+
+<script>
+(function() {
+  'use strict';
+  Polymer.AppLeveldbDatabaseBehaviorImpl = {
+    properties: {
+      schema:{
+        type:Object
+      },
+      name:{
+        type:String
+      },
+      db:{
+        type:Object,
+        computed: '__computeDb(app,name,schema)',
+        notify:true
+      }
+    },
+    save:function(data) {
+     var self = this;
+     return new Promise(function(fulfill,reject) {
+       self.db.documents.get(data.value).then(function(obj) {
+         if(!obj) {
+           reject({key:data.value});
+         } else {
+           fulfill(obj);
+         }
+       });
+     });
+    },
+    put:function(obj) {
+     this.db.tables.forEach(function(table) {
+       table.put(obj);
+     });
+    },
+    __computeDb:function(app,name,schema) {
+      if(!name) {
+        return null;
+      }
+      var _db = new Dexie(name);
+      schema['documents'] = 'key';
+
+      /*
+      _db.on('changes',function(changes) {
+         changes.forEach(function(change) {
+           console.log(JSON.stringify(change));
+         });
+      });
+      */
+
+      _db.version(1).stores(schema);
+      return _db;
+    }
+  };
+  Polymer.AppLeveldbDatabaseBehavior = [
+    Polymer.AppLeveldbCommonBehavior,
+    Polymer.AppLeveldbDatabaseBehaviorImpl
+  ];
+})();   
+  
+</script>

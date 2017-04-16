@@ -1,0 +1,132 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-tabs/paper-tabs.html">
+<link rel="import" href="../paper-tabs/paper-tab.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../app-layout/app-layout.html">
+<link rel="import" href="../app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
+<link rel="import" href="../app-leveldb/app-leveldb.html">
+<link rel="import" href="../app-leveldb/app-leveldb-document.html">
+
+<dom-module id="form-control">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      paper-tabs {
+        background-color: var(--paper-light-blue-500);
+        color: #fff;
+        height:40px;
+      }
+      paper-button {
+        margin-left: 10px;
+        margin-right: 10px;
+        padding:5px;
+      }
+      .formControl {
+        padding:5px;
+      }
+    </style>     
+
+    <app-localstorage-document 
+      key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+    
+    <app-leveldb
+      name="test"
+      url="https://maas.nuqlis.com:9000/api"
+      db-name="students_care"
+      app="{{app}}"
+      jwt-token="{{jwtToken.token}}">
+    </app-leveldb>
+    
+    <app-leveldb-document id="doc"
+      app="{{app}}"
+      key="{{docKey}}"
+      on-response="_onResponse"
+      status="{{status}}"
+      value="{{docValue}}">
+    </app-leveldb-document>    
+
+    <paper-tabs selected="{{page}}">
+      <paper-tab>คำชี้แจง</paper-tab>
+      <paper-tab>แบบประเมิน</paper-tab>
+      <paper-tab>ผลการประเมิน</paper-tab>
+    </paper-tabs>
+
+    <iron-pages selected="{{page}}">
+      <content select=".description"></content>
+      <div class="layout vertical">
+        <div class="layout horizontal formControl">
+          <paper-button raised on-tap="_save">
+            <iron-icon icon="save"></iron-icon>
+            บันทึก
+          </paper-button>
+          <paper-button raised on-tap="_undo">
+            <iron-icon icon="undo"></iron-icon>
+            เริ่มใหม่
+          </paper-button>
+          <paper-button raised on-tap="_process">
+            <iron-icon icon="assignment-returned"></iron-icon>
+            ประเมิน
+          </paper-button>
+        </div>
+        <div>{{message}}</div>
+        <content select=".formEntry"></content>
+      </div>
+      <div>
+        <content select=".evaluation"></content>
+      </div>
+    </iron-pages>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'form-control',
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      properties: {      
+        docKey:{
+          type:String
+        },
+        docValue:{
+          type:Object,
+          notify:true
+        },
+        page: {
+          type:Number,
+          value:0
+        }
+      },
+      _save:function(e) {
+        this.fire('form-action',{'type':'save'});
+      },
+      _undo:function(e) {
+        this.fire('form-action',{'type':'undo'});
+      },
+      _process:function(e) {
+        this.fire('form-action',{'type':'process'});
+      },
+      _onResponse:function(e) {
+        var self = this;
+        if(e.detail.response.ok) {
+          this.set('message','บันทึกเรียบร้อย');
+          this.fire('update',{'key':this.docKey,'value':this.docValue}); 
+          setTimeout(function() {
+            self.set('message','');
+          },2000);
+        }
+      },
+      save:function(e) {
+        if(!this.docKey) {
+          this.set('docKey',null);
+        }
+        var ts = (new Date()).getTime()*-1;
+        this.docValue.ts = ts;
+        this.$.doc.save();
+      }
+    });
+  </script>
+</dom-module>

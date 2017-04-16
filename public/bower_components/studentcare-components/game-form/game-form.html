@@ -1,0 +1,347 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="./game-choice.html">
+<dom-module id="game-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply(--paper-font-display);
+        @apply(--layout-vertical);
+        display: block;
+      }
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+      paper-radio-group {
+        background:#efefef;
+      }
+      .formEntry div {
+        @apply(--paper-font-title);
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+      .description ol {
+        @apply(--paper-font-body1);
+        .num {list-style-type: decimal;}
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+      .mark {
+        font-weight:bold;
+      }
+      .evaluation {
+        padding:5px;
+      }
+      p {
+        text-indent: 50px;
+      }
+      table, td, th {
+        border: 1px solid black;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 50%;
+      }
+
+      td {
+        vertical-align: middle;
+      }
+    </style>
+
+    <form-control id="control"
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div class="description">
+        <ul class="num"><b><u>คำอธิบาย</u></b>
+          <p>
+                                แบบทดสอบการติดเกม (Game Addiction Screening Test – GAST) เป็นแบบทดสอบที่พัฒนาขึ้นโดยสถาบันสุขภาพจิตเด็กและวัยรุ่นราชนครินทร์ กรมสุขภาพจิต 
+                             กระทรวงสาธารณสุขร่วมกับ รศ.นพ.ชาญวิทย์ พรนภดล สาขาวิชาจิตเวชเด็กและวัยรุ่น ภาควิชาจิตเวชศาสตร์ คณะแพทยศาสตร์ศิริราชพยาบาล 
+            เพื่อใช้สำหรับค้นหาเด็กและวัยรุ่นที่อาจมีปัญหาติดเกมคอมพิวเตอร์หรือหมกมุ่นกับการเล่นเกมคอมพิวเตอร์มากจนก่อให้เกิดปัญหาต่างๆ
+          </p>
+        </ul>
+        <ul class="num"><b><u>ความหมายของคำว่า “เกม”</u></b>
+          <p>
+                                คำว่า “เกม” ในแบบทดสอบการติดเกม (GAST) หมายถึง วิดีโอเกม เกมเพลสเตชั่น เกมบอย เกมคอมพิวเตอร์ เกมในโทรศัพท์มือถือ และเกมออนไลน์ทุกชนิด 
+          </p>
+        </ul>
+        <ol class="num"><b><u>โครงสร้างของแบบทดสอบการติดเกม (GAST)</u></b>
+          <p>แบบทดสอบการติดเกม (GAST) มีข้อคำถามทั้งสิ้น 16 ข้อคำถาม ข้อคำถามทั้ง 16 ข้อใช้วัดปัญหาที่เกี่ยวข้องกับการเล่นเกม 3 ด้าน ได้แก่</p>
+          <li>การหมกมุ่นกับเกม (preoccupation with game): ได้แก่ ข้อคำถามที่ 1, 8, 9, 11, 13, 16</li>
+          <li>การสูญเสียความสามารถในการควบคุมการเล่นเกม (loss of control): ได้แก่ ข้อคำถามที่ 2, 4, 5, 6, 12</li>
+          <li>การสูญเสียหน้าที่ ความรับผิดชอบ (function impairment): ได้แก่ ข้อคำถามที่ 3, 7, 10, 14, 15 </li>
+        </ol>
+        <ul class="num"><b><u>ผู้ตอบแบบทดสอบ</u></b>
+          <p>
+                            ผู้ตอบแบบทดสอบการติดเกม (GAST)-ฉบับเด็กและวัยรุ่น (Child and Adolescent Version) ได้แก่ เด็กและวัยรุ่นที่มีอายุตั้งแต่ 8 ปีขึ้นไปที่เล่นเกมเป็นประจำในช่วงเวลาอย่างน้อย 3 เดือนที่ผ่านมา 
+          </p>
+        </ul>
+        <ul class="num"><b><u>การตอบแบบทดสอบ</u></b>
+          <p>
+              คำตอบที่สามารถเลือกตอบได้ในแต่ละข้อคำถามมี 4 คำตอบ ได้แก่ “ไม่ใช่เลย” “ไม่น่าใช่” “น่าจะใช่” “ใช่เลย”
+                        การตอบให้ใช้ความรู้สึกของผู้ตอบเป็นหลัก กรณีที่ไม่แน่ใจให้ใช้เกณฑ์ต่อไปนี้เป็นแนวทางในการตอบ
+          </p>
+          <li>ไม่ใช่เลย หมายถึง ผู้ตอบมีความมั่นใจ 100% ว่าตนเองไม่เคยมีพฤติกรรมเช่นนั้นเลย</li>
+          <li>ไม่น่าใช่	หมายถึง	ผู้ตอบมีความมั่นใจมากกว่า 50% (แต่ไม่ถึง 100%) ว่าตนเองไม่เคยมีพฤติกรรมเช่นนั้น</li>
+          <li>น่าจะใช่	หมายถึง	ผู้ตอบมีความมั่นใจมากกว่า 50% (แต่ไม่ถึง 100%) ว่าตนเองมีหรือเคยมีพฤติกรรมเช่นนั้น </li>
+          <li>ใช่เลย	หมายถึง	ผู้ตอบมีความมั่นใจ 100% ว่าตนเองมีหรือเคยมีพฤติกรรมเช่นนั้น</li>
+        </ul>
+        <ul class="num"><b><u>คำแนะนำก่อนตอบแบบทดสอบ</u></b>
+          <p>
+            ข้อความต่อไปนี้เป็นการอธิบายถึงพฤติกรรมที่เกี่ยวข้องกับการเล่นเกมของท่าน กรุณาอ่านโดยละเอียด และพิจารณาเลือกคำตอบที่ใกล้เคียงกับพฤติกรรมของตัวท่านมากที่สุดในช่วง 3 เดือนที่ผ่านมา
+          </p>
+        </ul>
+        <ul class="num"><b><u>การให้คะแนน </u></b>
+          <p>ให้คะแนนแต่ละข้อคำถามดังนี้</p>
+          <li>ไม่ใช่เลย ให้ 0 คะแนน</li>
+          <li>ไม่น่าใช่	ให้ 1 คะแนน</li>
+          <li>น่าจะใช่	ให้ 2 คะแนน</li>
+          <li>ใช่เลย	ให้ 3 คะแนน</li>
+        </ul>
+        <ol class="num"><b><u>การแปลผล</u></b>  แบ่งเป็น 2 กลุ่ม
+          <li>กลุ่มที่ 1<b><u>ผู้ชาย</u></b> 
+            <ul class="num">
+              <br>
+              <table>
+                <tr>
+                  <th>คะแนนรวมของแบบทดสอบ GAST</th>
+                  <th>กลุ่ม</th>
+                  <th>ระดับความรุนแรงของปัญหา</th>
+                </tr>
+                <tr>
+                  <td>คะแนนต่ำกว่า 24</td>
+                  <td>ปกติ</td>
+                  <td>ยังไม่มีปัญหาในการเล่นเกม</td>
+                </tr>
+                <tr>
+                  <td>คะแนนระหว่าง 24-32</td>
+                  <td>คลั่งใคล้</td>
+                  <td>เริ่มมีปัญหาในการเล่นเกม</td>
+                </tr>
+                <tr>
+                  <td>คะแนนมากกว่าหรือเท่ากับ 33</td>
+                  <td>น่าจะติดเกม</td>
+                  <td>มีปัญหาในการเล่นเกมมาก</td>
+                </tr>
+              </table>
+              <br>
+            </ul>
+          </li>
+          <li> กลุ่มที่ 2 <b><u>ผู้หญิง</u></b> 
+            <ul class="num">
+              <br>
+              <table>
+                <tr>
+                  <th>คะแนนรวมของแบบทดสอบ GAST</th>
+                  <th>กลุ่ม</th>
+                  <th>ระดับความรุนแรงของปัญหา</th>
+                </tr>
+                <tr>
+                  <td>คะแนนต่ำกว่า 16</td>
+                  <td>ปกติ</td>
+                  <td>ยังไม่มีปัญหาในการเล่นเกม</td>
+                </tr>
+                <tr>
+                  <td>คะแนนระหว่าง 16-22</td>
+                  <td>คลั่งใคล้</td>
+                  <td>เริ่มมีปัญหาในการเล่นเกม</td>
+                </tr>
+                <tr>
+                  <td>คะแนนมากกว่าหรือเท่ากับ 23</td>
+                  <td>น่าจะติดเกม</td>
+                  <td>มีปัญหาในการเล่นเกมมาก</td>
+                </tr>
+              </table>
+            </ul>
+            <br>
+          </li>
+          <li> ค่าความไว (sensitivity) และความจำเพาะ (specificity) ของแบบทดสอบการติดเกมฉบับเด็กและวัยรุ่น
+            <ul class="num">
+              <br>
+              <table>
+                <tr>
+                  <th>แบบทดสอบ GAST</th>
+                  <th>จุดตัดคะแนน(cut-off point)</th>
+                  <th>ค่าความไว  (sensitivity)</th>
+                  <th>ค่าความจำเพาะ  (specificity)</th>
+                  <th>Likelihood Ratio</th>
+                </tr>
+                <tr>
+                  <td>ฉบับเด็กและวัยรุ่น (ผู้ชาย)</td>
+                  <td align="center">>= 24</td>
+                  <td align="center">68.5</td>
+                  <td align="center">89.3</td>
+                  <td align="center">6.4</td>
+                </tr>
+                <tr>
+                  <td>ฉบับเด็กและวัยรุ่น (ผู้หญิง)</td>
+                  <td align="center">>= 16</td>
+                  <td align="center">88.2</td>
+                  <td align="center">88.3</td>
+                  <td align="center">7.6</td>
+                </tr>
+              </table>
+            </ul>
+          </li>
+        </ol>
+        <ol class="num"><b><u>ข้อควรปฏิบัติสำหรับผู้ปกครอง</u></b>
+          <li>
+          หากระดับการเล่นเกมของลูกท่านยังอยู่ในเกณฑ์ปกติ ท่านควรมีมาตรการป้องกันไม่ให้ลูกของท่านติดเกม 
+          โดยการสร้างสัมพันธภาพที่ดีและให้เวลาที่มีคุณภาพกับลูก ฝึกวินัย สอนให้เด็กรู้จักแบ่งเวลาและใช้เวลาว่างให้เป็นประโยชน์ 
+          กำหนดกติกาและจำกัดเวลาในการเล่นเกม ส่งเสริมให้เด็กมีงานอดิเรกที่เด็กชอบทำนอกเหนือจากการเล่นเกม
+          </li>
+          <li>
+            หากระดับการเล่นเกมของลูกท่านอยู่ในระดับคลั่งไคล้หรือเริ่มมีปัญหา 
+            ท่านควรพูดคุยกับลูกถึงพฤติกรรมที่เป็นปัญหาในการเล่นเกมของลูกอย่างจริงจัง 
+            มีการกำหนดกติกาและจำกัดเวลาในการเล่นเกมอย่างเข้มงวด ใส่ใจและให้เวลาที่มีคุณภาพกับลูก 
+            ส่งเสริมให้เด็กมีงานอดิเรก หรือทำกิจกรรมที่ผ่อนคลายอื่นๆนอกเหนือจากการเล่นเกม
+          </li>
+          <li>
+            หากระดับการเล่นเกมของลูกท่านอยู่ในระดับน่าจะติดเกมหรือมีปัญหามาก 
+            และท่านได้พยายามปรับลดเวลาการเล่นเกมของลูกท่านแล้วตามคำแนะนำในข้อ 2
+            แต่ยังไม่ได้ผล ท่านควรรีบปรึกษาจิตแพทย์เด็กและวัยรุ่นเพื่อรับการช่วยเหลือโดยรีบด่วน
+          </li>
+        </ol>
+        <ul class="num"><b><u>ข้อควรทราบสำหรับผู้ใช้แบบทดสอบการติดเกม GAST</u></b>
+          <p>
+                               แบบทดสอบการติดเกม (GAST) เป็นเพียงเครื่องมือที่ใช้ในการ “คัดกรอง (screening)” 
+                          เพื่อค้นหาเด็กและวัยรุ่นที่อาจมีปัญหาในการเล่นเกม มิใช่เป็นเครื่องมือในการใช้ “วินิจฉัย (diagnosis)” 
+                               เด็กที่ติดเกม ดังนั้นก่อนที่ผู้ใดจะนำแบบทดสอบการติดเกม (GAST) ไปใช้จำเป็นต้องทราบวัตถุประสงค์ในการใช้แบบทดสอบการติดเกม (GAST) 
+                               นี้เป็นอย่างดีเสียก่อน การจะวินิจฉัยว่าเด็กรายใดมีภาวะติดเกมจำเป็นต้องผ่านกระบวนการตรวจประเมินอย่างละเอียดจากจิตแพทย์หรือนักจิตวิทยา 
+            ผู้ซึ่งจะลงความเห็นว่าเด็กรายใดติดเกมหลังจากได้ข้อมูลอย่างละเอียดและพบกับเด็กและครอบครัวแล้วเท่านั้น
+          </p>
+        </ul>
+        <ul class="num"><b><u>แบบทดสอบการติดเกม GAST เป็นลิขสิทธิ์ของสถาบันสุขภาพจิตเด็กและวัยรุ่นราชนครินทร์ กรมสุขภาพจิต ผู้ที่ต้องการนำแบบทดสอบการติดเกม GAST ไปใช้กรุณาติดต่อขออนุญาตได้ที่</u></b>
+          <p>
+                             ผู้อำนวยการสถาบันสุขภาพจิตเด็กและวัยรุ่นราชนครินทร์
+                          สถาบันสุขภาพจิตเด็กและวัยรุ่นราชนครินทร์
+                          กรมสุขภาพจิต
+                          พญาไท
+                          กรุงเทพฯ 10400
+          </p>
+        </ul>
+      </div>
+      <div class="formEntry">
+                      ตั้งแต่ฉันชอบเล่นเกม...
+        <game-choice id="q1" value="{{document.value.form_value.q1}}"
+          label=".....ฉันสนใจหรือทำกิจกรรมอย่างอื่นน้อยลงมาก">
+        </game-choice>
+        <game-choice id="q2" value="{{document.value.form_value.q2}}"
+          label=".....ฉันมักเล่นเกมจนลืมเวลา">
+        </game-choice>
+        <game-choice id="q3" value="{{document.value.form_value.q3}}"
+          label=".....ความสัมพันธ์ระหว่างฉันกับคนในครอบครัวแย่ลง">
+        </game-choice>
+        <game-choice id="q4" value="{{document.value.form_value.q4}}"
+          label=".....ฉันเคยเล่นเกมดึกมาก จนทำให้ตื่นไปเรียนไม่ไหว">
+        </game-choice>
+        <game-choice id="q5" value="{{document.value.form_value.q5}}"
+          label=".....ฉันมักเล่นเกมเกินเวลาที่ฉันได้รับอนุญาตให้เล่น">
+        </game-choice>
+        <game-choice id="q6" value="{{document.value.form_value.q6}}"
+          label=".....ฉันมักอารมณ์เสียเวลามีใครมาบอกให้เลิกเล่นเกม">
+        </game-choice>
+        <game-choice id="q7" value="{{document.value.form_value.q7}}"
+          label=".....ฉันเคยโดดเรียนเพื่อไปเล่นเกม">
+        </game-choice>
+        <game-choice id="q8" value="{{document.value.form_value.q8}}"
+          label=".....เรื่องที่ฉันคุยกับเพื่อนๆ มักเป็นเรื่องเกี่ยวกับเกม">
+        </game-choice>
+        <game-choice id="q9" value="{{document.value.form_value.q9}}"
+          label=".....ฉันใช้เวลาว่างส่วนใหญ่ไปกับการเล่นเกม">
+        </game-choice>
+         <game-choice id="q10" value="{{document.value.form_value.q10}}"
+          label=".....ฉันใช้เวลาว่างส่วนใหญ่ไปกับการเล่นเกม">
+        </game-choice>
+         <game-choice id="q11" value="{{document.value.form_value.q11}}"
+          label=".....ฉันใช้เวลาว่างส่วนใหญ่ไปกับการเล่นเกม">
+        </game-choice>
+         <game-choice id="q12" value="{{document.value.form_value.q12}}"
+          label=".....ฉันใช้เวลาว่างส่วนใหญ่ไปกับการเล่นเกม">
+        </game-choice>
+         <game-choice id="q13" value="{{document.value.form_value.q13}}"
+          label=".....ฉันใช้เวลาว่างส่วนใหญ่ไปกับการเล่นเกม">
+        </game-choice>
+         <game-choice id="q14" value="{{document.value.form_value.q14}}"
+          label=".....ฉันใช้เวลาว่างส่วนใหญ่ไปกับการเล่นเกม">
+        </game-choice>
+         <game-choice id="q15" value="{{document.value.form_value.q15}}"
+          label=".....ฉันใช้เวลาว่างส่วนใหญ่ไปกับการเล่นเกม">
+        </game-choice>
+         <game-choice id="q16" value="{{document.value.form_value.q16}}"
+          label=".....ฉันใช้เวลาว่างส่วนใหญ่ไปกับการเล่นเกม">
+        </game-choice>
+      </div>
+      <div class="evaluation">
+       <div class="layout horizontal">
+        <paper-input label="คะแนนรวมได้ (คะแนน)" class="flex"
+          readonly
+          value="[[document.value.form_result.score]]">
+        </paper-input>
+        <paper-input label="ระดับความรุนแรงของปัญหา" class="flex"
+          readonly
+          value="[[_result(document.value.form_result.score)]]">
+        </paper-input>
+       </div>
+      </div>
+    </form-control>
+  </template>
+  <script>
+    Polymer({
+      is: 'game-form',
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบทดสอบการติดเกม ฉบับเด็กและวัยรุ่น (GAST)"
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var dict = ['n','s','u','a'];
+        var score = 0;
+        for(var key in values) {
+          score+=dict.indexOf(values[key]);
+        }
+        return {'score':score};
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});              
+        this.set('document.value.form_result',{});              
+      },
+      _validate:function() {
+        var questions = this.document.value.form_value;
+        var required = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','q13','q14','q15','q16']; 
+        for(var i=0;i<required.length;i++) {
+          if(!questions[required[i]]) {
+            this.$$('#'+required[i]).classList.add('invalid'); 
+            return false;
+          } else {
+            this.$$('#'+required[i]).classList.remove('invalid'); 
+          }
+        }
+        return true;
+      },
+      _result:function(score) {
+        if(score>=0) {
+          if(score<24) return 'ยังไม่มีปัญหาในการเล่นเกม';
+          if(score<32) return 'เริ่มมีปัญหาในการเล่นเกม';
+          return 'มีปัญหาในการเล่นเกมมาก';
+        } 
+        return '';
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,200 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="disability-choice.html">
+
+<dom-module id="disability-autistic-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply(--paper-font-display);
+        @apply(--layout-vertical);
+        display: block;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      paper-radio-group {
+        background:#efefef;
+      }
+      
+      .formEntry div {
+        @apply(--paper-font-title);
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+
+      .description ol {
+        @apply(--paper-font-body1);
+        .num {list-style-type: decimal;}
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+     
+      .evaluation {
+        padding:5px;
+      }
+
+      .result {
+        padding-left:20px;
+        font-weight:bold;
+      }
+    </style>
+
+    <form-control id="control" 
+      on-form-action="_tap" 
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div class="description">
+        <ol class="num"><b> คำชี้แจง</b>
+          <li>แบบคัดกรองฉบับนี้เป็นแบบคัดกรองเพื่อประโยชน์ในทางการจัดการศึกษาเท่านั้น</li>
+          <li>วิเคราะห์ลักษณะ / พฤติกรรม ของเด็ก ซึ่งเป็นลักษณะหรือพฤติกรรม ที่เด็กแสดงออกบ่อย ๆ โดยให้ทำเครื่องหมาย / ลงในช่อง <b>“ใช่”</b> หรือ <b>“ไม่ใช่”</b> ที่ตรงกับลักษณะหรือพฤติกรรมนั้น ๆ ของเด็ก</li>
+          <li>ผู้ทำการคัดกรองเบื้องต้นต้องผ่านการอบรมวิธีการใช้ และการประเมิน ตามแบบคัดกรองนี้ และควรสอบถามข้อมูลเพิ่มเติมจากผู้ที่อยู่ใกล้ชิดเด็กมากที่สุด เช่น ผู้ปกครอง หรือ ครู เพื่อให้เกิดความชัดเจนถูกต้อง</li>
+          <li>ผู้คัดกรองควรจะมีอย่างน้อย ๒ คนขึ้นไป</li>
+        </ol>
+        <ol class="num"> 
+          <b>เกณฑ์การพิจารณา</b>
+          <li>ถ้าตอบว่าใช่อย่างน้อย 2 ด้านๆ ละ 2 ข้อขึ้นไป  แสดงว่ามีแนวโน้มที่จะเป็ฯบุคคลออทิสติกให้จัดบริการช่วยเหลือทางการศึกษาพิเศษ  และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+        </ol>
+      </div>
+      <div class="formEntry">
+       <div>ด้านพฤติกรรม / อารมณ์</div>
+       <disability-choice value="{{document.value.form_value.q_1}}"> 
+      มีพฤติกรรมกระตุ้นตัวเอง ซึ่งเป็นพฤติกรรมซ้ำๆ เช่นสะบัดนิ้ว  เล่นมือ  ดม เคาะ หรือหมุนสิ่งของ เป็นต้น
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.q_2}}"> 
+      แสดงพฤติกรรมที่ไม่เหมาะสมเมื่อมีการเปลี่ยนแปลงกิจกรรมประจำวัน เช่น เด็กไม่ยอมเปลี่ยนเส้นทางไปโรงเรียน  เด็กไม่ยอมเปลี่ยนเก้าอี้นั่งในห้องเรียน เป็นต้น
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.q_3}}"> 
+      มีพฤติกรรมหลีกหนีการสัมผัส เช่น  เดินเขย่าปลายเท้า ไม่ชอบการกอดรัด ทนต่อเสียงบางอย่างไม่ได้ เป็นต้น
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.q_4}}"> 
+      มีพฤติกรรมอยู่ไม่นิ่ง เช่น ชอบวิ่ง เดินไปมารอบห้อง เป็นต้น
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.q_5}}"> 
+      ไม่เข้าใจอารมณ์ของผู้อื่น  เช่นไม่เข้าใจเวลาเพื่อนโกรธ เศร้า เสียใจ เป็นต้น
+       </disability-choice>     
+       <div>ด้านการสือความหมาย</div>
+       <disability-choice value="{{document.value.form_value.q_6}}"> 
+      แสดงความต้องการดดยการจูงมือ  เช่น เด็กจะจูงมือผู้ปกครอง / ครูเพื่อนำไปทำสิ่งที่ต้องการ เป็ฯต้น
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.q_7}}"> 
+     ใช้ภาษาพูดของตัวเองที่ผู้อื่นไม่เข้าใจ
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.q_8}}"> 
+     พูดเลียนแบบ หรือทวนคำถาม
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.q_9}}"> 
+       พูดคำซ้ำๆ ที่เคยได้ยินบ่อย  เช่น พูดตามโฆษณาที่ได้ยินจากโทรทัศน์
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.q_10}}"> 
+       ไม่สามารถเริ่มต้นบทบทสนทนากับผู้อื่นได้
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_11}}"> 
+       พูดเรื่องที่ตนเองสนใจโดยไม่สนใจผู้ฟัง
+       </disability-choice>  
+       <disability-choice value="{{document.value.form_value.q_12}}"> 
+      ไม่เข้าใจคำที่เป็นนามธรรม เช่น การเอื้อเฟื้อเผื่อแผ่
+       </disability-choice>  
+       <div>ด้านสังคม</div>
+       <disability-choice value="{{document.value.form_value.q_13}}"> 
+      ไม่มองสบตากับผู้อื่นขณะสนทนา
+       </disability-choice>  
+       <disability-choice value="{{document.value.form_value.q_14}}"> 
+       ไม่มีปฏิสัมพันธ์กับบุคคลรอบข้าง เช่น ไม่เล่นกับเพื่อน  ไม่สนใจคนรอบข้าง  เป็นต้น
+       </disability-choice>  
+       <disability-choice value="{{document.value.form_value.q_15}}"> 
+       มีปฏิสัมพันธ์ต่อบุคคลรอบข้างไม่เหมาะสม  เช่นเล่นกับเพื่อนแรง
+       </disability-choice>  
+       <disability-choice value="{{document.value.form_value.q_16}}"> 
+       แสดงพฤติกรรมตอบสนองทางอารมณ์  และสังคมไม่เหมาะสม เช่น ส่งเสียงกรีดร้อง ทำร้ายตัวเองหรือผู้อื่นเมื่อถูกขัดใจ เป็นต้น
+       </disability-choice>  
+       <disability-choice value="{{document.value.form_value.q_17}}"> 
+       แยกตัวออกมาอยู่ตามลำพัง  เช่น ในขณะที่เพื่อนทำกิจกรรมกลุ่มไม่ยอมเข้าร่วมกิจกรรม
+       </disability-choice>    
+       <disability-choice value="{{document.value.form_value.q_18}}"> 
+ไม่สามารถปฏิบัติตามกฎกติกา   ระเบียบหรือข้อตกลงได้ เช่น ไม่ร็จักรอคอย ไม่ร็จักการเข้าแถว  เป็นต้น
+       </disability-choice>            
+     </div>
+
+     <div class="evaluation">
+      <div class="layout vertical">
+       <span class="result">{{_resultq}}</span>
+      </div>
+     </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'disability-autistic-form',
+      listeners : {
+      },
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบคัดกรองบุคคลออทิสติก"
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers:[
+        '_result(document.value.form_result)'
+      ],
+      _tap:function(e) {
+        if(e.detail.type == "save") {
+          this.$.control.save();
+        }
+      },
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score = {};
+        for(var q in values) {
+          var p = q.split('_')[0];
+          if(!score[p]) score[p] = {'y':0,'n':0};
+          score[p][values[q]]++;
+        }
+        return score;
+      },
+      _validate:function() {
+        var eles =Polymer.dom(this.root)
+         .querySelectorAll('disability-choice');
+        for(var i=0;i<eles.length;i++) {
+          if(!eles[i].value)  {
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            eles[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});        
+      },
+      _result:function(score) {
+        for(var key in score) {
+          if(score[key].y >= 2) {
+            this.set('_result'+key,'มีแนวโน้มที่จะเป็นบุคคลออทิสติกให้จัดบริการช่วยเหลือทางการศึกษาพิเศษ  และส่งต่อให้แพทย์ตรวจวินิจฉัย');
+          } else {
+            this.set('_result'+key,'ไม่มีแนวโน้มที่จะเป็นบุคคลออทิสติก');
+          }
+        }
+      }
+    });
+  </script>
+</dom-module>

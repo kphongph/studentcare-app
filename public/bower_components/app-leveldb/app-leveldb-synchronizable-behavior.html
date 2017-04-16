@@ -1,0 +1,79 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-request.html">
+
+<script>
+(function() {
+  'use strict';
+  Polymer.AppLeveldbSynchronizableBehavior = {
+    properties: {
+      url: {
+        type:String
+      },
+      jwtToken: {
+        type:String
+      },
+      updateList: {
+        type:Array,
+        notify:true,
+        value:function() {
+          return [];
+        }
+      }
+    },
+    observers:[
+    ],
+    listeners: {
+    },
+    query:function(query) {
+      var url = this.url+'/'+key;
+      var request = document.createElement('iron-request');
+      var self = this;
+      return request.send({
+        url:url,
+        method:"GET", 
+        headers:{'Authorization':'JWT '+self.jwtToken},
+        handleAs:"json",
+      }).then(function() {
+        return new Promise(function(fulfill,reject) {
+          fulfill({key:key,value:request.response});
+        });
+      });     
+    },
+    pull:function(key) {
+      var url = this.url+'/'+key;
+      var request = document.createElement('iron-request');
+      var self = this;
+      return request.send({
+        url:url,
+        method:"GET", 
+        headers:{'Authorization':'JWT '+self.jwtToken},
+        handleAs:"json",
+      }).then(function() {
+        return new Promise(function(fulfill,reject) {
+          fulfill({key:key,value:request.response});
+        });
+      });     
+    },
+    push:function(obj) {
+      var url = this.url+'/'+key;
+      url = url+'?apikey='+this.apiKey;
+      var request = document.createElement('iron-request');
+      return request.send({
+        url:url,
+        method:"POST", 
+        headers:{
+          'content-type':'application/json'
+        },
+        body:JSON.stringify(obj.value),
+        handleAs:"json",
+      }).then(function() {
+        return new Promise(function(fulfill,reject) {
+          if(request.response.ok) {
+            fulfill();
+          }
+        });
+      });     
+    }
+  };
+})();   
+</script>

@@ -1,0 +1,28 @@
+<link rel="import" href="../polymer/polymer.html">
+<script>
+  (function() {
+    'use strict';
+    Polymer.AppLeveldbCommonBehaviorImpl = {
+      properties: {
+        app: {
+          type: Object,
+          notify: true,
+          observer: '__appChanged'
+        }
+      },
+      __appChanged: function(app) {
+        if(app) {
+          return;
+        }
+      },
+      __onError: function(err) {
+        this.fire('error', err);
+      }
+
+    };
+    /** @polymerBehavior */
+    Polymer.AppLeveldbCommonBehavior = [
+      Polymer.AppLeveldbCommonBehaviorImpl
+    ];
+  })();
+</script>

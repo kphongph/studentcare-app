@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>studentcare-components test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+   
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../test-fixture/test-fixture-mocha.js"></script>
+
+    <link rel="import" href="../student-table.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <student-table id="stable"></student-table>
+      </template>
+    </test-fixture>
+
+    <script>
+      describe('student-table', function() {
+        var stable;
+        beforeEach(function() {
+          stable = fixture('basic');
+        });
+        
+        context('common tests',function() {
+          it('should display',function() {
+            stable.setAttribute('x','true');
+          });
+        });
+
+        /*
+        test('instantiating the element works', function() {
+          var element = fixture('basic');
+          assert.equal(element.is, 'student-table');
+        });
+        */
+      });
+    </script>
+  </body>
+</html>

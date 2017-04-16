@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>app-leveldb demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../app-storage/app-localstorage/app-localstorage-document.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../paper-input/paper-input.html">
+    <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+    <link rel="import" href="../app-leveldb.html">
+    <link rel="import" href="../app-leveldb-document.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic app-leveldb-sync demo</h3>
+      <demo-snippet>
+        <template>
+          <template is="dom-bind">
+          <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+          </app-localstorage-document>
+
+          <app-leveldb
+            name="test"
+            url="https://maas.nuqlis.com:9000/api"
+            db-name="students_care"
+            app="{{app}}"
+            jwt-token="{{jwtToken.token}}">
+          </app-leveldb>
+
+          <app-leveldb-document 
+            app="{{app}}"
+            key="6da2d240141711e7aee58f9356072a1c"
+            status="{{status}}"
+            value="{{value}}">
+          </app-leveldb-document>
+
+
+          </p>
+            From app-leveldb-document<br>
+            <span>{{value.cid}}</span>
+            <paper-input value="{{value.fname}}" 
+              label="fname">
+            </paper-input>
+            <p>
+            <paper-checkbox>Insert</paper-checkbox>
+            </p>
+            Status:<br>
+             ok:<span>{{status.ok}}</span><br>
+             key:<span>{{status.key}}</span>
+          </p>
+          
+          <script>
+            document.querySelector('app-leveldb-document')
+             .addEventListener('response',function(e) {
+             console.log(e);
+            });
+
+            document.querySelector('paper-input')
+             .addEventListener('change',function(e) {
+             console.log('change'); 
+             var doc = document.querySelector('app-leveldb-document');
+             var _input = document.querySelector('paper-input');
+             var checkbox = document.querySelector('paper-checkbox');
+             if(checkbox.checked) {
+               doc.key = null;
+             }
+             if(!doc.value) {
+               doc.value = {'fname':_input.value};
+             }
+             doc.save();
+             
+            });
+          </script>
+          
+ 
+          </template>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>

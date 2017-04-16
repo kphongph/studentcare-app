@@ -1,0 +1,299 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="disability-choice.html">
+<dom-module id="disability-behavior-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply(--paper-font-display);
+        @apply(--layout-vertical);
+        display: block;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      paper-radio-group {
+        background:#efefef;
+      }
+      
+      .formEntry div {
+        @apply(--paper-font-display);
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+
+      .description ol {
+        @apply(--paper-font-body1);
+        .num {list-style-type: decimal;}
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+     
+      .evaluation {
+        padding:5px;
+      }
+      
+      .sub-question {
+        padding-left:20px;
+      }
+
+      .check-icon {
+        width:30px;
+      }
+    </style>
+
+    <form-control id="control" 
+      on-form-action="_tap" 
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div class="description">
+        <ol class="num"><b> คำชี้แจง</b>
+          <li>แบบคัดกรองฉบับนี้เป็นแบบคัดกรองเพื่อประโยชน์ในทางการจัดการศึกษาเท่านั้น</li>
+          <li>
+          วิเคราะห์ลักษณะ/พฤติกรรม 
+          ของเด็กซึ่งเป็นลักษณะหรือพฤติกรรมเบี่ยงเบนไปจากปกติอย่างมาก
+          หรือเป็นไปอย่างต่อเนื่อง 
+          ทำให้ไม่สามารถเรียนหนังสือได้นั้น 
+          มิได้มีสาเหตุมาจากองค์ประกอบทางสติปัญญา 
+          การรับรู้และสุขภาพ หรือความบกพร่องทางร่างกาย 
+          โดยทำเครื่องหมาย/ลงในช่อง “ใช่” หรือ “ไม่ใช่” 
+          ที่ตรงกับลักษณะหรือพฤติกรรมนั้น
+          </li>
+          <li>ผู้ทำการคัดกรองเบื้องต้นต้องผ่านการอบรมวิธีการใช้ และการประเมิน ตามแบบคัดกรองนี้ และควรสอบถามข้อมูลเพิ่มเติมจากผู้ที่อยู่ใกล้ชิดเด็กมากที่สุด เช่น ผู้ปกครอง หรือ ครู เพื่อให้เกิดความชัดเจนถูกต้อง</li>
+          <li>ผู้คัดกรองควรจะมีอย่างน้อย ๒ คนขึ้นไป</li>
+        </ol>
+        <ol class="num"> <b>เกณฑ์การพิจารณา</b>
+          <li> 
+          ถ้าตอบว่าใช่ 1 ใน 5 ข้อ และตอบใช่ 2 ข้อย่อยในข้อหนึ่ง 
+          ถือว่ามีแนวโน้มที่จะเป็นบุคคลที่มีความบกพร่องทางพฤติกรรมหรืออารมณ์
+          ให้จัดบริการช่วยเหลือทางการศึกษาพิเศษ และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+        </ol>
+      </div>
+      <div class="formEntry">
+       <div>ก้าวร้าว ก่อกวนเป็นอันตรายแก่ตนเองและผู้อื่น</div>
+       <disability-choice value="{{document.value.form_value.p1_1}}"> 
+       1. ก้าวร้าว ก่อกวนเป็นอันตรายแก่ตนเองและผู้อื่น
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s1_1}}"> 
+        <span class="sub-question">
+        1.1 โหดร้าย ทารุณ รังแกสัตว์
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s1_2}}"> 
+        <span class="sub-question">
+        1.2 ชกต่อย ทำร้ายร่างกายตนเองและผู้อื่น
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s1_3}}"> 
+        <span class="sub-question">
+        1.3 ข่มขู่ คุกคาม หวีดร้อง กระทืบเท้า
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s1_4}}"> 
+        <span class="sub-question">
+        1.4 ก่อกวนเพื่อน
+        </span>
+       </disability-choice>
+       <div>เคลื่อนไหวผิดปกติ</div>
+       <disability-choice value="{{document.value.form_value.p1_2}}"> 
+       2. เคลื่อนไหวผิดปกติ
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s2_1}}"> 
+        <span class="sub-question">
+        2.1 ไม่อยู่นิ่ง เคลื่อนไหวตลอดเวลาโดยปราศจากจุดมุ่งหมาย
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s2_2}}"> 
+        <span class="sub-question">
+        2.2 มีความสนใจสั้น สนใจบทเรียนไม่ได้นาน ขาดสมาธิในการเรียน
+        </span>
+       </disability-choice>
+       <div>มีปัญหาปรับตัวทางสังคม มีการฝ่าฝืนกฏเกณฑ์ที่เป็นที่ยอมรับของสังคม</div>
+       <disability-choice value="{{document.value.form_value.p1_3}}"> 
+       3. มีปัญหาปรับตัวทางสังคม มีการฝ่าฝืนกฏเกณฑ์ที่เป็นที่ยอมรับของสังคม
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s3_1}}"> 
+        <span class="sub-question">
+        3.1 ทำลายสาธารณสมบัติ
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s3_2}}"> 
+        <span class="sub-question">
+        3.2 ลักขโมย
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s3_3}}"> 
+        <span class="sub-question">
+        3.3 วิวาทกับผู้อื่นเสมอ
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s3_4}}"> 
+        <span class="sub-question">
+        3.4 ประทุษร้ายทางเพศ
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s3_5}}"> 
+        <span class="sub-question">
+        3.5 ไม่เคารพ ไม่เชื่อฟัง ครูและพ่อแม่ ผู้ปกครองอย่างรุนแรง
+        </span>
+       </disability-choice>
+       <div>มีความรู้สึกกกังวลและปมด้อย อย่างรุนแรงสม่ำเสมอ</div>
+       <disability-choice value="{{document.value.form_value.p1_4}}"> 
+       4. มีความรู้สึกกกังวลและปมด้อย อย่างรุนแรงสม่ำเสมอ
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s4_1}}"> 
+        <span class="sub-question">
+        4.1 ไม่กล้าพูด ไม่กล้าแสดงออก
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s4_2}}"> 
+        <span class="sub-question">
+        4.2 มีการประหม่าอย่างมากเมื่อให้ออกไปแสดงออก เช่น รายงาน
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s4_3}}"> 
+        <span class="sub-question">
+        4.3 มีอาการเจ็บป่วยทางกายเมื่อมาโรงเรียน
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s4_4}}"> 
+        <span class="sub-question">
+        4.4 ร้องไห้บ่อย
+        </span>
+       </disability-choice>
+       <div>หนีสังคม ปลีกตัวออกจากสังคม อันมีผลต่อการเรียน</div>
+       <disability-choice value="{{document.value.form_value.p1_5}}"> 
+       5. หนีสังคม ปลีกตัวออกจากสังคม อันมีผลต่อการเรียน
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s5_1}}"> 
+        <span class="sub-question">
+        5.1 ไม่พูดคุย ไม่เล่นกับเพื่อน
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s5_2}}"> 
+        <span class="sub-question">
+        5.2 ไม่ร่วมกิจกรรมที่ทางโรงเรียนจัดให้
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s5_3}}"> 
+        <span class="sub-question">
+        5.3 เจ้าอารมณ์ รุนแรง
+        </span>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.s5_4}}"> 
+        <span class="sub-question">
+        5.4 แยกตัวอยู่คนเดียว ทำงานคนเดียวตลอดเวลา
+        </span>
+       </disability-choice>
+     </div>
+
+     <div class="evaluation">
+      <div class="layout vertical">
+       <div class="layout horizontal">
+        <div class="check-icon">
+          <iron-icon icon="check" hidden$="{{!_mark}}">
+          </iron-icon>
+        </div>
+        <span class="flex" id="markPositive">
+          พบความบกพร่อง
+        </span>
+       </div>
+       <div class="layout horizontal">
+        <div class="check-icon">
+          <iron-icon icon="check" hidden$="{{_mark}}">
+          </iron-icon>
+        </div>
+        <span class="flex" id="markNegative">
+          ไม่พบความบกพร่อง
+        </span>
+       </div>
+      </div>
+     </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'disability-behavior-form',
+      listeners : {
+      },
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบคัดกรองบุคคลที่มีความบกพร่องทางพฤติกรรม หรืออารมณ์"
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers:[
+        '_result(document.value.form_result)'
+      ],
+      _tap:function(e) {
+        if(e.detail.type == "save") {
+          this.$.control.save();
+        }
+      },
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score = {};
+        for(var q in values) {
+          var p = q.split('_')[0];
+          if(!score[p]) score[p] = {'y':0,'n':0};
+          score[p][values[q]]++;
+        }
+        return score;
+      },
+      _validate:function() {
+        var eles =Polymer.dom(this.root)
+         .querySelectorAll('disability-choice');
+        for(var i=0;i<eles.length;i++) {
+          if(!eles[i].value)  {
+            console.log(eles[i]);
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            eles[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});        
+      },
+      _result:function(score) {
+        if(!score) return;
+        var foundSub = false; 
+        for(var key in score) {
+          if(key.indexOf('s') == 0 && score[key].y>=2) {
+            foundSub=true;
+            break;
+          }
+        }
+        if(score.p1.y >= 1  && foundSub) {
+          this.$$('#markPositive').classList.add('mark');
+          this.$$('#markNegative').classList.remove('mark');
+          this.set('_mark',true);
+        } else {
+          this.$$('#markNegative').classList.add('mark');
+          this.$$('#markPositive').classList.remove('mark');
+          this.set('_mark',false);
+        }
+      }
+    });
+  </script>
+</dom-module>

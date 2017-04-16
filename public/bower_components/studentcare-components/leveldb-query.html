@@ -1,0 +1,51 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../app-leveldb/app-leveldb.html">
+<link rel="import" href="../app-leveldb/app-leveldb-query.html">
+
+<dom-module id="leveldb-query">
+  <template> 
+    <app-localstorage-document 
+      key="jwtToken" 
+      data="{{jwtToken}}">
+    </app-localstorage-document>
+    
+    <app-leveldb
+      url="{{url}}"
+      db-name="{{dbName}}"
+      app="{{app}}"
+      jwt-token="{{jwtToken.token}}">
+    </app-leveldb>
+    
+    <app-leveldb-query
+      app="{{app}}"
+      view-name="{{viewName}}"
+      query="{{query}}"
+      data="{{data}}">
+    </app-leveldb-query>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'leveldb-query',
+      properties: {
+        url: {
+          type:String
+        },
+        data: {
+          type:Array,
+          notify:true 
+        },
+        dbName: {
+          type:String
+        },
+        viewName: {
+          type:String
+        },
+        query:{
+          type:Object
+        }
+      }
+    });
+  </script>
+</dom-module>

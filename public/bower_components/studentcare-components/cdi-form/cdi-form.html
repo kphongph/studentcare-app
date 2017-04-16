@@ -1,0 +1,394 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="cdi-choice.html">
+
+<dom-module id="cdi-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply(--paper-font-display);
+        @apply(--layout-vertical);
+        display: block;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      paper-radio-group {
+        background:#efefef;
+      }
+      
+      .formEntry div {
+        @apply(--paper-font-display);
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+
+      .description {
+        @apply(--paper-font-body1);
+        padding:5px;
+      }
+     
+      .evaluation {
+        padding:5px;
+      }
+      
+      .sub-question {
+        padding-left:20px;
+      }
+
+      .check-icon {
+        width:30px;
+      }
+    </style>
+
+    <form-control id="control" 
+      on-form-action="_tap" 
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div class="description">
+        <div class="layout vertical pad">
+          <h3>คำชี้แจง</h3>
+          <p> 
+ความรู้สึกเศร้า 
+หรือไม่มีความสุขเป็นสิ่งที่พบได้เสมอในชีวิตประจำวัน 
+ไม่ว่าจะเป็นผู้ใหญ่ หรือเด็กการมีความรู้สึกเศร้าในช่วงระยะ 
+สั้นๆ และคราวนั้นถือว่าเป็นสิ่งปกติ 
+แต่ถ้าความรู้สึกเศร้านั้นมีอยู่เป็นระยะเวลานาน 
+และรุนแรง จนส่งผลกระทบถึงการปฏิบัติหน้าที่ใน
+ชีวิตประจำวัน ก็จัดว่าเป็นภาวะปกติ 
+ในทางคลินิกภาวะซึมเศร้าดังกล่าวมมีหลายแบบขึ้นอยู่กับลักษณะอาการ 
+และความรุนแรง เช่น 
+ภาวะเศร้าอันเป็นผลจากความผิดปกติในการปรับตัวต่อความเครียด(adjustment disorder) 
+โรคซึมเศร้าเรื้อรัง (dysthymia) 
+และโรคซึมเศร้ารุนแรง (major depression) เป็นต้น
+          </p>
+          <p>
+อาการซึมเศร้าที่เกิดขึ้นในผู้ป่วยส่วนใหญ่เป็นความรู้สึก 
+หรือสภาวะที่เกิดภายในที่รับรู้ได้เฉพาะตัวผู้ป่วย ยากแก่การสังเกตของผู้คน
+รอบข้าง เฉพาะเมื่ออาการนั้นมีความรุนแรง 
+จึงจะปรากฏชัดต่อสายตาของผู้ใกล้ชิด เช่น ความรู้สึกเบื่อหน่ายต่อสิ่งรอบตัว(anhedonia) ถ้าเป็น
+น้อยผู้ป่วยอาจเพียงแต่รู่สึกไม่ค่อยสนุกกับสิ่งที่เคยสนุก 
+ถ้าเป็นมากผู้อื่นอาจสังเกตได้ว่าผู้ป่วยหงอยแยกตัวไม่ค่อยทำอะไร หรือยุ่งกับใคร
+ความรู้สึกผิดก็เช่นกัน ถ้าเป็นไม่มากผู้ป่วยอาจเพียงมีความรู้สึกว่าตนเองเป็นคนไม่ดี 
+แต่ความรู้นี้อาจออกไม่ชัดเจน จนกระทั่งอาการทวีความ
+รุนแรง และความรู้สึกผิดนั้นออกมาในรูปของความหลงผิด 
+หรือหูแว่วเป็นเสียงคนตำหนิว่าผู้ป่วยไม่ดี เป็นต้น
+          </p>
+          <p>
+แบบคัดกรองภาวะซึมเศร้า หรือ 
+Children’s Depression Inventory:CDI 
+ฉบับภาษาไทยเป็นแบบวัดที่ศาสตราจารย์แพทย์หญิงอุมาพร ตรังคสมบัติ 
+แปลจากฉบับภาษาอังกฤษที่สร้างโดย Maria Kovacs 
+โดยดัดแปลงจาก Beck Depression Inventory แบบวัดนี้
+ประกอบด้วยคำถาม 27 ข้อ เกี่ยวกับอาการซึมเศร้าในด้านต่างๆที่พบในเด็ก 
+แต่ละคำถามจะประกอบด้วยตัวเลือก 3 ข้อ ซึ่งบอกความรุนแรง
+ของภาวะซึมเศร้าใน 2 สัปดาห์ที่ผ่านมา 
+แต่ละตัวเลือกจะมีระดับความรุนแรงของอาการ คะแนน 0 หมายถึง ไม่มีอาการเศร้าเลย หรือมีน้อย
+คะแนน 1 หมายถึง มีอาการบ่อยๆ และคะแนน 2 หมายถึง มีอาการตลอดเวลา 
+คะแนนรวมของ CDI มีได้ตั้งแต่ 0-52 เนื่องจากความรู้สึก และ
+ความนึกคิดของผู้ป่วยเป็นสิ่งสำคัญในการประเมินภาวะซึมเศร้าจึงควรมีการประเมินศึกษาความรู้สึก 
+และความคิดผู้ป่วยด้วย นอกเหนือไปจากการสังเกตของแพทย์ 
+หรือผู้ตรวจ ดังนี้ เครื่องมือที่ประเมินความรู้สึก 
+และความคิดของผู้ป่วยจึงมีความจำเป็นอย่างยิ่งที่จะช่วยให้การประเมินเป็นไปอย่างครบถ้วน
+          </p>
+          <h3>วัตถุประสงค์</h3>
+          <p>
+การประเมินภาวะซึมเศร้านั้น 
+โดยทั่วไปกระทำโดยการสังเกตอาการแสดงของผู้ป่วย 
+และสอบถามข้อมูลเกี่ยวกับอาการ หรือความรู้สึกของผู้ป่วย 
+การสังเกตอาการแสดงอาจจะมีปัญหาดังกล่าวมาแล้ว 
+ส่วนการสอบถามข้อมูลจากผู้ป่วยเอง ก็อาจจะได้ข้อมูลที่ไม่ครบถ้วน
+โดยเฉพาะข้อมูลที่เกี่ยวกับความรู้สึกระเอียดอ่อนของผู้ป่วย 
+เช่น ความรู้สึกเกี่ยวกับตนเอง เป็นต้น ผู้ป่วยบางรายอาจขาดทักษะในการสื่อสาร
+นอกจากนี้กรณีผู้ป่วยเป็นเด็ก ก็อาจเกิดปัญหาในการให้ข้อมูลแก่แพทย์ 
+เนื่องจากเด็กอาจไม่กล้าแสดงความคิดเห็น โดยเฉพาะกับผู้ใหญ่ ด้วย
+เหตุนี้ใช่เครื่องมือประเภท self-report ที่ใช้แพร่หลายในเด็กปัจจุบัน
+          </p>
+          <h3>คุณสมบัติของเครื่องมือ</h3>
+          <p>
+จากการวิจัยพบว่า CDI ฉบับภาษาไทย 
+มีค่าอำนาจจำแนกระหว่างเด็กที่มีภาวะซึมเศร้าอย่างมีนัยสำคัญทางสิถิตที่ P<10 กำลัง 6
+การศึกษาในเด็กไทยพบว่ามี reliability coefficient (Alpha) = 0.83 
+และมีความตรงในการจำแนก(discriminant validity) สูงจาก
+receiver operating characteristic curve 
+คะแนนที่เป็นจุดตัดแยกภาวะซึมเศร้าที่มีความสำคัญทางคลินิก คือ 15 คะแนนขึ้นไป ที่คะแนนนี้
+CDI ฉบับภาษาไทยมี Sensitivity = 78.7% specificity = 91.3% 
+และมี accuracy = 87% อย่างไรก็ตาม สำหรับการคัดกรองระบาดวิทยา
+สามารถใช้จุดตัดที่ 19 หรือ 21 คะแนนได้
+          </p>
+          <h3>วิธีการใช้</h3>
+          <p>
+แบบคัดกรอง CDI ประกอบด้วยคำถาม 27 ข้อ 
+แต่ละคำถามมี 3 ตัวเลือก เพื่อบอกความรุนแรงของภาวะซึมเศร้าในช่วง 2 สัปดาห์ที่
+ผ่านมา การให้คะแนนจะให้ตามความรุนแรงของอาการ 
+          </p>
+<ul>
+<li>คะแนน 0 หมายถึง ไม่มีอาการเศร้าเลย</li>
+<li>คะแนน 1 หมายถึง มีอาการบ่อย</li>
+<li>คะแนน 2 หมายถึง มีอาการตลอดเวลา</li>
+<li>คะแนนรวม มีได้ตั้งแต่ 0 ถึง 54</li>
+</ul>
+          <h3>การแปลผล</h3>
+          <p>
+ผู้ที่ใดคะแนนรวมสูงกว่า 15 ขึ้นไป จากการคัดกรองถือว่ามีภาวะซึมเศร้าที่มีนัยสำคัญทางคลินิก
+          </p>
+          <h3>การนำไปใช้ประโยชน์</h3>
+          <ol>
+            <li>ใช้เพื่อการคัดกรองภาวะซึมเศร้า</li>
+            <li>ใช้เพื่อประกอบการวินิฉัยโรคซึมเศร้า</li>
+            <li>ใช้เป็นเครื่องมือสำหรับติดตามผลการบำบัดรักษา</li>
+          </ol>
+          <h3>ข้อจำกัด</h3>
+          <ol>
+            <li>กลุ่มเป้าหมายต้องอ่านหนังสืออก และเล่าเรื่องราวเกี่ยวกับตนเองได้</li>
+            <li>ในกลุ่มเป้าหมายที่เป็นวัยรุ่น 
+                อาจมีข้อคำถามบ้างข้อที่ไม่เหมาะกับอายุ
+                ดังนั้นอาจพิจารณาใช้งานแบบคัดกรอง CSE-D แทนได้
+            </li>
+          </ol>
+        </div>
+      </div>
+      <div class="formEntry">
+       <cdi-choice value="{{document.value.form_value.q1_1}}"> 
+        <span class="cdi-a">ฉันรู้สึกเศร้านานๆ ครั้ง</span>
+        <span class="cdi-b">ฉันรู้สึกเศร้าบ่อยครั้ง</span>
+        <span class="cdi-c">ฉันรู้สึกเศร้าตลอดเวลา</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_2}}"> 
+        <span class="cdi-a">อะไรๆ ก็มีอุปสรรคไปเสียหมด</span>
+        <span class="cdi-b">ฉันไม่แน่ใจว่าสิ่งต่างๆ จะไปด้วยดี</span>
+        <span class="cdi-c">สิ่งต่างๆ จะเป็นไปด้วยดีสำหรับฉัน</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_3}}"> 
+        <span class="cdi-a">ฉันทำอะไรๆ ได้ค่อนข้างดี</span>
+        <span class="cdi-b">ฉันทำผิดพลาดหลายอย่าง</span>
+        <span class="cdi-c">ฉันทำอะไรผิดพลาดไปหมด</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_4}}"> 
+        <span class="cdi-a">ฉันรู้สึกสนุกกับหลายสิ่งหลายอย่าง</span>
+        <span class="cdi-b">ฉันรู้สึกสนุกกับบางสิ่งบางอย่าง</span>
+        <span class="cdi-c">ไม่มีอะไรสนุกสสนานเลยสำหรับฉัน</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_5}}"> 
+        <span class="cdi-a">ฉันทำตัวไม่ดีเสมอ</span>
+        <span class="cdi-b">ฉันทำตัวไม่ดีบ่อยครั้ง</span>
+        <span class="cdi-c">ฉันทำตัวไม่ดีนานๆ ที</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_6}}"> 
+        <span class="cdi-a">นานๆ ครั้งฉันจะคิดถึงสิ่งไม่ดีที่อาจเกิดขึ้นกับฉัน</span>
+        <span class="cdi-b">ฉันวิตกว่าสิ่งไม่ดีจะเกิดขึ้นกับฉัน</span>
+        <span class="cdi-c">จะต้องมีสิ่งเลวร้ายเกิดขึ้นกับฉันแน่ๆ</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_7}}"> 
+        <span class="cdi-a">ฉันเกลัยดตัวเอง</span>
+        <span class="cdi-b">ฉันไม่ชอบตัวเอง</span>
+        <span class="cdi-c">ฉันชอบตัวเอง</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_8}}"> 
+        <span class="cdi-a">สิ่งเลวร้ายทั้งหมดที่เกิดขึ้นเป็นความผิดของฉัน</span>
+        <span class="cdi-b">สิ่งเลวร้ายหลายสิ่งที่เกิดขึ้นเป็นความผิดของฉัน</span>
+        <span class="cdi-c">สิ่งเลวร้ายที่เกิดขึ้นมามักไม่ใช่ความผิดของฉัน</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_9}}"> 
+        <span class="cdi-a">ฉันไม่คิดจะฆ่าตัวตาย</span>
+        <span class="cdi-b">ฉันคิดถึงการฆ่าตัวตาย</span>
+        <span class="cdi-c">ฉันต้องฆ่าตัวตาย</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q_10}}"> 
+        <span class="cdi-a">ฉันรู้สึกอยากร้องไห้ทุกวัน</span>
+        <span class="cdi-b">ฉันรู้สึกอยากร้องไห้บ่อยครั้ง</span>
+        <span class="cdi-c">ฉันรู้สึกอยากร้องไห้นานๆ ครั้ง</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_11}}"> 
+        <span class="cdi-a">ฉันรู้สึกหงุดหงิงใจตลอดเวลา</span>
+        <span class="cdi-b">ฉันรู้สึกหงุดหงิดใจบ่อยครั้ง</span>
+        <span class="cdi-c">ฉันรู้สึกหงุดหงิดใจนานๆครั้ง</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_12}}"> 
+        <span class="cdi-a">ฉันชอบอยูกับคนอื่น</span>
+        <span class="cdi-b">ฉันไม่ค่อยชอบอยู่กับคนอื่น</span>
+        <span class="cdi-c">ฉันไม่ต้องการอยู่กับใครเลย</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_13}}"> 
+        <span class="cdi-a">ฉันไม่สามารถตัดสินใจอะไรต่างๆ ด้วยตนเอง</span>
+        <span class="cdi-b">ฉันตัดสินใจเรื่องต่างๆได้ลำบาก</span>
+        <span class="cdi-c">ฉันตัดสินใจเรื่องต่างๆ ได้ง่าย</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_14}}"> 
+        <span class="cdi-a">ฉันเป็นคนหน้าตาดี</span>
+        <span class="cdi-b">ฉันเป็นคนหน้าตาไม่ค่อยดี</span>
+        <span class="cdi-c">ฉันเป็นคนหน้าตาหน้าเกลียด</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_15}}"> 
+        <span class="cdi-a">ฉันต้องใช้ความพยายามอย่างหนักทุกครั้งที่ทำการบ้าน</span>
+        <span class="cdi-b">ฉันต้องใช้ความพยายามอย่างหนักบ่อยครั้งเวลาทำการบ้าน</span>
+        <span class="cdi-c">การทำการบ้านไม่ใช่ปัญหาใหญ่สำหรับฉัน</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_16}}"> 
+        <span class="cdi-a">ฉันนอนไม่หลับทุกคืน</span>
+        <span class="cdi-b">ฉันนอนไม่หลับหลายคืน</span>
+        <span class="cdi-c">ฉันนอนหลับสบาย</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_17}}"> 
+        <span class="cdi-a">ฉันรู้สึกเหนื่อยหลายๆ ครั้ง</span>
+        <span class="cdi-b">ฉันรู้สึกเหนื่อยบ่อยครั้ง</span>
+        <span class="cdi-c">ฉันรู้สึกเหนื่อยตลอดเวลา</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_18}}"> 
+        <span class="cdi-a">มีหลายวันที่ฉันรู้สึกไม่อยากกินอาหาร</span>
+        <span class="cdi-b">มีบางวันที่ฉันไม่รู้สึกอยากกินอาหาร</span>
+        <span class="cdi-c">ฉันกินอาหารได้ดี</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_19}}"> 
+        <span class="cdi-a">ฉันไม่กังวลกับการเจ็บป่วย</span>
+        <span class="cdi-b">ฉันกังวลกับการจ็บป่วยบ่อยครั้ง</span>
+        <span class="cdi-c">ฉันกังวลกับการเจ็บป่วยตลอดเวลา</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_20}}"> 
+        <span class="cdi-a">ฉันไม่รู้สึกเหงา</span>
+        <span class="cdi-b">ฉันรู้สึกเหงาบ่อยๆ</span>
+        <span class="cdi-c">ฉันรู้สึกเหงาตลอดเวลา</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_21}}"> 
+        <span class="cdi-a">ฉันไม่รู้สึกสสนุกเลยเวลาที่อยู่โรงเรียน</span>
+        <span class="cdi-b">ฉันรู้สึกสนุกนานๆ ครั้งที่อยู่โรงเรียน</span>
+        <span class="cdi-c">ฉันรู้สึกสนุกบ่อยครั้งเวลาที่อยู่โรงเรียน</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_22}}"> 
+        <span class="cdi-a">ฉันมีเพื่อนมาก</span>
+        <span class="cdi-b">ฉันมีเพื่อนไม่กี่คน และอยากมีเพื่อนมากกว่านี้</span>
+        <span class="cdi-c">ฉันไม่มีเพื่อนเลย</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_23}}"> 
+        <span class="cdi-a">การเรียนขอองฉันอยู่ในขั้นใช้ได้ดี</span>
+        <span class="cdi-b">การเรียนของฉันไม่ค่อยดีเหมือนก่อน</span>
+        <span class="cdi-c">การเรียนของฉันแย่ลงมาก</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_24}}"> 
+        <span class="cdi-a">ฉันทำอะไรไม่ได้ดีเท่าคนอื่น</span>
+        <span class="cdi-b">ฉันทำอะไร ได้ดีเท่าคนอื่น ถ้าฉันพยายาม</span>
+        <span class="cdi-c">ฉันทำได้ดีพอๆ กับคนอื่นอยู่แล้ว ในขณะที่</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q2_25}}"> 
+        <span class="cdi-a">ไม่มีใครรักฉันจริง</span>
+        <span class="cdi-b">ฉันไม่แน่ใจว่ามีใครรักฉันหรือเปล่า</span>
+        <span class="cdi-c">ฉันไม่เคยทำตามคำสั่ง</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_26}}"> 
+        <span class="cdi-a">ฉันทำตามคำสั่งที่ได้รับเสมอ</span>
+        <span class="cdi-b">ฉันไม่ทำตามคำสั่งบ่อยครั้ง</span>
+        <span class="cdi-c">ฉันไม่เคยทำตามคำสั่ง</span>
+       </cdi-choice>
+       <cdi-choice value="{{document.value.form_value.q1_27}}"> 
+        <span class="cdi-a">ฉันเข้ากับคนอื่นได้ดี</span>
+        <span class="cdi-b">ฉันทะเลาะกับคนอื่นบ่อยครั้ง</span>
+        <span class="cdi-c">ฉันทะเลาะกับคนอื่นตลอดเวลา</span>
+       </cdi-choice>
+     </div>
+
+     <div class="evaluation">
+      <div class="layout vertical">
+       <div class="layout horizontal">
+        <div class="check-icon">
+          <iron-icon icon="check" hidden$="{{!_mark}}">
+          </iron-icon>
+        </div>
+        <span class="flex" id="markPositive">
+          มีภาวะซึมเศร้าที่มีนัยสำคัญ
+        </span>
+       </div>
+       <div class="layout horizontal">
+        <div class="check-icon">
+          <iron-icon icon="check" hidden$="{{_mark}}">
+          </iron-icon>
+        </div>
+        <span class="flex" id="markNegative">
+          ไม่มีภาวะซึมเศร้าที่มีนัยสำคัญ
+        </span>
+       </div>
+      </div>
+     </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'cdi-form',
+      listeners : {
+      },
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบคัดกรองภาวะซึมเศร้าในเด็ก (CDI)"
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers:[
+        '_result(document.value.form_result)'
+      ],
+      _tap:function(e) {
+        if(e.detail.type == "save") {
+          this.$.control.save();
+        }
+      },
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score_list = { 
+          'q1':['a','b','c'],
+          'q2':['a','b','c']
+        };
+        var score = {};
+        for(var q in values) {
+          var p = q.split('_')[0];
+          if(score_list[p]) {
+            if(!score[p]) score[p] = 0;
+            score[p]+=score_list[p].indexOf(values[q]);
+          }
+        }
+        return score;
+      },
+      _validate:function() {
+        var eles =Polymer.dom(this.root)
+         .querySelectorAll('cdi-choice');
+        for(var i=0;i<eles.length;i++) {
+          if(!eles[i].value)  {
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            eles[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});        
+      },
+      _result:function(score) {
+        if(!score) return;
+        if((score.q1+score.q2)>15) {
+          this.$$('#markPositive').classList.add('mark');
+          this.$$('#markNegative').classList.remove('mark');
+          this.set('_mark',true);
+        } else {
+          this.$$('#markNegative').classList.add('mark');
+          this.$$('#markPositive').classList.remove('mark');
+          this.set('_mark',false);
+        }
+      }
+    });
+  </script>
+</dom-module>

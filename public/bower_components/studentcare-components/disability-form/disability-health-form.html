@@ -1,0 +1,205 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="disability-choice.html">
+
+<dom-module id="disability-health-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply(--paper-font-display);
+        @apply(--layout-vertical);
+        display: block;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      paper-radio-group {
+        background:#efefef;
+      }
+      
+      .formEntry div {
+        @apply(--paper-font-title);
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+
+      .description ol {
+        @apply(--paper-font-body1);
+        .num {list-style-type: decimal;}
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+     
+      .evaluation {
+        padding:5px;
+      }
+
+      .result {
+        padding-left:20px;
+        font-weight:bold;
+      }
+    </style>
+
+    <form-control id="control" 
+      on-form-action="_tap" 
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div class="description">
+        <ol class="num"><b> คำชี้แจง</b>
+          <li>แบบคัดกรองฉบับนี้เป็นแบบคัดกรองเพื่อประโยชน์ในทางการจัดการศึกษาเท่านั้น</li>
+          <li>วิเคราะห์ลักษณะ / พฤติกรรม ของเด็ก ซึ่งเป็นลักษณะหรือพฤติกรรม ที่เด็กแสดงออกบ่อย ๆ โดยให้ทำเครื่องหมาย / ลงในช่อง <b>“ใช่”</b> หรือ <b>“ไม่ใช่”</b> ที่ตรงกับลักษณะหรือพฤติกรรมนั้น ๆ ของเด็ก</li>
+          <li>ผู้ทำการคัดกรองเบื้องต้นต้องผ่านการอบรมวิธีการใช้ และการประเมิน ตามแบบคัดกรองนี้ และควรสอบถามข้อมูลเพิ่มเติมจากผู้ที่อยู่ใกล้ชิดเด็กมากที่สุด เช่น ผู้ปกครอง หรือ ครู เพื่อให้เกิดความชัดเจนถูกต้อง</li>
+          <li>ผู้คัดกรองควรจะมีอย่างน้อย ๒ คนขึ้นไป</li>
+        </ol>
+        <ol class="num"> 
+          <b>เกณฑ์การพิจารณา</b>
+          <li><b>ด้านร่างกาย และด้านการเคลื่อนไหว</b>
+ถ้าตอบว่าใช่ตั้งแต่ 1 ข้อ ขึ้นไป 
+แสดงว่ามีแนวโน้มที่จะเป็นบุคคลที่มีความบกพร่องทางร่างกายหรือการเคลื่อนไหว ให้จัดบริการ
+ช่วยเหลือทางการศึกษาพิเศษ และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+          <li><b>ด้านสุขภาพ</b>
+ถ้าตอบว่าใช่ข้อใดข้อหนึ่ง 
+แสดงว่ามีแนวโน้มที่จะเป็นบุคคลที่มีแนวโน้มที่จะเป็นบุคคลที่มีความบกพร่องทางสุขภาพ ให้จัดบริการ
+ช่วยเหลือทางการศึกษาพิเศษ และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+        </ol>
+      </div>
+      <div class="formEntry">
+       <div>ด้านร่างกาย</div>
+       <disability-choice value="{{document.value.form_value.p1_1}}"> 
+       มีอวัยวะไม่สมส่วน หรือ แขน ขา ลีบ
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.p1_2}}"> 
+       มีอวัยวะขาดหายไปและเป็นอุปสรรคในการด ารงชีวิต
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.p1_3}}"> 
+       มีการผิดรูปของกระดูกและข้อ
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.p1_4}}"> 
+       มีลักษณะกล้ามเนื้อแขนขาเกร็ง
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.p1_5}}"> 
+       มีลักษณะกล้ามเนื้อแขนขาอ่อนแรง
+       </disability-choice>     
+       <div>ด้านการเคลื่อนไหว</div>
+       <disability-choice value="{{document.value.form_value.p2_6}}"> 
+       มีการเคลื่อนไหวที่ผิดปกติ ทิศทางการเคลื่อนไหวและจังหวะการเคลื่อนไหว เช่น
+       กระตุก เกร็ง
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.p2_7}}"> 
+       ไม่สามารถนั่งทรงตัวได้ด้วยตนเอง
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.p2_8}}"> 
+       ไม่สามารถลุกขึ้นยืนได้ด้วยตนเอง
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.p2_9}}"> 
+       ไม่สามารถยืนทรงตัวได้ด้วยตนเอง
+       </disability-choice>     
+       <disability-choice value="{{document.value.form_value.p2_10}}"> 
+       ไม่สามารถเดินได้ด้วยตนเอง
+       </disability-choice>     
+       <div>ด้านสุขภาพ</div>
+       <disability-choice value="{{document.value.form_value.p3_11}}"> 
+มีความเจ็บป่วยที่ต้องได้รับการรักษาเป็นระยะเวลานาน และเป็นอุปสรรคต่อ
+การศึกษา เช่น 
+<ol>
+<li>ประสบอุบัติเหตุ ผ่าตัด เป็นต้น</li>
+<li>เป็นโรคเรื้อรังหรือมีภาวะผิดปกติของระบบต่าง ๆ ดังต่อไปนี้
+ระบบโลหิต เช่น ภาวะเลือดออกง่ายหยุดยาก ธาลัสซีเมีย ไขกระดูกฝ่อ ระบบ
+หัวใจและหลอดเลือด เช่น หัวใจพิการแต่ก าเนิด โรคหัวใจรูมาติก ระบบไต เช่น
+โรคเนโฟรติก โรคไตเรื้อรัง ระบบประสาท เช่น อัมพาต สมองพิการ ลมชัก ระบบ
+หายใจ เช่น หอบหืดโรคปอด ระบบภูมิคุ้มกันและภูมิแพ้ เช่น ข้ออักเสบ-รูมา
+ตอยด์, SLE (เอส แอล อี) ระบบต่อไร้ท่อ เช่น โรคเบาหวาน แคระ หรือโต
+ผิดปกติ ระบบผิวหนัง เช่น เด็กดักแด้ เป็นต้น
+</li>
+</ol>
+       </disability-choice>     
+     </div>
+
+     <div class="evaluation">
+      <div class="layout vertical">
+       <span>ด้านร่างกาย</span>
+       <span class="result">{{_resultp1}}</span>
+       <span>ด้านการเคลื่อนไหว</span>
+       <span class="result">{{_resultp2}}</span>
+       <span>ด้านสุขภาพ</span>
+       <span class="result">{{_resultp3}}</span>
+      </div>
+     </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'disability-health-form',
+      listeners : {
+      },
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบคัดกรองบุคคลที่มีความบกพร่องทางร่างกาย หรือการเคลื่อนไหว หรือสุขภาพ"
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers:[
+        '_result(document.value.form_result)'
+      ],
+      _tap:function(e) {
+        if(e.detail.type == "save") {
+          this.$.control.save();
+        }
+      },
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score = {};
+        for(var q in values) {
+          var p = q.split('_')[0];
+          if(!score[p]) score[p] = {'y':0,'n':0};
+          score[p][values[q]]++;
+        }
+        return score;
+      },
+      _validate:function() {
+        var eles =Polymer.dom(this.root)
+         .querySelectorAll('disability-choice');
+        for(var i=0;i<eles.length;i++) {
+          if(!eles[i].value)  {
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            eles[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});        
+      },
+      _result:function(score) {
+        for(var key in score) {
+          if(score[key].y >= 1) {
+            this.set('_result'+key,'พบความบกพร่อง');
+          } else {
+            this.set('_result'+key,'ไม่พบความบกพร่อง');
+          }
+        }
+      }
+    });
+  </script>
+</dom-module>

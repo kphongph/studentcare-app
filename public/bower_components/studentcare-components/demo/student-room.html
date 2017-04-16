@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>studentcare-components demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../app-storage/app-localstorage/app-localstorage-document.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../student-room.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container">
+      <h3>student-room</h3>
+      <demo-snippet>
+        <template is="dom-bind">
+          <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+          </app-localstorage-document>
+          <div class="layout horizontal">
+            <student-room jwt-token="{{jwtToken.token}}" 
+              host="30070132"
+              level="03"
+              room="1"
+              selected-student="{{student}}">
+            </student-room>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>

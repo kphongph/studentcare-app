@@ -1,0 +1,86 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../app-localize-behavior/app-localize-behavior.html">
+
+
+<!--
+`dl-profile`
+Polymer Component for StudentCare project
+
+@demo demo/dl-profile.html
+-->
+
+<dom-module id="dl-profile">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        @apply(--layout-vertical);
+        display:block;
+      }
+    </style>
+    <div class="layout horizontal">
+    
+    <paper-input label="{{localize('title')}}" readonly
+      value="{{_getDesc('dist_title',dmcStudent.TITLE)}}">
+     </paper-input>
+     
+     <paper-input label="{{localize('first_name')}}" readonly
+      value="{{dmcStudent.NAME}}">
+     </paper-input>
+
+     <paper-input label="{{localize('last_name')}}" readonly
+       value="{{dmcStudent.LNAME}}">
+     </paper-input>
+
+     <paper-input label="{{localize('gradeclassroom')}}" readonly
+       value="{{_gradeLevel(dmcStudent.LEVEL,dmcStudent.CLASSROOM)}}">
+     </paper-input>
+
+     <paper-input label="{{localize('studentid')}}" readonly
+       value="{{dmcStudent.STUDENTNO}}">
+     </paper-input>
+
+     <paper-input label="{{localize('birthdate_label')}}" readonly
+       value="{{dmcStudent.BIRTHDATE}}">
+     </paper-input>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'dl-profile',
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+      ],
+      properties: {
+        language: {
+          value:'th'
+        },
+        dmcStudent: {
+          type: Object
+        }
+      },
+      attached:function() {
+        this.loadResources(this.resolveUrl('../locales.json'));
+      },
+      _gradeLevel: function(level,room) {
+        var level_int = parseInt(level);
+        if(level_int > 10) {
+          return this.localize('secondary_level')+' '+parseInt(level_int-9)+'/'+room;
+        }else if(level_int > 3 && level_int < 10) {
+          return this.localize('elementary_level')+' '+parseInt(level_int-3)+'/'+room;
+        } else if(level_int <= 3){
+          return this.localize('pre_elementary_level')+' '+parseInt(level_int-1)+'/'+room;
+        }
+      },
+      _getDesc:function(keyMap,keyDesc){
+        this.set('language',keyMap);
+        var value = this.localize(keyDesc);
+        this.set('language','th');
+        return value;
+      }
+    });
+  </script>
+</dom-module>

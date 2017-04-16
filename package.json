@@ -1,0 +1,25 @@
+{
+  "name": "studentcare-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kphongph/studentcare-app.git"
+  },
+  "author": "Phongphun Kijsanayothin <kphongph@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kphongph/studentcare-app/issues"
+  },
+  "homepage": "https://github.com/kphongph/studentcare-app#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "level-sublevel": "^6.6.1",
+    "leveldb-logview": "git://github.com/kphongph/leveldb-logview.git#master"
+  }
+}

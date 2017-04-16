@@ -1,0 +1,58 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-request.html">
+<link rel="import" href="./app-leveldb-database-behavior.html">
+
+<dom-module id="app-leveldb-query">
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'app-leveldb-query',
+        behaviors: [
+          Polymer.AppLeveldbCommonBehavior
+        ],
+        properties:{
+          data:{
+            type:Array,
+            readOnly:true,
+            notify:true,
+            value:function() {
+              return [];
+            }
+          },
+          query: {
+            type:Object
+          },
+          viewName:{
+            type:String
+          },
+          execute:{
+            type:Object,
+            computed:'__computeQuery(app,viewName,query)'
+          }
+        },
+        __computeQuery:function(app,viewName,query) {
+          var url = this.app.url+'/query/'+app.dbName+'/'+viewName;
+          var request = document.createElement('iron-request');
+          var self = this;
+          request.send({
+            url:url,
+            method:"POST",
+            headers:{
+              'Authorization':'JWT '+self.app.jwtToken,
+              'Content-Type':'application/json'
+            },
+            body:JSON.stringify(query),
+            handleAs:"json",
+          }).then(function() {
+            self.fire('response',{'response':request.response});
+            self._setData(request.response);
+          }).catch(function(err) {
+          });
+        }
+      });
+    })();
+  </script>
+</dom-module>
+
+

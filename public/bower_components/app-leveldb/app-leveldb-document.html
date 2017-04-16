@@ -1,0 +1,86 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="./app-leveldb-database-behavior.html">
+<link rel="import" href="../iron-ajax/iron-request.html">
+
+<!--
+`app-leveldb-doucment`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="app-leveldb-document">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'app-leveldb-document',
+
+      behaviors: [
+        Polymer.AppLeveldbDatabaseBehavior
+      ],
+
+      properties: {
+        key: {
+          type:String
+        },
+        value: {
+          type:Object,
+          notify:true,
+        },
+        status: {
+          type:Object,
+          readOnly:true,
+          notify:true
+        },
+        getDoc:{
+          type:Boolean,
+          computed:'__getDoc(app,key)'
+        }
+      },
+      __getDoc:function(app,key) {
+        var self = this;
+        if(!key) return;
+        var url = app.url+'/dbs/'+app.dbName+'/'+key;
+        var request = document.createElement('iron-request');
+        request.send({
+          url:url,
+          method:"GET",
+          headers:{
+            'Authorization':'JWT '+app.jwtToken
+          },
+          handleAs:"json"
+        }).then(function() {
+          self.set('value',request.response);
+        });
+      },
+      save:function() {
+        var self = this;
+        var url = this.app.url+'/dbs/'+this.app.dbName;
+        if(this.key) { 
+          url += '/'+this.key;
+        }
+        var request = document.createElement('iron-request');
+
+        request.send({
+          url:url,
+          method:"POST",
+          headers:{
+            'Authorization':'JWT '+this.app.jwtToken,
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify(self.value),
+          handleAs:"json"
+        }).then(function() {
+          self.fire('response',{'response':request.response});
+          self._setStatus(request.response);
+        });
+      }
+    });
+  </script>
+</dom-module>

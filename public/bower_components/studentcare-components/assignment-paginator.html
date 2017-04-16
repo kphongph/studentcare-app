@@ -1,0 +1,117 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-styles/typography.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="assignment-paginator">
+ <template>
+   <style include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      @apply(--layout-vertical);
+      display: block;
+      margin-top:5px;
+    }
+    .content-wrapper {
+      margin-top:5px;
+    }
+
+    .info {
+      @apply(--paper-font-body2);
+      font-weight:normal;
+      padding:10px;
+    }
+   </style>
+
+   <div class="layout horizontal">
+   <paper-button raised on-tap="_previous" 
+     disabled$="{{disablePrevious}}">
+     Previous
+   </paper-button>
+   <paper-button raised on-tap="_next" 
+     disabled$="{{disableNext}}">
+     Next
+   </paper-button>
+   </div>
+   <div class="info">
+   Total <span>{{data.length}}</span> Assignment
+   </div>
+   <div class="content-wrapper">
+     <content></content>
+   </div>
+
+ </template>
+ <script>
+  Polymer({
+    is:'assignment-paginator',
+    properties : {
+      perPage:{
+        type:Number,
+        value:10
+      },
+      items: {
+        type:Array,
+        value:[],
+        notify:true
+      },
+      pageCount:{
+        type:Number,
+        notify:true
+      },
+      currentPage: {
+        type:Number,
+        value:0,
+        notify:true
+      },
+      disableNext: {
+        type:Boolean,
+        computed:'_disableNext(currentPage,pageCount)'
+      },
+      disablePrevious: {
+        type:Boolean,
+        computed:'_disablePrevious(currentPage,pageCount)'
+      },
+      data: {
+        type:Array,
+        value:[],
+        notify:true,
+        observer:'_dataChanged'
+      }
+    },
+    observers:[
+      '_currentPageChanged(data,currentPage)'
+    ],
+    _dataChanged:function(n) {
+      this.set('currentPage',0);
+      this.set('pageCount',this.getPageCount());
+      n.sort(function(a,b) {
+        if(a.key[8] >= b.key[8]) return 1;
+        return -1;
+      });
+      this.set('items',this.filterPage());
+    },
+    _next:function(e) {
+      this.set('currentPage',this.currentPage+1);
+    },
+    _previous:function(e) {
+      this.set('currentPage',this.currentPage-1);
+    },
+    _currentPageChanged:function(data,currentPage) {
+      this.set('items',this.filterPage());
+    },
+    _disableNext:function(currentPage,pageCount) {
+      return currentPage == pageCount || currentPage > pageCount;
+    },
+    _disablePrevious:function(currentPage,pageCount) {
+      return currentPage == 0;
+    },
+    filterPage:function() {
+      return this.data.slice(this.currentPage*this.perPage,
+       (this.currentPage*this.perPage)+this.perPage);
+    },
+    getPageCount:function() {
+      return Math.ceil(this.data.length / this.perPage ) - 1;
+    }
+  });
+ </script>
+</dom-module>

@@ -1,0 +1,146 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="local/assignment-card.html">
+<link rel="import" href="leveldb-query.html">
+<link rel="import" href="assignment-paginator.html">
+
+<dom-module id="assignment-panel">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        --paper-item-min-height:40px;
+      }
+    </style>
+
+    <leveldb-query url="https://maas.nuqlis.com:9000/api"
+      db-name="students_care"
+      view-name="assignment"
+      data="{{data}}"
+      query="{{query}}">
+    </leveldb-query>
+
+    <div class="layout horizontal">
+      <paper-listbox selected="{{status}}" attr-for-selected="name" 
+        class="flex-1">
+        <paper-item name="">ทั้งหมด
+        </paper-item>
+        <paper-item name="new">ใหม่
+          (<span>{{_newCount}}</span>)
+        </paper-item>
+        <paper-item name="working">กำลังดำเนินการ
+          (<span>{{_workingCount}}</span>)
+        </paper-item>
+        <paper-item name="done">ประเมินแล้ว
+          (<span>{{_doneCount}}</span>)
+        </paper-item>
+      </paper-listbox>
+
+      <div class="layout vertical flex-4">
+       <assignment-paginator per-page="10" data="{{data}}" items="{{items}}">
+        <paper-material elevation="1" class="flex">
+         <template is="dom-repeat" items="{{items}}"> 
+          <assignment-card data="{{item}}" on-select-assignment="_onSelect">
+          </assignment-card>  
+         </template>
+        </paper-material>
+       </assignment-paginator>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'assignment-panel',
+      listeners:{
+        'assignment-update':'_onAssignmentUpdate'
+      },
+      properties: {
+        host: {
+          type:String
+        },
+        level:{
+          type:String
+        },
+        room:{
+          type:String
+        },
+        status: {
+          type:String,
+          value:''
+        },
+        limit: {
+          type:Number,
+          value:1
+        },
+        page: {
+          type:Number,
+          readOnly:true,
+          value:0
+        },
+        query:{
+          type:Object,
+          computed:'__computeQuery(host,level,room,status)'
+        }
+      },
+      observers:[
+        '_onDataChanged(data)',
+      ],
+      __computeQuery:function(host,level,room,status) {
+        console.log('query',host,level,room,status);
+        if(status.length > 0) {
+          return {"match":[host,level,room,status],"limit":-1};
+        }
+        return {"match":[host,level,room],"limit":-1};
+      },
+      _onAssignmentUpdate:function(e) {
+        var card = e.target;
+        var old = e.detail.old.key;
+        var status='_'+old[4]+'Count';
+        this.set(status,this.get(status)-1);
+        status='_'+e.target.data.key[4]+'Count';
+        this.set(status,this.get(status)+1);
+      },
+      _onDataChanged:function(data) {
+        this._updateStatus(data);
+      },
+      _updateStatus:function(data) {
+        var dict = {
+          'working':0,
+          'new':0,
+          'done':0
+        };
+        var status = this.status;
+        data.forEach(function(item) {
+          if(dict[item.key[4]] >=0 ) dict[item.key[4]]++;
+        });
+        for(var key in dict) {
+          if(this.status == key || this.status.length==0) {
+            this.set('_'+key+'Count',dict[key]);
+          }
+        }
+      },
+      filterByType:function(str) {
+        return function(a) {
+          return a.key[4] == str;
+        }
+      },
+      _onSelect:function(e) { 
+        /*
+        var self = this;
+        var show=e.target.showForm;
+        var key =e.target.data.value;
+        var eles =Polymer.dom(this.root)
+         .querySelectorAll('assignment-card');
+        eles.forEach(function(ele) {
+          if(ele.data.value != key)  {
+          }
+        });
+        */
+      }
+    });
+  </script>
+</dom-module>

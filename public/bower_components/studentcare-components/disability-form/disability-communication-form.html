@@ -1,0 +1,195 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="disability-choice.html">
+<dom-module id="disability-communication-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply(--paper-font-display);
+        @apply(--layout-vertical);
+        display: block;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      paper-radio-group {
+        background:#efefef;
+      }
+      
+      .formEntry div {
+        @apply(--paper-font-title);
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+
+      .description ol {
+        @apply(--paper-font-body1);
+        .num {list-style-type: decimal;}
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+     
+      .evaluation {
+        padding:5px;
+      }
+
+      .check-icon {
+        width:30px;
+      }
+    </style>
+
+    <form-control id="control" 
+      on-form-action="_tap" 
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div class="description">
+        <ol class="num"><b> คำชี้แจง</b>
+          <li>แบบคัดกรองฉบับนี้เป็นแบบคัดกรองเพื่อประโยชน์ในทางการจัดการศึกษาเท่านั้น</li>
+          <li>วิเคราะห์ลักษณะ / พฤติกรรม ของเด็ก ซึ่งเป็นลักษณะหรือพฤติกรรม ที่เด็กแสดงออกบ่อย ๆ โดยให้ทำเครื่องหมาย / ลงในช่อง <b>“ใช่”</b> หรือ <b>“ไม่ใช่”</b> ที่ตรงกับลักษณะหรือพฤติกรรมนั้น ๆ ของเด็ก</li>
+          <li>ผู้ทำการคัดกรองเบื้องต้นต้องผ่านการอบรมวิธีการใช้ และการประเมิน ตามแบบคัดกรองนี้ และควรสอบถามข้อมูลเพิ่มเติมจากผู้ที่อยู่ใกล้ชิดเด็กมากที่สุด เช่น ผู้ปกครอง หรือ ครู เพื่อให้เกิดความชัดเจนถูกต้อง</li>
+          <li>ผู้คัดกรองควรจะมีอย่างน้อย ๒ คนขึ้นไป</li>
+        </ol>
+        <ol class="num"> <b>เกณฑ์การพิจารณา</b>
+          <li> 
+          ถ้าตอบว่าใช่ 5 ข้อ ขึ้นไป 
+          แสดงว่ามีแนวโน้มที่จะเป็นบุคคลที่มีความบกพร่องทางการพูดและภาษา 
+          ให้จัดบริการช่วยเหลือทางการศึกษาพิเศษ และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+        </ol>
+      </div>
+      <div class="formEntry">
+       <disability-choice value="{{document.value.form_value.q_1}}"> 
+       อวัยวะที่ใช่ในการออกเสียงมีความผิดปกติ
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_2}}"> 
+       ใช่หน่วยเสียงหนักแทนกัน เช่น แทนที่จะพูดว่า “นาฬิกา” พูดว่า “นากิ๊กา” “เสือ” เป็น “เฉือ” เป็นต้น
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_3}}"> 
+       พูดด้วยน้ำเสียงไม่ชัดเจน เสียงเพี้ยนมาก หรือเป็นเสียงพึมพำฟังแล้วไม่เข้าใจ
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_4}}"> 
+       เสียงบางส่วนของคำขาดหายไป เช่น “ความ” เป็น “คาม” เป็นต้น
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_5}}"> 
+       ความบกพร่องของระดับเสียง เช่น เสียงสูงเสียงต่ำตลอดเวลาหรือเสียงที่พูด
+       อยู่ในระดับเดียวตลอด เสียงผิดเพศ ผิดวัย
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_6}}"> 
+       พูดไม่ถูกลำดับขั้นตอน ไม่เป็นไปตามโครงสร้างของภาษา เช่น ฉันตลาดไป
+       ข้าวกินฉัน เป็นต้น
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_7}}"> 
+       การเว้นวรรคตอนไม่ถูกต้อง เช่น “ผ้าสีเขียวขี้...ม้า” เป็นต้น
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_8}}"> 
+       อัตราการพูดเร็วหรือช้าเกินไป
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_9}}"> 
+       พูดตะกุกตะกักหรือพูดติดอ่าง
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.q_10}}"> 
+       บกพร่องในเรื่องความเข้าใจหรือการใช้ภาษาพูด หรือภาษาเขียนหรือระบบ
+       สัญลักษณ์
+       </disability-choice>
+     </div>
+
+     <div class="evaluation">
+      <div class="layout vertical">
+       <div class="layout horizontal">
+        <div class="check-icon">
+          <iron-icon icon="check" hidden$="{{!_mark}}">
+          </iron-icon>
+        </div>
+        <span class="flex" id="markPositive">
+          พบความบกพร่อง
+        </span>
+       </div>
+       <div class="layout horizontal">
+        <div class="check-icon">
+          <iron-icon icon="check" hidden$="{{_mark}}">
+          </iron-icon>
+        </div>
+        <span class="flex" id="markNegative">
+          ไม่พบความบกพร่อง
+        </span>
+       </div>
+      </div>
+     </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'disability-communication-form',
+      listeners : {
+      },
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบคัดกรองบุคคลที่มีความบกพร่องทางการพูดและภาษา"
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers:[
+        '_result(document.value.form_result)'
+      ],
+      _tap:function(e) {
+        if(e.detail.type == "save") {
+          this.$.control.save();
+        }
+      },
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score = {'fail':0};
+        for(var q in values) {
+          var p = q.split('_')[0];
+          if(!score[p]) score[p] = {'y':0,'n':0};
+          score[p][values[q]]++;
+        }
+        return score;
+      },
+      _validate:function() {
+        var eles =Polymer.dom(this.root)
+         .querySelectorAll('disability-choice');
+        for(var i=0;i<eles.length;i++) {
+          if(!eles[i].value)  {
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            eles[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});        
+      },
+      _result:function(score) {
+        if(score && score.q.y>=5) {
+          this.$$('#markPositive').classList.add('mark');
+          this.$$('#markNegative').classList.remove('mark');
+          this.set('_mark',true);
+        } else {
+          this.$$('#markNegative').classList.add('mark');
+          this.$$('#markPositive').classList.remove('mark');
+          this.set('_mark',false);
+        }
+      }
+    });
+  </script>
+</dom-module>

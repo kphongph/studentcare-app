@@ -1,0 +1,27 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-validator-behavior/iron-validator-behavior.html">
+
+<script>
+  Polymer({
+    is: 'required-attr',
+    behaviors: [
+      Polymer.IronValidatorBehavior
+    ],
+    validateObject: function(obj) {
+      var valid = true;
+      for (key in obj) {
+        if (obj[key] !== null) {
+          valid = false;
+          break;
+        }
+      }
+      return valid;
+    },
+    validate: function(values) {
+      if (typeof values === 'object') {
+        return this.validateObject(values);
+      }
+      return false;
+    }
+  });
+</script>

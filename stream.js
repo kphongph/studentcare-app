@@ -13,8 +13,6 @@ module.exports.createStreamHandlers = function(config) {
   return function() {
     var first = function() {
       var stream = through2.obj(function(chunk,enc,cb) {
-      //  console.log(chunk);
-      // console.log(chunk._value==null,chunk.value==null); 
         this.push(chunk);
         cb();
       });
@@ -31,7 +29,7 @@ module.exports.createStreamHandlers = function(config) {
           self.push({
             '_view':'by_host',
             'change':{
-              'key':[tmp.dmc.host],
+              'key':[tmp.dmc.host,tmp.form_type],
               'value':value_changes
             }
           });
@@ -52,7 +50,7 @@ module.exports.createStreamHandlers = function(config) {
             self.push({
               '_view':'by_host',
               'change':{
-                'key':[tmp.dmc.host],
+                'key':[tmp.dmc.host,tmp.form_type],
                 'value':value_changes
               }
             });

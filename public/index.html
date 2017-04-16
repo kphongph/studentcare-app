@@ -10,13 +10,18 @@
 
     <link rel="import" href="bower_components/studentcare-components/studentcare-app.html">
     <link rel="import" href="bower_components/paper-styles/typography.html">
+    <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
     <link rel="import" href="/components/progress-host.html">
 
+    <style include="iron-flex-layout iron-flex-alignment iron-flex-factors">
+      progress-host {
+        width:50%;
+      }
     </style>
   </head>
   <body>
-   <progress-host host="30070132"></progress-host>
-   <studentcare-app host="30070132" level="02" room="1">
-   </studentcare-app>
+     <studentcare-app host="30070132" level="02" room="1">
+     </studentcare-app>
+     <progress-host host="30070132"></progress-host>
   </body>
 </html>

@@ -9,11 +9,25 @@
   <style include="iron-flex iron-flex-alignment iron-flex-factors">
     :host {
       display:box;
-      @apply(--layout-horizontal);
+      @apply(--layout-vertical);
       @apply(--paper-font-body2);
+      padding:5px;
+    }
+    .status {
+      cursor:hand;
+      cursor:pointer;
+    }
+    .status:hover {
+      background:#efefef;
     }
     .host-id {
       padding:5px;
+    }
+    .form-item {
+    }
+    .detail-report {
+      padding:5px;
+      border:1px solid #efefef;
     }
   </style>
   <iron-ajax auto
@@ -23,38 +37,75 @@
     body$='{"match":["by_host","{{host}}"]}'
     on-response="_onResponse">
   </iron-ajax>
-  <div class="layout horizontal center">
+
+  <div class="layout horizontal center status" on-tap="_toggleShowDetail">
     <div class="host-id">
       <span>{{host}}</span>
       <span>{{_ratio}}</span>
     </div>
-    <paper-progress max="{{total}}" value="{{done}}">
+    <paper-progress max="{{total}}" value="{{done}}" class="flex">
     </paper-progress>
   </div>
+  <div class="detail-report" hidden$="{{!showDetail}}">
+  <template is="dom-repeat" items="{{forms}}">
+    <div class="layout horizontal center">
+      <span class="flex form-item">{{item.name}}</span>
+      <span>{{item.remain}}</span>
+    </div>
+  </template>
+  </div>
+
  </template>
  <script>
   Polymer({
    is: 'progress-host',
    properties:{
      host:{
-      type:String
+       type:String
+     },
+     forms:{
+      type:Array,
+      value:[]
+     },
+     showDetail:{
+      type:Boolean,
+      value:false
      }
    },
    _onResponse:function(e) {
-     if(e.detail.response && e.detail.response.length == 1) {
-       var _value =  e.detail.response[0].value;
+     if(e.detail.response) {
        var total = 0;
        var done = 0;
-       for(var key in _value) {
-         if(key == "done") {
-           this.set('done',_value[key]);
-           done = _value[key];
+       var dict = {};
+       e.detail.response.forEach(function(item) {
+         for(var key in item.value) {
+           if(!dict[item.key[2]]) {
+             dict[item.key[2]] = {
+               'name':item.key[2], 
+               'remain':0
+             };
+           }
+           if(key == "done") {
+             done+= item.value[key];
+           } else {
+             dict[item.key[2]].remain+=item.value[key];
+           }
+           total+=item.value[key];
          }
-         total+=_value[key];
+       });
+       this.set('forms',[]);
+       for(var key in dict) {
+         if(dict[key].remain > 0) {
+           this.push('forms',dict[key]);
+         }
        }
        this.set('_ratio','('+done+'/'+total+')');
        this.set('total',total);
+       this.set('done',done);
      }
+   },
+   _toggleShowDetail:function(e) {
+     this.set('showDetail',!this.showDetail);
    }
   });
  </script>

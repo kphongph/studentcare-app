@@ -38,3 +38,4 @@ jspm_packages
 myView
 _view
 config.js
+public/bower_components

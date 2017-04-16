@@ -6,6 +6,8 @@
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
 
@@ -43,35 +45,27 @@
     }
     
    </style>
-   <app-location route="{{route}}" use-hash-as-path></app-location>
-   <app-route
-     route="{{route}}"
-     pattern="/:page"
-     data="{{pageData}}"
-     tail="{{subRoute}}"></app-route>
-   
 
    <app-drawer-layout drawer-width="300px" responsive-width="1280px">
     <app-drawer id="drawer">
      <app-header-layout has-scrolling-region>
-      <app-header fixed>
+      <app-header>
        <app-toolbar></app-toolbar>
        <app-toolbar class="title-toolbar nav-title-toolbar">
          <div class="title">StudentCare App</div>
        </app-toolbar>
       </app-header>
 
-      <iron-selector class="nav-menu"
-        attr-for-selected="name"
-        selected="[[pageData.page]]">
-        <a name="assignment" href="#/assignment">แบบประเมิน</a>
-        <a name="progress" href="#/progress">ความก้าวหน้า</a>
-      </iron-selector>
+      <paper-menu selected="{{page}}"
+        attr-for-selected="name">
+        <paper-item name="assignment">แบบประเมิน</paper-item>
+        <paper-item name="progress">ความก้าวหน้า</paper-item>
+      </paper-menu>
      </app-header-layout>
     </app-drawer>
 
     <app-header-layout>
-     <app-header fixed class="main-header">
+     <app-header class="main-header">
       <app-toolbar>
        <paper-icon-button icon="menu"
          drawer-toggle>
@@ -79,14 +73,14 @@
       </app-toolbar>
      </app-header>
      <!-- content -->
-     <iron-pages selected="[[pageData.page]]" attr-for-selected="name">
+     <iron-pages selected="[[page]]" attr-for-selected="name">
       <div name="assignment"> 
        <studentcare-app host="30070132" level="02" room="1">
        </studentcare-app>
       </div>
       <div name="progress"> 
        <!-- lazy load -->
-       <template is="dom-if" if="[[_equal(pageData.page, 'progress')]]">
+       <template is="dom-if" if="[[_equal(page, 'progress')]]">
          <progress-host host="30070132">
          </progress-host>
        </template>
@@ -100,6 +94,12 @@
  <script>
   Polymer({
     is: 'main-app',
+    properties : {
+      page:{
+        type:String,
+        value:'assignment'
+      }
+    },
     _equal: function(value1, value2) {
       return value1 === value2;
     }

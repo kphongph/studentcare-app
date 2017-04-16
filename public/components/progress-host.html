@@ -1,0 +1,62 @@
+<link href="../bower_components/polymer/polymer.html">
+<link href="../bower_components/paper-progress/paper-progress.html">
+<link href="../bower_components/iron-ajax/iron-ajax.html">
+<link href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link href="../bower_components/paper-styles/typography.html">
+
+<dom-module id="progress-host">
+ <template>
+  <style include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      display:box;
+      @apply(--layout-horizontal);
+      @apply(--paper-font-body2);
+    }
+    .host-id {
+      padding:5px;
+    }
+  </style>
+  <iron-ajax auto
+    url="/view"
+    method="POST"
+    content-type="application/json"
+    body$='{"match":["by_host","{{host}}"]}'
+    on-response="_onResponse">
+  </iron-ajax>
+  <div class="layout horizontal center">
+    <div class="host-id">
+      <span>{{host}}</span>
+      <span>{{_ratio}}</span>
+    </div>
+    <paper-progress max="{{total}}" value="{{done}}">
+    </paper-progress>
+  </div>
+ </template>
+ <script>
+  Polymer({
+   is: 'progress-host',
+   properties:{
+     host:{
+      type:String
+     }
+   },
+   _onResponse:function(e) {
+     if(e.detail.response && e.detail.response.length == 1) {
+       var _value =  e.detail.response[0].value;
+       var total = 0;
+       var done = 0;
+       for(var key in _value) {
+         if(key == "done") {
+           this.set('done',_value[key]);
+           done = _value[key];
+         }
+         total+=_value[key];
+       }
+       this.set('_ratio','('+done+'/'+total+')');
+       this.set('total',total);
+     }
+   }
+  });
+ </script>
+
+</dom-module>

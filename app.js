@@ -25,7 +25,6 @@ app.get('/view',logview.serve);
 app.post('/view',logview.serve);
 
 
-
 app.listen(3002, function () {
   console.log('Example app listening on port 3002!')
 })

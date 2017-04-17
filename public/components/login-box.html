@@ -1,0 +1,84 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module is="login-box">
+ <template>
+  <style include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      @apply(--layout-vertical);
+      padding:10px;
+      width:200px;
+    }
+    paper-button {
+      height:30px;
+    }
+  </style>
+  <div class="layout vertical" hidden$="{{signed}}"> 
+    <paper-input label="Login ID" value="{{user}}"></paper-input> 
+    <paper-input label="Password" type="password" value="{{pass}}"></paper-input> 
+    <span>{{_message}}</span>
+    <div class="layout horizontal">
+     <paper-button raised on-tap="_signIn">Sign in</paper-button>
+    </div>
+  </div>
+
+  <div class="layout horizontal" hidden$="{{!signed}}">
+   <paper-button raised on-tap="_signOut">Sign out</paper-button>
+  </div>
+
+  <iron-ajax 
+    id="loginAjax"
+    url="/login"
+    method="POST"
+    on-response="_onResponse"
+    content-type="application/json"
+    body$='{"user":"{{user}}","pass":"{{pass}}"}'>
+  </iron-ajax>
+   
+  <app-localstorage-document 
+    id="storage"
+    key="jwtToken" 
+    data="{{token}}">
+  </app-localstorage-document>
+   
+ </template>
+ 
+ <script>
+  Polymer({
+    is:'login-box',
+    properties:{
+     token: {
+       type:Object
+     },
+     signed:{
+       type:Boolean,
+       notify:true,
+       reflectToAttribute:true,
+       computed:'_computeSigned(token)'
+     }
+    },
+    _signIn:function(e) {
+      this.$.loginAjax.generateRequest();
+    },
+    _signOut:function(e) {
+      this.set('token',{});
+    },
+    _computeSigned:function(token) {
+      return token.token != null;
+    },
+    _onResponse:function(e) {
+      var res = e.detail.response;
+      if(res.success) {
+        this.set('token',{'token':res.token});
+      } else {
+        this.set('_message','Invalid User/Password');
+      }
+    }
+  });
+ </script>
+</dom-module>
+

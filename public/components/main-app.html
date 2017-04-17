@@ -12,6 +12,7 @@
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
 
 <link rel="import" href="progress-host.html">
+<link rel="import" href="login-box.html">
 
 
 <dom-module id="main-app">
@@ -55,12 +56,16 @@
          <div class="title">StudentCare App</div>
        </app-toolbar>
       </app-header>
-
+      <template is="dom-if" if="{{signed}}">
       <paper-menu selected="{{page}}"
         attr-for-selected="name">
         <paper-item name="assignment">แบบประเมิน</paper-item>
         <paper-item name="progress">ความก้าวหน้า</paper-item>
+        <paper-item name="login">
+         <login-box signed="{{signed}}"></login-box>
+        </paper-item>
       </paper-menu>
+      </template>
      </app-header-layout>
     </app-drawer>
 
@@ -74,6 +79,9 @@
      </app-header>
      <!-- content -->
      <iron-pages selected="[[page]]" attr-for-selected="name">
+      <div name="login"> 
+        <login-box signed="{{signed}}"></login-box>
+      </div>
       <div name="assignment"> 
        <studentcare-app host="30070132" level="02" room="1">
        </studentcare-app>
@@ -97,7 +105,17 @@
     properties : {
       page:{
         type:String,
-        value:'assignment'
+        value:'login'
+      }
+    },
+    observers:[
+     '_signedChanged(signed)'
+    ],
+    _signedChanged:function(n) {
+      if(this.signed) {
+        this.set('page','assignment');
+      } else {
+        this.set('page','login');
       }
     },
     _equal: function(value1, value2) {

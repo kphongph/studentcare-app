@@ -2,6 +2,7 @@ var express = require('express');
 var logview = require('leveldb-logview');
 var config = require('./config');
 var bodyParser = require('body-parser');
+var request = require('request');
 
 var app = express();
 app.use(express.static('public'));
@@ -20,6 +21,25 @@ logview.config({
 
 app.use(logview.handle_match);
 app.use(logview.monitor);
+
+app.post('/login',function(req,res) {
+  console.log(req.body.user,req.body.pass);
+  request({
+   'method':'POST',
+   'url':'https://maas.nuqlis.com:9000/login',
+   'headers':{
+    'user':req.body.user,
+    'pass':req.body.pass
+   } 
+  },function(err,response,body) {
+    if(response.headers.authorization) {
+      res.json({success:true,'token':response.headers.authorization});
+    } else {
+      res.json({success:false});
+    }
+  });
+});
+
 app.get('/mirror',logview.mirror);
 app.get('/view',logview.serve);
 app.post('/view',logview.serve);

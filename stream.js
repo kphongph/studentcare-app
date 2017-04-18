@@ -18,7 +18,7 @@ module.exports.createStreamHandlers = function(config) {
       });
       return stream;
     };
-    
+
     var reverse = function() {
       return through2.obj(function(chunk,enc,cb) {
         var self = this;

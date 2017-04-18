@@ -20,6 +20,9 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "level-sublevel": "^6.6.1",
-    "leveldb-logview": "git://github.com/kphongph/leveldb-logview.git#master"
+    "leveldb-logview": "git://github.com/kphongph/leveldb-logview.git#master",
+    "leveldown": "^1.6.0",
+    "levelup": "^1.3.5",
+    "request": "^2.81.0"
   }
 }

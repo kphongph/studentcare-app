@@ -11,7 +11,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 var stream = require('./stream');
-
 logview.config({
   'url':'https://maas.nuqlis.com:9000/api/log/students_care',
   'jwtToken':config.token,
@@ -21,7 +20,6 @@ logview.config({
 
 app.use(logview.handle_match);
 app.use(logview.monitor);
-
 app.post('/login',function(req,res) {
   console.log(req.body.user,req.body.pass);
   request({
@@ -30,7 +28,7 @@ app.post('/login',function(req,res) {
    'headers':{
     'user':req.body.user,
     'pass':req.body.pass
-   } 
+   }
   },function(err,response,body) {
     if(response.headers.authorization) {
       res.json({success:true,'token':response.headers.authorization});
@@ -39,12 +37,9 @@ app.post('/login',function(req,res) {
     }
   });
 });
-
-app.get('/mirror',logview.mirror);
 app.get('/view',logview.serve);
 app.post('/view',logview.serve);
 
-
-app.listen(3002, function () {
-  console.log('Example app listening on port 3002!')
+app.listen(82, function () {
+  console.log('Example app listening on port 82!')
 })

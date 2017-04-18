@@ -166,14 +166,14 @@
    },
    __computeLevels:function(hostInfo) {
      var result = [];
-     var dict = ['K','E','S'];
+     var dict = ['อ.','ป.','ม.'];
      var level = hostInfo.value.level;
      for(var key in level) {  
        var tmp = {'level':key,'room':[]}; 
        var intLevel = Number(key);
-       if(intLevel<=15) tmp['label']=dict[2]+' '+(intLevel-9);
-       if(intLevel<=9) tmp['label']=dict[1]+' '+(intLevel-3);
-       if(intLevel<=3) tmp['label']=dict[0]+' '+intLevel;
+       if(intLevel<=15) tmp['label']=dict[2]+(intLevel-9);
+       if(intLevel<=9) tmp['label']=dict[1]+(intLevel-3);
+       if(intLevel<=3) tmp['label']=dict[0]+intLevel;
        for(var room in level[key]) {
          tmp['room'].push({'room':room,'student':level[key][room]});
        }

@@ -1,8 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
@@ -14,6 +18,10 @@
       @apply(--layout-vertical);
       @apply(--paper-font-body2);
       padding:5px;
+    }
+    paper-tabs {
+      background:var(--paper-blue-500);
+      color:#ffffff;
     }
     paper-progress {
       padding:5px;
@@ -57,18 +65,33 @@
   </template>
   </div>
 
-  <template is="dom-repeat" items="{{_levels}}" as="level">
-    <template is="dom-repeat" items="{{level.room}}">
-      <div>
-        <span>Level</span>
-        <span>{{level.level}}</span>
-        <span>Room</span>
-        <span>{{item.room}}</span>:
-        <span>Student</span>
-        <span>{{item.student}}</span>
+  <paper-tabs selected="{{selectedLevel}}" 
+    attr-for-selected="name" scrollable>
+    <template is="dom-repeat" items="{{_levels}}">
+      <paper-tab name="{{item.level}}">{{item.label}}</paper-tab>
+    </template>
+  </paper-tabs>
+
+  <iron-pages selected="{{selectedLevel}}"
+    attr-for-selected="name">
+    <template is="dom-repeat" items="{{_levels}}" as="level">
+      <div name="{{level.level}}" class="layout vertical">
+        <div class="layout horizontal center">
+          <div class="flex-1">Room</div>
+          <div class="flex-1">Students</div>
+          <div class="flex-2">Class Teacher</div>
+        </div>
+        <template is="dom-repeat" items="{{level.room}}">
+          <div class="layout horizontal center">
+            <div class="flex-1">{{item.room}}</div>
+            <div class="flex-1">{{item.student}}</div>
+            <div class="flex-2">Class Teacher</div>
+          </div>
+        </template>
       </div>
     </template>
-  </template>
+  </iron-pages>
+    
 
   <div class="layout horizontal center">
   <paper-button raised on-tap="_reload">Reload</paper-button>
@@ -143,15 +166,22 @@
    },
    __computeLevels:function(hostInfo) {
      var result = [];
-     console.log('update',hostInfo);
+     var dict = ['K','E','S'];
      var level = hostInfo.value.level;
      for(var key in level) {  
        var tmp = {'level':key,'room':[]}; 
+       var intLevel = Number(key);
+       if(intLevel<=15) tmp['label']=dict[2]+' '+(intLevel-9);
+       if(intLevel<=9) tmp['label']=dict[1]+' '+(intLevel-3);
+       if(intLevel<=3) tmp['label']=dict[0]+' '+intLevel;
        for(var room in level[key]) {
          tmp['room'].push({'room':room,'student':level[key][room]});
        }
        result.push(tmp);
      }
+     result.sort(function(a,b) {
+       return Number(a.level)>=Number(b.level)?1:-1; 
+     });
      return result;
    },
    _listAllResponse:function(e) {

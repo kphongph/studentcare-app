@@ -1,0 +1,58 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
+<dom-module id="classteacher-select">
+ <template>
+  <style>
+    :host {
+      display:block;
+    }
+    .iron-selected {
+      background:#efefef;
+    }
+  </style>
+
+  <paper-icon-button icon="create" 
+    hidden$="{{show}}"
+    on-tap="_toggle">
+  </paper-icon-button>
+  <paper-icon-button icon="arrow-back" 
+    hidden$="{{!show}}"
+    on-tap="_toggle">
+  </paper-icon-button>
+   
+  <iron-selector attr-for-selected="name" multi 
+    hidden$="{{!show}}"
+    selected-values="{{selected}}">
+    <template is="dom-repeat" items="{{list}}">
+     <div name="{{item.user}}">{{item.name}}</div>
+    </template>
+  </iron-selector>
+ </template>
+
+ <script>
+  Polymer({
+    is:"classteacher-select",
+    properties:{
+      list:{ 
+        type:Array,
+        notify:true,
+        value:[]
+      },
+      selected:{
+        type:Array,
+        notify:true,
+        value:[]
+      },
+      show:{
+        type:Boolean,
+        value:false
+      }
+    },
+    _toggle:function(e) {
+      this.set('show',!this.show);
+    }
+  });
+ </script>
+</dom-module>

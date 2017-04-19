@@ -10,6 +10,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="teacher-list.html">
+<link rel="import" href="classteacher-select.html">
 <link rel="import" href="document-loader.html">
 <link rel="import" href="host-info.html">
 
@@ -25,6 +26,10 @@
     paper-tabs {
       background:var(--paper-blue-500);
       color:#ffffff;
+    }
+    .room-info {
+      border:1px solid #efefef;
+      padding:5px;
     }
     paper-progress {
       padding:5px;
@@ -66,13 +71,24 @@
         <div class="layout horizontal center">
           <div class="flex-1">Room</div>
           <div class="flex-1">Students</div>
-          <div class="flex-2">Class Teacher</div>
+          <div class="flex-1">Class Teacher</div>
+          <div class="flex-1"></div>
         </div>
         <template is="dom-repeat" items="{{level.rooms}}">
-          <div class="layout horizontal center">
+          <div class="layout horizontal start room-info">
             <div class="flex-1">{{item.room}}</div>
             <div class="flex-1">{{item.student}}</div> 
-            <div class="flex-2">Class Teacher</div>
+            <div class="flex-1 layout vertical">
+              <template is="dom-repeat" items="{{item.classteachers}}" as="t">
+                <div>{{_teacherName(hostInfo.value.teachers,t)}}</div>
+              </template>
+            </div>
+            <div class="flex-1 layout vertical">
+              <classteacher-select 
+                selected="{{item.classteachers}}"
+                list="{{hostInfo.value.teachers}}">
+              </classteacher-select>
+            </div>
           </div>
         </template>
       </div>
@@ -98,6 +114,13 @@
    },
    _save:function(e) {
      this.$.hostInfo.save();
+   },
+   _teacherName:function(teachers,user) {
+     for(var i=0;i<teachers.length;i++) {
+       if(teachers[i].user == user) {
+         return teachers[i].name;
+       }
+     }
    },
    _teacherLoaded:function(hostInfo) {
      return hostInfo.value.teachers && hostInfo.value.teachers.length > 0;

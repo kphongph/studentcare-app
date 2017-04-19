@@ -6,7 +6,7 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module is="login-box">
- <template>
+  <template>
   <style include="iron-flex iron-flex-alignment iron-flex-factors">
     :host {
       @apply(--layout-vertical);
@@ -25,9 +25,14 @@
     </div>
   </div>
 
-  <div class="layout horizontal" hidden$="{{!signed}}">
-   <paper-button raised on-tap="_signOut">Sign out</paper-button>
-  </div>
+   <div hidden$="{{!signed}}">
+    <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="100" width="100">    
+    <h3>นายธีรวุฒิ ทวีภัทรวงศ์</h3>
+    <div class="layout horizontal" >   
+     <paper-button raised on-tap="_signOut">Sign out</paper-button>   
+    </div> 
+   </div>
+
 
   <iron-ajax 
     id="loginAjax"
@@ -45,41 +50,43 @@
   </app-localstorage-document>
    
  </template>
- 
- <script>
-  Polymer({
-    is:'login-box',
-    properties:{
-     token: {
-       type:Object,
-       value:{}
-     },
-     signed:{
-       type:Boolean,
-       notify:true,
-       reflectToAttribute:true,
-       computed:'_computeSigned(token)'
-     }
-    },
-    _signIn:function(e) {
-      this.$.loginAjax.generateRequest();
-    },
-    _signOut:function(e) {
-      this.set('token',{});
-    },
-    _computeSigned:function(token) {
-      return token.token != null;
-    },
-    _onResponse:function(e) {
-      var res = e.detail.response;
-      if(res.success) {
-        this.set('token',{'token':res.token});
-        this.set('_message','');
-      } else {
-        this.set('_message','Invalid User/Password');
-      }
-    }
-  });
- </script>
-</dom-module>
 
+  <script>
+    Polymer({
+      is: 'login-box',
+      properties: {
+        token: {
+          type: Object,
+          value: {}
+        },
+        signed: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+          computed: '_computeSigned(token)'
+        }
+      },
+      _signIn: function(e) {
+        this.$.loginAjax.generateRequest();
+      },
+      _signOut: function(e) {
+        this.set('token', {});
+      },
+      _computeSigned: function(token) {
+        return token.token != null;
+      },
+      _onResponse: function(e) {
+        var res = e.detail.response;
+        if (res.success) {
+          this.set('token', {
+            'token': res.token
+          });
+          this.set('_message', '');
+        } else {
+          this.set('_message', 'Invalid User/Password');
+        }
+      }
+    });
+
+  </script>
+</dom-module>

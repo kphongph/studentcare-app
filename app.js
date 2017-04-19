@@ -21,7 +21,7 @@ logview.config({
 app.use(logview.handle_match);
 app.use(logview.monitor);
 app.post('/login',function(req,res) {
-  console.log(req.body.user,req.body.pass);
+  //console.log(req.body.user,req.body.pass);
   request({
    'method':'POST',
    'url':'https://maas.nuqlis.com:9000/login',

@@ -11,7 +11,6 @@
     :host {
       @apply(--layout-vertical);
       padding:10px;
-      width:200px;
     }
     paper-button {
       height:30px;
@@ -52,7 +51,8 @@
     is:'login-box',
     properties:{
      token: {
-       type:Object
+       type:Object,
+       value:{}
      },
      signed:{
        type:Boolean,
@@ -74,6 +74,7 @@
       var res = e.detail.response;
       if(res.success) {
         this.set('token',{'token':res.token});
+        this.set('_message','');
       } else {
         this.set('_message','Invalid User/Password');
       }

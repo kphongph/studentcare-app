@@ -10,6 +10,7 @@
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="import" href="progress-host.html">
 <link rel="import" href="login-box.html">
@@ -45,6 +46,13 @@
     .nav-menu > a.iron-selected {
       background-color: #888;
     }
+
+    login-box {
+      padding:15px;
+    }
+    paper-dialog {
+      margin:0px;
+    }
     
    </style>
 
@@ -62,9 +70,6 @@
         attr-for-selected="name">
         <paper-item name="assignment">แบบประเมิน</paper-item>
         <paper-item name="progress">ความก้าวหน้า</paper-item>
-        <paper-item name="login">
-         <login-box signed="{{signed}}"></login-box>
-        </paper-item>
       </paper-menu>
       </template>
      </app-header-layout>
@@ -73,16 +78,16 @@
     <app-header-layout>
      <app-header class="main-header">
       <app-toolbar>
-       <paper-icon-button icon="menu"
-         drawer-toggle>
+       <paper-icon-button icon="menu" drawer-toggle>
+       </paper-icon-button>
+       <div main-title></div>
+       <paper-icon-button icon="account-circle"
+         onclick="openBy(this)">
        </paper-icon-button>
       </app-toolbar>
      </app-header>
      <!-- content -->
      <iron-pages selected="[[page]]" attr-for-selected="name">
-      <div name="login"> 
-        <login-box signed="{{signed}}"></login-box>
-      </div>
       <div name="assignment"> 
        <teacher-app host="30070132"></teacher-app>
        <studentcare-app host="30070132" level="02" room="1">
@@ -98,6 +103,17 @@
      </iron-pages>
     </app-header-layout>
    </app-drawer-layout>
+
+   <paper-dialog id="alignedDialog"
+     no-overlap horizontal-align="right">
+     <login-box signed="{{signed}}"></login-box>
+   </paper-dialog>
+   <script>
+     function openBy(element) {
+       alignedDialog.positionTarget = element;
+       alignedDialog.open();
+     }
+   </script>
    
  </template>
  
@@ -107,7 +123,7 @@
     properties : {
       page:{
         type:String,
-        value:'login'
+        value:'assignment'
       }
     },
     observers:[
@@ -117,8 +133,9 @@
       if(this.signed) {
         this.set('page','assignment');
       } else {
-        this.set('page','login');
+        this.set('page','main');
       }
+      this.$.alignedDialog.close();
     },
     _equal: function(value1, value2) {
       return value1 === value2;

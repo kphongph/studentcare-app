@@ -1,0 +1,46 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="document-loader.html">
+
+<dom-module id="teacher-list">
+ <template>
+  <style>
+    :host {
+      display:block;
+    }
+  </style>
+  Teacher List:
+  <span>{{host}}</span>
+
+  <document-loader 
+    db="user_db" 
+    view="hostid"
+    on-data="_onData"
+    query$='{"match":["{{host}}"],"limit":-1}'>
+  </document-loader>
+
+ </template>
+ <script>
+  Polymer({
+    is:"teacher-list",
+    properties:{
+      host:{
+        type:String
+      },
+      list:{ 
+        type:Array,
+        notify:true,
+        value:[]
+      }
+    },
+    _onData:function(e) {
+      var data = e.detail;
+      this.push('list',{
+        'key':data.key,
+        'name':data.value.Firstname+' '+data.value.Lastname,
+        'user':data.value.User
+      });
+    }
+  });
+ </script>
+</dom-module>

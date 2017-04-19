@@ -1,0 +1,148 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="status-message.html">
+
+<dom-module id="document-loader">
+ <template>
+  <style include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      display:box;
+      @apply(--layout-vertical);
+      @apply(--paper-font-body2);
+      padding:5px;
+    }
+    paper-tabs {
+      background:var(--paper-blue-500);
+      color:#ffffff;
+    }
+    paper-progress {
+      padding:5px;
+    }
+  </style>
+  <app-localstorage-document 
+    key="jwtToken" 
+    data="{{token}}">
+  </app-localstorage-document>
+
+  <iron-ajax 
+    id="listAllAjax"
+    url$="https://maas.nuqlis.com:9000/api/query/{{db}}/{{view}}"
+    method="POST"
+    content-type="application/json"
+    headers$='{"authorization":"JWT {{token.token}}"}'
+    body='{{query}}'
+    on-response="_listAllResponse">
+  </iron-ajax>
+  <status-message id="message" delay="1000" hidden$="{{!interactive}}">
+  </status-message>
+  <div class="layout horizontal center">
+  <template is="dom-if" if="{{loading}}">
+    (<span>{{_loaded}}</span>/
+     <span>{{_total}}</span>)
+    <paper-progress value="{{_loaded}}" max="{{_total}}">
+  </template>
+  </div>
+
+  <div class="layout horizontal center" hidden$="{{!interactive}}">
+    <paper-button raised on-tap="_reload">Reload</paper-button>
+  </div>
+  
+  
+ </template>
+ <script>
+  Polymer({
+   is: 'document-loader',
+   properties:{
+     db:{
+       type:String
+     },
+     view:{
+       type:String
+     },
+     query:{
+       type:Object
+     },
+     data: {
+       type:Array,
+       notify:true,
+       value:[]
+     },
+     interactive:{
+       type:Boolean,
+       value:false
+     },
+     loading: {
+       type:Boolean,
+       notify:true,
+       value:false
+     }
+   },
+   observers:[
+    '_tokenLoaded(token)'
+   ],
+   _tokenLoaded:function(token) {
+     if(token && token.token != null) {
+       this.$.listAllAjax.generateRequest();
+     }
+   },
+   _listAllResponse:function(e) {
+     var response = e.detail.response;
+     if(response.ok == false)  {
+       this.$.message.add({
+         'type':'error',
+         'message':JSON.stringify(response.message)});
+       return;
+     }
+     this.set('_total',response.length);
+     this.$.message.add({
+       'type':'info',
+       'message':'Found '+response.length+' documents'});
+     this.$.message.add({
+       'type':'info',
+       'message':'Loading '+response.length+' documents'});
+     this.set('loading',true);
+     this.__load(response,0);
+   },
+   __load:function(list,index) {
+     var self = this;
+     if(index>=list.length) {
+       this.set('loading',false);
+       this.fire('finish',{'data':this.data});
+       this.$.message.add({
+         'type':'info',
+         'message':''+index+' documents loaded'});
+       return; 
+     } else {
+       var self= this;
+       var ele = document.createElement('iron-request');
+       var key = list[index].value;
+       ele.send({
+         url:'https://maas.nuqlis.com:9000/api/dbs/'+this.db+'/'+key,
+         method:'GET',
+         handleAs:'json',  
+         headers:{
+           'authorization':'JWT '+this.token.token
+         }
+       }).then(function(res) {
+         var document = res.response;
+         self.push('data',{'key':key,'value':document});
+         self.fire('data',{'key':key,'value':document});
+         self.set('_loaded',index+1);
+         self.__load(list,index+1);
+       });
+     }
+   },
+   _reload:function(e) {
+     this.fire('reload');
+     this.set('data',[]);
+     this.$.message.add({'type':'info','message':'Reloading'});
+     this.$.listAllAjax.generateRequest();
+   }
+  });
+ </script>
+
+</dom-module>

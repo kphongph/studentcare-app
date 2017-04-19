@@ -1,0 +1,50 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+
+<dom-module id="status-message">
+ <template>
+  <style include="iron-flex iron-flex-alignment">
+    :host {
+      @apply(--layout-vertical);
+      background:#efefef;
+    }
+
+    .info {
+      @apply(--paper-font-body1);
+      padding:5px;
+    }
+    div {
+      padding:5px;
+    }
+
+  </style>
+  <template is="dom-repeat" items="{{messages}}">
+   <div class$="{{item.type}}">{{item.message}}</div>
+  </template>
+ </template>
+ <script>
+  Polymer({
+   is:'status-message',
+   properties:{
+     delay:{
+       type:Number,
+       value:2000
+     },
+     messages:{
+       type:Array,
+       notify:true,
+       value:[]
+     }
+   },
+   add:function(message) {
+     this.push('messages',message);
+     setTimeout(function() {
+       this.splice('messages',0,1);
+     }.bind(this),this.delay*this.messages.length);
+   }
+  });
+ </script>
+</dom-module>
+

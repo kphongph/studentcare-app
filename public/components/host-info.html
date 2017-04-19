@@ -1,0 +1,74 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="document-loader.html">
+
+<dom-module id="host-info">
+ <template>
+  <style>
+    :host {
+      display:block;
+    }
+  </style>
+  <span>{{host}}</span>
+  <app-localstorage-document
+    key="jwtToken"
+    data="{{token}}">
+  </app-localstorage-document>
+
+  <document-loader db="students_care"
+    view="host_info"
+    on-finish="_finish"
+    query$='{"match":["{{host}}"]}'>
+  </document-loader>
+   
+ </template>
+ <script>
+  Polymer({
+    is:"host-info",
+    properties:{
+      host:{
+        type:String
+      },
+      document:{
+        type:Object,
+        notify:true
+      },
+    },
+    _finish:function(e) {
+      var data = e.detail.data;
+      if(data.length == 0) {
+        this.set('document',{
+          value:{
+            dmc:{host:this.host},
+            doc_type:'host_info',
+            teachers:[],
+            levels:[]
+          }
+        });
+      } else {
+        this.set('document',data[0]);
+      }
+    },
+    save:function(e) {
+      var ele = document.createElement('iron-request');
+      var key = '';
+      if(this.document.key) {
+        var key = this.document.key;
+      }
+      ele.send({
+        url:'https://maas.nuqlis.com:9000/api/dbs/students_care/'+key,
+        method:'POST',
+        handleAs:'json',
+        headers:{
+          'content-type':'application/json',
+          'authorization':'JWT '+this.token.token
+        },
+        body:JSON.stringify(this.document.value)
+     }).then(function(res) {
+        console.log(res.response);
+     });
+    }
+  });
+ </script>
+</dom-module>

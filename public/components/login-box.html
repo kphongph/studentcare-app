@@ -2,32 +2,51 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+
+<script src="../bower_components/kjur-jsrsasign/jsrsasign-all-min.js"></script>
 
 <dom-module is="login-box">
  <template>
   <style include="iron-flex iron-flex-alignment iron-flex-factors">
     :host {
       @apply(--layout-vertical);
+      @apply(--paper-font-body1);
       padding:10px;
     }
-    paper-button {
+    .signin-btn {
       height:30px;
     }
   </style>
-  <div class="layout vertical" hidden$="{{signed}}"> 
-    <paper-input label="Login ID" value="{{user}}"></paper-input> 
-    <paper-input label="Password" type="password" value="{{pass}}"></paper-input> 
-    <span>{{_message}}</span>
-    <div class="layout horizontal">
-     <paper-button raised on-tap="_signIn">Sign in</paper-button>
-    </div>
+
+  <div>
+     <div class="layout horizontal center" hidden$="{{!signed}}">
+       <span>{{_user.UserID}}</span>
+       <paper-icon-button icon="account-circle">
+       </paper-icon-button>
+       <div class="layout horizontal">
+         <paper-button  class="signin-btn" raised on-tap="_signOut">Sign out</paper-button>
+       </div>
+     </div>
+     <paper-button raised onclick="modal.open()" hidden$="{{signed}}">Sign in</paper-button>
   </div>
 
-  <div class="layout horizontal" hidden$="{{!signed}}">
-   <paper-button raised on-tap="_signOut">Sign out</paper-button>
+  <paper-dialog id="modal">
+  <div class="layout vertical center sign-bar"> 
+    <paper-input label="Login ID" value="{{user}}"></paper-input> 
+    <paper-input label="Password" type="password" value="{{pass}}">
+    </paper-input> 
+    <span>{{_message}}</span>
+    <div class="layout horizontal">
+      <paper-button raised on-tap="_signIn">Sign in</paper-button>
+    </div>
   </div>
+  </paper-dialog>
 
   <iron-ajax 
     id="loginAjax"
@@ -43,6 +62,7 @@
     key="jwtToken" 
     data="{{token}}">
   </app-localstorage-document>
+
    
  </template>
  
@@ -68,6 +88,16 @@
       this.set('token',{});
     },
     _computeSigned:function(token) {
+      if(token.token) {
+        var a = token.token.split(".");
+        var uHeader = b64utos(a[0]);
+        var uClaim = b64utos(a[1]);
+        var pClaim = KJUR.jws.JWS.readSafeJSONString(uClaim);
+        var sClaim = JSON.stringify(pClaim, null, "  ");
+        this.set('_user',pClaim);
+        this.$.modal.close();
+      } else {
+      }
       return token.token != null;
     },
     _onResponse:function(e) {

@@ -69,6 +69,7 @@
         attr-for-selected="name">
         <paper-item name="assignment">แบบประเมิน</paper-item>
         <paper-item name="progress">ความก้าวหน้า</paper-item>
+        <paper-item name="classteachers">ครูประจำชั้น</paper-item>
       </paper-menu>
       </template>
      </app-header-layout>
@@ -80,15 +81,12 @@
        <paper-icon-button icon="menu" drawer-toggle>
        </paper-icon-button>
        <div main-title></div>
-       <paper-icon-button icon="account-circle"
-         onclick="openBy(this)">
-       </paper-icon-button>
+       <login-box signed="{{signed}}"></login-box>
       </app-toolbar>
      </app-header>
      <!-- content -->
      <iron-pages selected="[[page]]" attr-for-selected="name">
       <div name="assignment"> 
-       <teacher-app host="1040050983"></teacher-app>
        <studentcare-app host="30070132" level="02" room="1">
        </studentcare-app>
       </div>
@@ -99,21 +97,16 @@
          </progress-host>
        </template>
       </div>
+      <div name="classteachers">
+        <!-- lazy load -->
+        <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
+          <teacher-app host="1040050983"></teacher-app>
+        </template>
+      </div>
      </iron-pages>
     </app-header-layout>
    </app-drawer-layout>
 
-   <paper-dialog id="alignedDialog"
-     no-overlap horizontal-align="right">
-     <login-box signed="{{signed}}"></login-box>
-   </paper-dialog>
-   <script>
-     function openBy(element) {
-       alignedDialog.positionTarget = element;
-       alignedDialog.open();
-     }
-   </script>
-   
  </template>
  
  <script>
@@ -134,7 +127,6 @@
       } else {
         this.set('page','main');
       }
-      this.$.alignedDialog.close();
     },
     _equal: function(value1, value2) {
       return value1 === value2;

@@ -23,6 +23,9 @@
       @apply(--paper-font-body2);
       padding:5px;
     }
+    .student-panel {
+      margin-top:10px;
+    }
     paper-tabs {
       background:var(--paper-blue-500);
       color:#ffffff;
@@ -39,49 +42,55 @@
   <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
   </host-info>
 
-  <template is="dom-if" if="{{!_teacherLoaded(hostInfo)}}">
-    <teacher-list host="{{host}}" 
-      list="{{hostInfo.value.teachers}}">
-    </teacher-list>
-  </template>
-
-  <template is="dom-if" if="{{!_levelLoaded(hostInfo)}}">
-    <document-loader db="dmc59_1" view="hostid"
-      on-data="_onStudent"
-      query$='{"match":["{{host}}"],"limit":-1}'>
-    </document-loader>
-  </template>
-
-  <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
-    <div>{{item.name}}</div>
-  </template>
-
-  <paper-tabs selected="{{selectedLevel}}" 
-    attr-for-selected="name" scrollable>
-    <template is="dom-repeat" items="{{hostInfo.value.levels}}">
-      <paper-tab name="{{item.level}}">{{item.level}}</paper-tab>
-    </template>
+  <paper-tabs selected="{{page}}" attr-for-selected="name" 
+     scrollable>
+    <paper-tab name="teacher">ครูในโรงเรียน</paper-tab>
+    <paper-tab name="student">นักเรียน</paper-tab>
   </paper-tabs>
 
+  <iron-pages selected="{{page}}" attr-for-selected="name">
+   <div name="teacher">
+    <template is="dom-if" if="{{!_teacherLoaded(hostInfo)}}">
+     <teacher-list host="{{host}}" 
+       list="{{hostInfo.value.teachers}}">
+     </teacher-list>
+    </template>
+    <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
+     <div>{{item.name}}</div>
+    </template>
+   </div>
 
-  <iron-pages selected="{{selectedLevel}}"
-    attr-for-selected="name">
-    <template is="dom-repeat" items="{{hostInfo.value.levels}}" as="level">
-      <div name="{{level.level}}" class="layout vertical">
-        <div class="layout horizontal center">
+   <div name="student" class="student-panel">
+    <template is="dom-if" if="{{!_levelLoaded(hostInfo)}}">
+      <document-loader db="dmc59_1" view="hostid"
+        on-data="_onStudent"
+        query$='{"match":["{{host}}"],"limit":-1}'>
+      </document-loader>
+     </template>
+     <paper-tabs selected="{{selectedLevel}}" 
+       attr-for-selected="name" scrollable>
+       <template is="dom-repeat" items="{{hostInfo.value.levels}}">
+        <paper-tab name="{{item.level}}">{{item.level}}</paper-tab>
+       </template>
+     </paper-tabs>
+
+     <iron-pages selected="{{selectedLevel}}" attr-for-selected="name">
+      <template is="dom-repeat" items="{{hostInfo.value.levels}}" as="level">
+        <div name="{{level.level}}" class="layout vertical">
+         <div class="layout horizontal center">
           <div class="flex-1">Room</div>
           <div class="flex-1">Students</div>
           <div class="flex-1">Class Teacher</div>
           <div class="flex-1"></div>
-        </div>
-        <template is="dom-repeat" items="{{level.rooms}}">
-          <div class="layout horizontal start room-info">
+         </div>
+         <template is="dom-repeat" items="{{level.rooms}}">
+           <div class="layout horizontal start room-info">
             <div class="flex-1">{{item.room}}</div>
             <div class="flex-1">{{item.student}}</div> 
             <div class="flex-1 layout vertical">
-              <template is="dom-repeat" items="{{item.classteachers}}" as="t">
-                <div>{{_teacherName(hostInfo.value.teachers,t)}}</div>
-              </template>
+             <template is="dom-repeat" items="{{item.classteachers}}" as="t">
+              <div>{{_teacherName(hostInfo.value.teachers,t)}}</div>
+             </template>
             </div>
             <div class="flex-1 layout vertical">
               <classteacher-select 
@@ -90,10 +99,11 @@
               </classteacher-select>
             </div>
           </div>
-        </template>
-      </div>
-    </template>
-  </iron-pages>
+         </template>
+        </div>
+      </template>
+     </iron-pages>
+   </div>
     
   <div class="layout horizontal">
    <paper-button on-tap="_save" raised>Save</paper-button>

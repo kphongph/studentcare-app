@@ -109,20 +109,20 @@
           <div name="assignment">
             <template is="dom-if" if="[[_equal(page, 'assignment')]]">
               <!-- <teacher-app host="1040050983"></teacher-app> -->
-              <studentcare-app host="30070132" level="02" room="1">
+              <studentcare-app host=1071020101 level="02" room="1">
               </studentcare-app>
             </template>
           </div>
           <div name="progress">
             <!-- lazy load -->
             <template is="dom-if" if="[[_equal(page, 'progress')]]">
-             <progress-host host="30070132">
+             <progress-host host="1071020101">
              </progress-host>
            </template>
           </div>
           <div name="classteachers">
             <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
-             <teacher-app host="1040050983"></teacher-app> 
+             <teacher-app host="1071020101"></teacher-app> 
            </template>
           </div>
         </iron-pages>

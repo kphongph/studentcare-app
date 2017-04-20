@@ -19,12 +19,18 @@
       @apply(--paper-font-body1);
       padding:10px;
     }
-    .signin-btn {
-      height:30px;
+    #loginBox{
+      display:none;
+    }
+    @media (min-width: 400px) {
+      #loginBox {
+        height:auto;
+        display:inherit;
+      }
     }
   </style>
 
-  <div>
+  <div id="loginBox">
      <div class="layout horizontal center" hidden$="{{!signed}}">
        <span>{{_user.UserID}}</span>
        <paper-icon-button icon="account-circle">

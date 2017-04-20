@@ -7,6 +7,7 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
@@ -96,41 +97,67 @@
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>StudentCare App</div>
-            <login-box signed="{{signed}}"></login-box>
+            <login-box signed="{{signed}}" role="{{role}}"></login-box>
+            <!--
             <paper-progress value="10" indeterminate bottom-item></paper-progress>
+            -->
           </app-toolbar>
         </app-header>
 
-        <!-- content -->
-        <iron-pages selected="[[page]]" attr-for-selected="name">
-          <div name="homepage">          
+      <!-- content -->
+      <iron-pages selected="[[page]]" attr-for-selected="name">
+        <div name="homepage">          
              <homepage-app></homepage-app>
-          </div>
-          <div name="assignment">
-            <template is="dom-if" if="[[_equal(page, 'assignment')]]">
-              <!-- <teacher-app host="1040050983"></teacher-app> -->
-              <studentcare-app host=1071020101 level="02" room="1">
-              </studentcare-app>
+        </div>
+        <div name="assignment">
+          <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
+          </host-info>
+          <paper-listbox selected="{{_assignment}}">
+            <template is="dom-repeat" items="{{assignments}}">
+              <paper-item>{{item.label}}</paper-item>
             </template>
-          </div>
-          <div name="progress">
-            <!-- lazy load -->
-            <template is="dom-if" if="[[_equal(page, 'progress')]]">
-             <progress-host host="1071020101">
-             </progress-host>
-           </template>
-          </div>
-          <div name="classteachers">
-            <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
-             <teacher-app host="1071020101"></teacher-app> 
-           </template>
-          </div>
-        </iron-pages>
+          </paper-listbox>
+          <iron-pages selected="{{_assignment}}">
+            <template is="dom-repeat" items="{{assignments}}">
+            <studentcare-app host="{{role.profile.hostid}}" 
+              level="{{item.level}}" 
+              room="{{item.room}}">
+            </studentcare-app>
+            </template>
+          </iron-pages>
+        </div>
+        <div name="progress">
+          <!-- lazy load -->
+          <template is="dom-if" if="[[_equal(page, 'progress')]]">
+           <progress-host host="{{role.profile.hostid}}">
+           </progress-host>
+         </template>
+        </div>
+        <div name="classteachers">
+          <!-- lazy load -->
+          <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
+           <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
+         </template>
+        </div>
+      </iron-pages>
 
       </app-header-layout>
     </app-drawer-layout>
     
   </template>
+
+    <app-header-layout>
+     <app-header class="main-header">
+      <app-toolbar>
+       <paper-icon-button icon="menu" drawer-toggle>
+       </paper-icon-button>
+       <div main-title></div>
+      </app-toolbar>
+     </app-header>
+    </app-header-layout>
+   </app-drawer-layout>
+
+ </template>
  
  <script>
   Polymer({
@@ -139,6 +166,15 @@
       page:{
         type:String,
         value:'homepage'
+      },
+      assignments :{
+        type:Array,
+        notify:true,
+        value:[]
+      },
+      _loadClass:{
+        type:Boolean,
+        computed:'_loadClassInfo(role,hostInfo)'
       }
     },
     observers:[
@@ -153,6 +189,30 @@
     },
     _equal: function(value1, value2) {
       return value1 === value2;
+    },
+    _loadClassInfo:function(role,hostInfo) {
+      var key = role.profile._teacher;
+      console.log(hostInfo);
+      if(hostInfo.value.levels) {
+        for(var i=0;i<hostInfo.value.levels.length;i++) {
+          var level = hostInfo.value.levels[i];
+          var found = false;
+          if(level.rooms) {
+          for(var j=0;j<level.rooms.length;j++) {
+            if(level.rooms[j].classteachers && 
+              level.rooms[j].classteachers.indexOf(key)!=-1) {
+              _level = level.level;
+              _room = level.rooms[j].room;
+              this.push('assignments',{
+                'label':_level+'/'+_room,
+                'level':_level,
+                'room':_room
+              });
+            }
+          }
+          }
+        }
+      }
     }
   });
 

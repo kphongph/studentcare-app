@@ -9,13 +9,11 @@
       display:block;
     }
   </style>
-  Teacher List:
-  <span>{{host}}</span>
 
   <document-loader 
-    db="user_db" 
+    db="teacher_db" 
     view="hostid"
-    on-data="_onData"
+    on-finish="_onFinish"
     query$='{"match":["{{host}}"],"limit":-1}'>
   </document-loader>
 
@@ -33,13 +31,15 @@
         value:[]
       }
     },
-    _onData:function(e) {
-      var data = e.detail;
-      this.push('list',{
-        'key':data.key,
-        'name':data.value.Firstname+' '+data.value.Lastname,
-        'user':data.value.User
-      });
+    _onFinish:function(e) {
+      console.log(e.detail);
+      var self = this;
+      e.detail.data.forEach(function(doc) {
+        self.push('list',{
+         '_teacher':doc.key,
+         'name':doc.value.Firstname+' '+doc.value.Lastname
+        });
+      }); 
     }
   });
  </script>

@@ -9,6 +9,8 @@
 <link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 
+<link rel="import" href="document-loader.html">
+
 <script src="../bower_components/kjur-jsrsasign/jsrsasign-all-min.js"></script>
 
 <dom-module is="login-box">
@@ -34,11 +36,12 @@
 
   <div>
      <div class="layout horizontal center" hidden$="{{!signed}}">
-       <div id="loginBox">
-         <span>{{_user.UserID}}</span>
-         <paper-icon-button icon="account-circle">
-         </paper-icon-button>
+       <div>
+        <span>{{role.profile.firstname}}</span>
+        <span>{{role.profile.lastname}}</span>
        </div>
+       <paper-icon-button icon="account-circle">
+       </paper-icon-button>
        <div class="layout horizontal">
          <paper-button  class="signin-btn" raised on-tap="_signOut">Sign out</paper-button>
        </div>
@@ -58,6 +61,12 @@
   </div>
   </paper-dialog>
 
+  <document-loader id="roleloader" 
+    db="role_db" 
+    on-finish="_updateRole"
+    view="user_app">
+  </document-loader>
+  
   <iron-ajax 
     id="loginAjax"
     url="/login"
@@ -73,7 +82,11 @@
     data="{{token}}">
   </app-localstorage-document>
 
-   
+  <app-localstorage-document 
+    key="role" 
+    data="{{role}}">
+  </app-localstorage-document>
+
  </template>
  
  <script>
@@ -82,6 +95,11 @@
     properties:{
      token: {
        type:Object,
+       value:{}
+     },
+     role: {
+       type:Object,
+       notify:true,
        value:{}
      },
      signed:{
@@ -96,25 +114,33 @@
     },
     _signOut:function(e) {
       this.set('token',{});
+      this.set('role',{});
     },
     _computeSigned:function(token) {
-      if(token.token) {
-        var a = token.token.split(".");
-        var uHeader = b64utos(a[0]);
-        var uClaim = b64utos(a[1]);
-        var pClaim = KJUR.jws.JWS.readSafeJSONString(uClaim);
-        var sClaim = JSON.stringify(pClaim, null, "  ");
-        this.set('_user',pClaim);
-        this.$.modal.close();
-      } else {
-      }
       return token.token != null;
+    },
+    __getRole:function(token) {
+      var a = token.split(".");
+      var uClaim = b64utos(a[1]);
+      var pClaim = KJUR.jws.JWS.readSafeJSONString(uClaim);
+      var query = {'match':[pClaim.UserID,"student-care"]};
+      this.$.roleloader.query=JSON.stringify(query);
+    },
+    _updateRole:function(e) {
+      console.log(e.detail);
+      if(e.detail.data.length >= 1) {
+        console.log(e.detail.data[0]);
+        this.set('role',e.detail.data[0].value);
+      }
     },
     _onResponse:function(e) {
       var res = e.detail.response;
       if(res.success) {
         this.set('token',{'token':res.token});
         this.set('_message','');
+        // get role
+        this.__getRole(res.token);
+        this.$.modal.close();
       } else {
         this.set('_message','Invalid User/Password');
       }

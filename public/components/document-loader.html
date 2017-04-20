@@ -51,7 +51,6 @@
     <paper-button raised on-tap="_reload">Reload</paper-button>
   </div>
   
-  
  </template>
  <script>
   Polymer({
@@ -82,9 +81,9 @@
      }
    },
    observers:[
-    '_tokenLoaded(token)'
+    '_tokenLoaded(token,query)'
    ],
-   _tokenLoaded:function(token) {
+   _tokenLoaded:function(token,query) {
      if(token && token.token != null) {
        this.$.listAllAjax.generateRequest();
      }
@@ -105,10 +104,11 @@
        'type':'info',
        'message':'Loading '+response.length+' documents'});
      this.set('loading',true);
+     this.set('data',[]);
      this.__load(response,0);
    },
    __load:function(list,index) {
-     var self = this;
+     var self = this; 
      if(index>=list.length) {
        this.set('loading',false);
        this.fire('finish',{'data':this.data});
@@ -117,7 +117,6 @@
          'message':''+index+' documents loaded'});
        return; 
      } else {
-       var self= this;
        var ele = document.createElement('iron-request');
        var key = list[index].value;
        ele.send({

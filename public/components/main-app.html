@@ -92,29 +92,30 @@
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>StudentCare App</div>
-            <login-box signed="{{signed}}"></login-box>
+            <login-box signed="{{signed}}" role="{{role}}"></login-box>
+            <!--
             <paper-progress value="10" indeterminate bottom-item></paper-progress>
+            -->
           </app-toolbar>
         </app-header>
 
       <!-- content -->
       <iron-pages selected="[[page]]" attr-for-selected="name">
         <div name="assignment">
-          <!-- <teacher-app host="1040050983"></teacher-app> -->
-          <studentcare-app host="30070132" level="02" room="1">
+          <studentcare-app host="{{role.profile.hostid}}" level="02" room="1">
           </studentcare-app>
         </div>
         <div name="progress">
           <!-- lazy load -->
           <template is="dom-if" if="[[_equal(page, 'progress')]]">
-           <progress-host host="30070132">
+           <progress-host host="{{role.profile.hostid}}">
            </progress-host>
          </template>
         </div>
         <div name="classteachers">
           <!-- lazy load -->
           <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
-           <teacher-app host="1040050983"></teacher-app> 
+           <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
          </template>
         </div>
       </iron-pages>
@@ -132,26 +133,6 @@
        <div main-title></div>
       </app-toolbar>
      </app-header>
-     <!-- content -->
-     <iron-pages selected="[[page]]" attr-for-selected="name">
-      <div name="assignment"> 
-       <studentcare-app host="30070132" level="02" room="1">
-       </studentcare-app>
-      </div>
-      <div name="progress"> 
-       <!-- lazy load -->
-       <template is="dom-if" if="[[_equal(page, 'progress')]]">
-         <progress-host host="30070132">
-         </progress-host>
-       </template>
-      </div>
-      <div name="classteachers">
-        <!-- lazy load -->
-        <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
-          <teacher-app host="1040050983"></teacher-app>
-        </template>
-      </div>
-     </iron-pages>
     </app-header-layout>
    </app-drawer-layout>
 

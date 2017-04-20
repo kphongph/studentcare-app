@@ -11,7 +11,7 @@
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-
+<link rel="import" href="homepage-app.html">
 <link rel="import" href="progress-host.html">
 <link rel="import" href="login-box.html">
 <link rel="import" href="teacher-app.html">
@@ -28,10 +28,10 @@
       }
       
       app-toolbar {
-        background-color: #4285f4;
+        background-color: #d14836;
         color: #fff;
       }
-
+      
       paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
@@ -68,24 +68,28 @@
       paper-dialog {
         margin:0px;
       }
+      @media (min-width: 400px) {
+    
+      }
     </style>
 
     <app-drawer-layout fullbleed>
-      <app-drawer>
+      <app-drawer>        
         <app-toolbar>
           <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="42" width="42">               
         </app-toolbar>
         <app-toolbar>
           <div main-title>StudentCare App</div>   
         </app-toolbar>
-        <template is="dom-if" if="{{signed}}">
-          <paper-menu selected="{{page}}"
-            attr-for-selected="name">
+        <paper-menu selected="{{page}}"
+          attr-for-selected="name">
+          <paper-item name="homepage">หน้าแรก</paper-item>
+          <template is="dom-if" if="{{signed}}">
             <paper-item name="assignment">แบบประเมิน</paper-item>
             <paper-item name="progress">ความก้าวหน้า</paper-item>
             <paper-item name="classteachers">ครูประจำชั้น</paper-item>
-          </paper-menu>
-        </template>
+          </template>
+        </paper-menu>
       </app-drawer>
       <app-header-layout>
         <app-header>
@@ -97,65 +101,36 @@
           </app-toolbar>
         </app-header>
 
-      <!-- content -->
-      <iron-pages selected="[[page]]" attr-for-selected="name">
-        <div name="assignment">
-          <!-- <teacher-app host="1040050983"></teacher-app> -->
-          <studentcare-app host="30070132" level="02" room="1">
-          </studentcare-app>
-        </div>
-        <div name="progress">
-          <!-- lazy load -->
-          <template is="dom-if" if="[[_equal(page, 'progress')]]">
-           <progress-host host="30070132">
-           </progress-host>
-         </template>
-        </div>
-        <div name="classteachers">
-          <!-- lazy load -->
-          <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
-           <teacher-app host="1040050983"></teacher-app> 
-         </template>
-        </div>
-      </iron-pages>
+        <!-- content -->
+        <iron-pages selected="[[page]]" attr-for-selected="name">
+          <div name="homepage">          
+             <homepage-app></homepage-app>
+          </div>
+          <div name="assignment">
+            <template is="dom-if" if="[[_equal(page, 'assignment')]]">
+              <!-- <teacher-app host="1040050983"></teacher-app> -->
+              <studentcare-app host="30070132" level="02" room="1">
+              </studentcare-app>
+            </template>
+          </div>
+          <div name="progress">
+            <!-- lazy load -->
+            <template is="dom-if" if="[[_equal(page, 'progress')]]">
+             <progress-host host="30070132">
+             </progress-host>
+           </template>
+          </div>
+          <div name="classteachers">
+            <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
+             <teacher-app host="1040050983"></teacher-app> 
+           </template>
+          </div>
+        </iron-pages>
 
       </app-header-layout>
     </app-drawer-layout>
     
   </template>
-
-    <app-header-layout>
-     <app-header class="main-header">
-      <app-toolbar>
-       <paper-icon-button icon="menu" drawer-toggle>
-       </paper-icon-button>
-       <div main-title></div>
-      </app-toolbar>
-     </app-header>
-     <!-- content -->
-     <iron-pages selected="[[page]]" attr-for-selected="name">
-      <div name="assignment"> 
-       <studentcare-app host="30070132" level="02" room="1">
-       </studentcare-app>
-      </div>
-      <div name="progress"> 
-       <!-- lazy load -->
-       <template is="dom-if" if="[[_equal(page, 'progress')]]">
-         <progress-host host="30070132">
-         </progress-host>
-       </template>
-      </div>
-      <div name="classteachers">
-        <!-- lazy load -->
-        <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
-          <teacher-app host="1040050983"></teacher-app>
-        </template>
-      </div>
-     </iron-pages>
-    </app-header-layout>
-   </app-drawer-layout>
-
- </template>
  
  <script>
   Polymer({
@@ -163,7 +138,7 @@
     properties : {
       page:{
         type:String,
-        value:'assignment'
+        value:'homepage'
       }
     },
     observers:[
@@ -173,7 +148,7 @@
       if(this.signed) {
         this.set('page','assignment');
       } else {
-        this.set('page','main');
+        this.set('page','homepage');
       }
     },
     _equal: function(value1, value2) {

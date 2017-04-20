@@ -70,7 +70,7 @@ module.exports.createStreamHandlers = function(config) {
           };
           viewdb.get(obj.key,function(err,_obj) {
             if(err) {
-              console.log('new',obj.value);
+              //console.log('new',obj.value);
               viewdb.put(obj.key,obj.value,function(err) {
                 cb();
               });
@@ -79,7 +79,7 @@ module.exports.createStreamHandlers = function(config) {
                 if(!_obj[_key]) _obj[_key] = 0;
                 _obj[_key] += obj.value[_key];
               }
-              console.log('put',obj.value,_obj);
+              //console.log('put',obj.value,_obj);
               viewdb.put(obj.key,_obj,function(err) {
                 cb();
               });

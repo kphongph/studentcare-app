@@ -17,53 +17,75 @@
 <link rel="import" href="teacher-app.html">
 
 <dom-module id="main-app">
- <template>
-   <style>
-    :host {
-      --app-primary-color: #404040;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-      @apply(--paper-font-body2);
-    }
- 
-    app-toolbar {
-      background:#efefef;
-    }
-     
-    a {
-      text-decoration: none;
-      color: inherit;
-      font-size: inherit;
-    }
+  <template>
+   <style is="custom-style">
+      html, body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        background: #f1f1f1;
+        max-height: 368px;
+      }
+      app-toolbar {
+        background-color: #4285f4;
+        color: #fff;
+      }
 
-    .nav-menu > a {
-      display: block;
-      padding: 12px 16px;
-      font-size: 16px;
-      font-weight: 500;
-    }
+      paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
 
-    .nav-menu > a.iron-selected {
-      background-color: #888;
-    }
+      paper-icon-button + [main-title] {
+        margin-left: 24px;
+      }
+      paper-progress {
+        display: block;
+        width: 100%;
+        --paper-progress-active-color: rgba(255, 255, 255, 0.5);
+        --paper-progress-container-color: transparent;
+      }
+      app-header {
+        @apply(--layout-fixed-top);
+        color: #fff;
+        --app-header-background-rear-layer: {
+          background-color: #ef6c00;
+        };
+      }
+      app-drawer {
+        --app-drawer-scrim-background: rgba(0, 0, 100, 0.8);
+        --app-drawer-content-container: {
+          background-color: #fff;
+        }
+      }
+      .content {
+        padding-top: 64px;
+      }
+      login-box {
+        padding:15px;
+      }
+      paper-dialog {
+        margin:0px;
+      }
+    </style>
 
-    login-box {
-      padding:15px;
-    }
-    paper-dialog {
-      margin:0px;
-    }
+    <app-header reveals>
+      <app-toolbar>
+        <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button>
+        <div main-title>StudentCare App</div>  
+        <paper-icon-button icon="search"></paper-icon-button>
+        <paper-icon-button icon="account-circle" onclick="openBy(this)">
+        </paper-icon-button>
+        <paper-progress value="10" indeterminate bottom-item></paper-progress>
+      </app-toolbar>
+    </app-header>
     
-   </style>
-
-   <app-drawer-layout drawer-width="300px" responsive-width="1280px">
-    <app-drawer id="drawer">
-     <app-header-layout has-scrolling-region>
-      <app-header>
-       <app-toolbar></app-toolbar>
-       <app-toolbar class="title-toolbar nav-title-toolbar">
-         <div class="title">StudentCare App</div>
-       </app-toolbar>
-      </app-header>
+    <app-drawer id="drawer" swipe-open>
+      <app-toolbar>
+        <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="42" width="42">               
+      </app-toolbar>
+      <app-toolbar>
+        <div main-title>StudentCare App</div>   
+      </app-toolbar> 
       <template is="dom-if" if="{{signed}}">
       <paper-menu selected="{{page}}"
         attr-for-selected="name">
@@ -72,8 +94,37 @@
         <paper-item name="classteachers">ครูประจำชั้น</paper-item>
       </paper-menu>
       </template>
-     </app-header-layout>
     </app-drawer>
+    
+    <div class="content">
+      <!-- content -->
+      <iron-pages selected="[[page]]" attr-for-selected="name">
+        <div name="assignment">
+          <!-- <teacher-app host="1040050983"></teacher-app> -->
+          <studentcare-app host="30070132" level="02" room="1">
+          </studentcare-app>
+        </div>
+        <div name="progress">
+          <!-- lazy load -->
+          <template is="dom-if" if="[[_equal(page, 'progress')]]">
+           <progress-host host="30070132">
+           </progress-host>
+         </template>
+        </div>
+      </iron-pages>
+    </div>
+    
+    <paper-dialog id="alignedDialog" no-overlap horizontal-align="right">
+      <login-box signed="{{signed}}"></login-box>
+    </paper-dialog>
+  
+  <script>
+    function openBy(element) {
+      alignedDialog.positionTarget = element;
+      alignedDialog.open();
+    }
+  </script>
+  </template>
 
     <app-header-layout>
      <app-header class="main-header">
@@ -133,6 +184,5 @@
     }
   });
 
- </script>
+  </script>
 </dom-module>
-

@@ -7,11 +7,12 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-
+<link rel="import" href="homepage-app.html">
 <link rel="import" href="progress-host.html">
 <link rel="import" href="login-box.html">
 <link rel="import" href="teacher-app.html">
@@ -28,10 +29,10 @@
       }
       
       app-toolbar {
-        background-color: #4285f4;
+        background-color: #d14836;
         color: #fff;
       }
-
+      
       paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
@@ -68,24 +69,28 @@
       paper-dialog {
         margin:0px;
       }
+      @media (min-width: 400px) {
+    
+      }
     </style>
 
     <app-drawer-layout fullbleed>
-      <app-drawer>
+      <app-drawer>        
         <app-toolbar>
           <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="42" width="42">               
         </app-toolbar>
         <app-toolbar>
           <div main-title>StudentCare App</div>   
         </app-toolbar>
-        <template is="dom-if" if="{{signed}}">
-          <paper-menu selected="{{page}}"
-            attr-for-selected="name">
+        <paper-menu selected="{{page}}"
+          attr-for-selected="name">
+          <paper-item name="homepage">หน้าแรก</paper-item>
+          <template is="dom-if" if="{{signed}}">
             <paper-item name="assignment">แบบประเมิน</paper-item>
             <paper-item name="progress">ความก้าวหน้า</paper-item>
             <paper-item name="classteachers">ครูประจำชั้น</paper-item>
-          </paper-menu>
-        </template>
+          </template>
+        </paper-menu>
       </app-drawer>
       <app-header-layout>
         <app-header>
@@ -102,8 +107,21 @@
       <!-- content -->
       <iron-pages selected="[[page]]" attr-for-selected="name">
         <div name="assignment">
-          <studentcare-app host="{{role.profile.hostid}}" level="02" room="1">
-          </studentcare-app>
+          <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
+          </host-info>
+          <paper-listbox selected="{{_assignment}}">
+            <template is="dom-repeat" items="{{assignments}}">
+              <paper-item>{{item.label}}</paper-item>
+            </template>
+          </paper-listbox>
+          <iron-pages selected="{{_assignment}}">
+            <template is="dom-repeat" items="{{assignments}}">
+            <studentcare-app host="{{role.profile.hostid}}" 
+              level="{{item.level}}" 
+              room="{{item.room}}">
+            </studentcare-app>
+            </template>
+          </iron-pages>
         </div>
         <div name="progress">
           <!-- lazy load -->
@@ -119,7 +137,6 @@
          </template>
         </div>
       </iron-pages>
-
       </app-header-layout>
     </app-drawer-layout>
     
@@ -144,7 +161,16 @@
     properties : {
       page:{
         type:String,
-        value:'assignment'
+        value:'homepage'
+      },
+      assignments :{
+        type:Array,
+        notify:true,
+        value:[]
+      },
+      _loadClass:{
+        type:Boolean,
+        computed:'_loadClassInfo(role,hostInfo)'
       }
     },
     observers:[
@@ -154,11 +180,35 @@
       if(this.signed) {
         this.set('page','assignment');
       } else {
-        this.set('page','main');
+        this.set('page','homepage');
       }
     },
     _equal: function(value1, value2) {
       return value1 === value2;
+    },
+    _loadClassInfo:function(role,hostInfo) {
+      var key = role.profile._teacher;
+      console.log(hostInfo);
+      if(hostInfo.value.levels) {
+        for(var i=0;i<hostInfo.value.levels.length;i++) {
+          var level = hostInfo.value.levels[i];
+          var found = false;
+          if(level.rooms) {
+          for(var j=0;j<level.rooms.length;j++) {
+            if(level.rooms[j].classteachers && 
+              level.rooms[j].classteachers.indexOf(key)!=-1) {
+              _level = level.level;
+              _room = level.rooms[j].room;
+              this.push('assignments',{
+                'label':_level+'/'+_room,
+                'level':_level,
+                'room':_room
+              });
+            }
+          }
+          }
+        }
+      }
     }
   });
 

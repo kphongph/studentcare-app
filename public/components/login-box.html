@@ -21,18 +21,20 @@
       @apply(--paper-font-body1);
       padding:10px;
     }
+
     #loginBox{
       display:none;
     }
+
     @media (min-width: 400px) {
       #loginBox {
         height:auto;
-        display:inherit;
+        display:inline;
       }
     }
   </style>
 
-  <div id="loginBox">
+  <div>
      <div class="layout horizontal center" hidden$="{{!signed}}">
        <div>
         <span>{{role.profile.firstname}}</span>

@@ -55,9 +55,11 @@
        list="{{hostInfo.value.teachers}}">
      </teacher-list>
     </template>
+    <div class="layout vertical">
     <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
      <div>{{item.name}}</div>
     </template>
+    </div>
    </div>
 
    <div name="student" class="student-panel">
@@ -126,9 +128,9 @@
    _save:function(e) {
      this.$.hostInfo.save();
    },
-   _teacherName:function(teachers,user) {
+   _teacherName:function(teachers,key) {
      for(var i=0;i<teachers.length;i++) {
-       if(teachers[i].user == user) {
+       if(teachers[i]._teacher == key) {
          return teachers[i].name;
        }
      }

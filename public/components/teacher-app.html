@@ -50,22 +50,32 @@
 
   <iron-pages selected="{{page}}" attr-for-selected="name">
    <div name="teacher">
-    <template is="dom-if" if="{{!_teacherLoaded(hostInfo)}}">
-     <teacher-list host="{{host}}" 
-       list="{{hostInfo.value.teachers}}">
-     </teacher-list>
+    <div>  
+     <paper-button on-tap="_loadTeacher" raised>Load</paper-button>
+    </div>
+    <template is="dom-if" if="{{!_teacherLoaded(hostInfo.value.teachers)}}">
+      <document-loader id="teacherLoader"
+        interactive
+        db="teacher_db" view="hostid"
+        on-finish="_onTeacherLoaded"
+        query$='{"match":["{{host}}"],"limit":-1}'>
+      </document-loader>
     </template>
     <div class="layout vertical">
-    <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
-     <div>{{item.name}}</div>
-    </template>
+     <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
+      <div>{{item.name}}</div>
+     </template>
     </div>
    </div>
 
+
    <div name="student" class="student-panel">
-    <template is="dom-if" if="{{!_levelLoaded(hostInfo)}}">
+    <paper-button on-tap="_loadStudent" raised>Load</paper-button>
+    <template is="dom-if" if="{{!_levelLoaded(hostInfo.value.levels)}}">
       <document-loader db="dmc59_1" view="hostid"
-        on-data="_onStudent"
+        id="studentLoader"
+        interactive
+        on-finish="_onStudent"
         query$='{"match":["{{host}}"],"limit":-1}'>
       </document-loader>
      </template>
@@ -119,10 +129,6 @@
    properties:{
      host:{
        type:String
-     },
-     _level:{
-       type:Object,
-       value:{}
      }
    },
    _save:function(e) {
@@ -135,11 +141,34 @@
        }
      }
    },
-   _teacherLoaded:function(hostInfo) {
-     return hostInfo.value.teachers && hostInfo.value.teachers.length > 0;
+   _teacherLoaded:function(teachers) {
+     return teachers && teachers.length > 0;
    },
-   _levelLoaded:function(hostInfo) {
-     return hostInfo.value.levels && hostInfo.value.levels.length > 0;
+   _loadTeacher:function() {
+     this.set('hostInfo.value.teachers',[]);
+     var ele = this.$$('#teacherLoader');
+     if(ele) {
+       ele._reload();
+     }
+   },
+   _loadStudent:function() {
+     this.set('hostInfo.value.levels',[]);
+     var ele = this.$$('#studentLoader');
+     if(ele) {
+       ele._reload();
+     }
+   },
+   _onTeacherLoaded:function(e) {
+     var self = this;
+     e.detail.data.forEach(function(doc) {
+       self.push('hostInfo.value.teachers',{
+        '_teacher':doc.key,
+        'name':doc.value.Firstname+' '+doc.value.Lastname
+       });
+     });
+   },
+   _levelLoaded:function(levels) {
+     return levels && levels.length > 0;
    },
    __computeLevels:function(hostInfo) {
      var result = [];
@@ -162,25 +191,31 @@
      return result;
    },
    _onStudent:function(e) {
-     var student = e.detail.value;
+     var students = e.detail.data;
      var level = this.hostInfo.value.levels;
-     if(!this._level[student.LEVEL]) {
-       this._level[student.LEVEL] = {};
-     }
-     if(!this._level[student.LEVEL][student.CLASSROOM]) {
-       this._level[student.LEVEL][student.CLASSROOM] = {'student':0};
-     }
-     this._level[student.LEVEL][student.CLASSROOM].student++;
+     var _level = {};
+     students.forEach(function(doc) {
+       var student = doc.value;
+       if(!_level[student.LEVEL]) {
+         _level[student.LEVEL] = {};
+       }
+       if(!_level[student.LEVEL][student.CLASSROOM]) {
+         _level[student.LEVEL][student.CLASSROOM] = {'student':0};
+       }
+       _level[student.LEVEL][student.CLASSROOM].student++;
+     });
 
      var tmp = [];
      this.hostInfo.value.levels = [];
-     for(var key in this._level) {
-       var _level = {'level':key,'rooms':[]};
-       for(var room in this._level[key]) {
-         _level.rooms.push({'room':room,
-           'student':this._level[key][room].student});
+     for(var key in _level) {
+       var _l = {'level':key,'rooms':[]};
+       for(var room in _level[key]) {
+         _l.rooms.push({
+           'room':room,
+           'student':_level[key][room].student
+         });
        }
-       tmp.push(_level);
+       tmp.push(_l);
      }
      this.set('hostInfo.value.levels',tmp);
    }

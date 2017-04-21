@@ -13,7 +13,9 @@ module.exports.createStreamHandlers = function(config) {
   return function() {
     var first = function() {
       var stream = through2.obj(function(chunk,enc,cb) {
-        this.push(chunk);
+        if(chunk.value.doc_type == "assignment") {
+          this.push(chunk);
+        }
         cb();
       });
       return stream;

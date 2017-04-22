@@ -1,34 +1,58 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+
+<link rel="import" href="teacher-item.html">
 
 <dom-module id="classteacher-select">
  <template>
-  <style>
+  <style include="iron-flex iron-flex-alignment">
     :host {
       display:block;
+      padding:5px;
+      @apply(--layout-vertical);
     }
     .iron-selected {
       background:#efefef;
     }
+    .control-panel {
+      background:var(--paper-grey-400);
+    }
+   
   </style>
 
-  <paper-icon-button icon="create" 
-    hidden$="{{show}}"
-    on-tap="_toggle">
-  </paper-icon-button>
-  <paper-icon-button icon="arrow-back" 
-    hidden$="{{!show}}"
-    on-tap="_toggle">
-  </paper-icon-button>
+  <paper-material elevation="1">
+    <div class="control-panel">
+      <paper-icon-button icon="create" 
+        hidden$="{{show}}"
+        on-tap="_toggle">
+      </paper-icon-button>
+      <paper-icon-button icon="arrow-back" 
+        hidden$="{{!show}}"
+        on-tap="_toggle">
+      </paper-icon-button>
+      <span>{{title}}</span>
+    </div>
+
+    <div hidden$="{{show}}">
+      <content></content>
+    </div>
    
-  <iron-selector attr-for-selected="name" multi 
-    hidden$="{{!show}}"
-    selected-values="{{selected}}">
-    <template is="dom-repeat" items="{{list}}">
-     <div name="{{item._teacher}}">{{item.name}}</div>
-    </template>
-  </iron-selector>
+    <iron-selector attr-for-selected="key" multi 
+      hidden$="{{!show}}"
+      selected-attribute="checked"
+      selected-values="{{selected}}">
+      <template is="dom-repeat" items="{{list}}">
+        <teacher-item key="{{item._teacher}}">
+          {{item.name}}
+        </teacher-item>
+      </template>
+    </iron-selector>
+  </paper-material>
  </template>
 
  <script>
@@ -42,12 +66,19 @@
           return [];
         }
       },
+      title:{
+        type:String
+      },
       selected:{
         type:Array,
         notify:true,
         value:function() {
           return [];
         }
+      },
+      __ready : {
+        type:Boolean,
+        computed:'__computeReady(selected,list)'
       },
       show:{
         type:Boolean,
@@ -56,6 +87,10 @@
     },
     _toggle:function(e) {
       this.set('show',!this.show);
+    },
+    __computeReady:function(selected,list) {
+      console.log('ready',selected,list);
+      return true;
     }
   });
  </script>

@@ -151,14 +151,19 @@
     </div>
 
     <div class="layout vertical">
-      <div>รายชื่อคุณครูประจำชั้น</div>
-      <template is="dom-repeat" items="{{_roomInfo.classteachers.classteachers}}">
-       <span>{{_teacherName(hostInfo.value.teachers,item)}}</span>
-      </template>
+      <template is="dom-if" if="{{_notNull(_roomInfo.classteachers)}}">
       <classteacher-select 
+        title="รายชื่อคุณครูประจำชั้น"
         selected="{{_roomInfo.classteachers.classteachers}}"
         list="{{hostInfo.value.teachers}}">
+        <ol>
+         <template is="dom-repeat" 
+            items="{{_roomInfo.classteachers.classteachers}}">
+            <li>{{_teacherName(hostInfo.value.teachers,item)}}</li>
+         </template>
+        </ol>
       </classteacher-select>
+      </template>
     </div>
 
    </div>
@@ -330,6 +335,9 @@
        tmp.push(_l);
      }
      this.set('hostInfo.value.levels',tmp);
+   },
+   _notNull:function(obj) {
+     return obj != null;
    }
   });
  </script>

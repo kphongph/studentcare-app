@@ -38,12 +38,16 @@
       list:{ 
         type:Array,
         notify:true,
-        value:[]
+        value:function() {
+          return [];
+        }
       },
       selected:{
         type:Array,
         notify:true,
-        value:[]
+        value:function() {
+          return [];
+        }
       },
       show:{
         type:Boolean,

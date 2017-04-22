@@ -192,24 +192,17 @@
     _loadClassInfo:function(role,hostInfo) {
       if(!role.profile) return;
       var key = role.profile._teacher;
-      console.log(hostInfo);
-      if(hostInfo.value.levels) {
-        for(var i=0;i<hostInfo.value.levels.length;i++) {
-          var level = hostInfo.value.levels[i];
-          var found = false;
-          if(level.rooms) {
-          for(var j=0;j<level.rooms.length;j++) {
-            if(level.rooms[j].classteachers && 
-              level.rooms[j].classteachers.indexOf(key)!=-1) {
-              _level = level.level;
-              _room = level.rooms[j].room;
-              this.push('assignments',{
-                'label':_level+'/'+_room,
-                'level':_level,
-                'room':_room
-              });
-            }
-          }
+      if(hostInfo.value.classteachers) {
+        for(var i=0;i<hostInfo.value.classteachers.length;i++) {
+          var ct = hostInfo.value.classteachers[i];
+          if(ct.classteachers.indexOf(key) != -1) {
+            _level = ct.level;
+            _room = ct.room;
+            this.push('assignments',{
+              'label':_level+'/'+_room,
+              'level':_level,
+              'room':_room
+            });
           }
         }
       }

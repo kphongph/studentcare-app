@@ -1,18 +1,21 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/paper-styles/typography.html">
-<link rel="import" href="../bower_components/paper-styles/color.html">
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="teacher-list.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="classteacher-select.html">
-<link rel="import" href="document-loader.html">
-<link rel="import" href="host-info.html">
+<link rel="import" href="../document-loader.html">
+<link rel="import" href="../host-info.html">
 
 <dom-module id="teacher-app">
  <template>
@@ -21,7 +24,6 @@
       display:box;
       @apply(--layout-vertical);
       @apply(--paper-font-body2);
-      padding:5px;
     }
     .student-panel {
       margin-top:10px;
@@ -34,14 +36,34 @@
       border:1px solid #efefef;
       padding:5px;
     }
+    paper-toolbar {
+      --paper-toolbar-title: {
+        font-weight: bold;
+        height:100%;
+      };
+    }
+    .page {
+      padding:5px;
+    }
     paper-progress {
       padding:5px;
     }
+    .teacher-dropdown {
+      width:250px;
+    }
   </style>
+
+  <paper-toolbar>
+    <paper-icon-button icon="save" on-tap="_save">
+    </paper-icon-button>
+    <span class="title layout horizontal center">
+      <div>ข้อมูลครูและนักเรียน</div>
+    </span>
+  </paper-toolbar>
 
   <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
   </host-info>
-
+  
   <paper-tabs selected="{{page}}" attr-for-selected="name" 
      scrollable>
     <paper-tab name="teacher">ครูในโรงเรียน</paper-tab>
@@ -49,10 +71,11 @@
   </paper-tabs>
 
   <iron-pages selected="{{page}}" attr-for-selected="name">
-   <div name="teacher">
+   <div name="teacher" class="layout vertical">
     <div>  
      <paper-button on-tap="_loadTeacher" raised>Load</paper-button>
     </div>
+
     <template is="dom-if" if="{{!_teacherLoaded(hostInfo.value.teachers)}}">
       <document-loader id="teacherLoader"
         interactive
@@ -61,11 +84,25 @@
         query$='{"match":["{{host}}"],"limit":-1}'>
       </document-loader>
     </template>
-    <div class="layout vertical">
-     <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
-      <div>{{item.name}}</div>
-     </template>
-    </div>
+
+     <div>
+       จำนวนคุณครูในโรงเรียน 
+       <span>{{hostInfo.value.teachers.length}}</span>
+       คน
+     </div>
+     <paper-dropdown-menu label="รายชื่อครู" class="flex" 
+       horizontal-align="left">
+      <paper-listbox selected="{{_teacherId}}"
+        attr-for-selected="name"
+        class="dropdown-content teacher-dropdown">
+       <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
+        <paper-item name="{{item._teacher}}">
+          {{item.name}}
+        </paper-item>
+       </template>
+      </paper-listbox>
+     </paper-dropdown-menu>
+     <span>{{_teacherId}}</span>
    </div>
 
 
@@ -118,10 +155,6 @@
    </div>
   </iron-pages>
     
-  <div class="layout horizontal">
-   <paper-button on-tap="_save" raised>Save</paper-button>
-  </div>
-
  </template>
  <script>
   Polymer({
@@ -129,6 +162,12 @@
    properties:{
      host:{
        type:String
+     },
+     page:{
+       type:String,
+       value:function() {
+         return "teacher";
+       }
      }
    },
    _save:function(e) {

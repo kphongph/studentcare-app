@@ -15,7 +15,7 @@
 <link rel="import" href="homepage-app.html">
 <link rel="import" href="progress-host.html">
 <link rel="import" href="login-box.html">
-<link rel="import" href="teacher-app.html">
+<link rel="import" href="./teacher-app/teacher-app.html">
 
 <dom-module id="main-app">
   <template>
@@ -161,7 +161,9 @@
     properties : {
       page:{
         type:String,
-        value:'homepage'
+        value: function() {
+          return 'assignment';
+        }
       },
       assignments :{
         type:Array,
@@ -178,7 +180,8 @@
     ],
     _signedChanged:function(n) {
       if(this.signed) {
-        this.set('page','assignment');
+      //  this.set('page','assignment');
+        this.set('page','classteachers');
       } else {
         this.set('page','homepage');
       }
@@ -187,6 +190,7 @@
       return value1 === value2;
     },
     _loadClassInfo:function(role,hostInfo) {
+      if(!role.profile) return;
       var key = role.profile._teacher;
       console.log(hostInfo);
       if(hostInfo.value.levels) {

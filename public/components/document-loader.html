@@ -13,7 +13,6 @@
       display:box;
       @apply(--layout-vertical);
       @apply(--paper-font-body2);
-      padding:5px;
     }
     paper-tabs {
       background:var(--paper-blue-500);
@@ -37,9 +36,11 @@
     body='{{query}}'
     on-response="_listAllResponse">
   </iron-ajax>
+
   <status-message id="message" delay="1000" hidden$="{{!interactive}}">
   </status-message>
-  <div class="layout horizontal center">
+
+  <div class="layout horizontal center" hidden$="{{!interactive}}">
   <template is="dom-if" if="{{loading}}">
     (<span>{{_loaded}}</span>/
      <span>{{_total}}</span>)
@@ -47,10 +48,6 @@
   </template>
   </div>
 
-  <div class="layout horizontal center" hidden$="{{!interactive}}">
-    <paper-button raised on-tap="_reload">Reload</paper-button>
-  </div>
-  
  </template>
  <script>
   Polymer({
@@ -68,10 +65,13 @@
      data: {
        type:Array,
        notify:true,
-       value:[]
+       value: function() {
+         return [];
+       }
      },
      interactive:{
        type:Boolean,
+       notify:true,
        value:false
      },
      loading: {
@@ -97,6 +97,10 @@
        return;
      }
      this.set('_total',response.length);
+     this.$.message.add({
+       'type':'info',
+       'message':'Loading '+this.db+':'+this.view});
+     
      this.$.message.add({
        'type':'info',
        'message':'Found '+response.length+' documents'});

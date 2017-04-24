@@ -1,0 +1,38 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+
+<dom-module id="teacher-item">
+ <template>
+  <style include="iron-flex iron-flex-alignment">
+    :host {
+      display:block;
+      padding:5px;
+    }
+    .iron-selected {
+      background:#efefef;
+    }
+   
+  </style>
+  <paper-checkbox checked="{{checked}}">
+    <content></content>
+  </paper-checkbox>
+ </template>
+
+ <script>
+  Polymer({
+    is:"teacher-item",
+    properties:{
+      name:{
+        type:String,
+      },
+      key:{
+        type:String,
+      },
+      checked:{
+        type:Boolean
+      }
+    }
+  });
+ </script>
+</dom-module>

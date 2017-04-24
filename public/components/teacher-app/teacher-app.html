@@ -12,7 +12,6 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="classteacher-select.html">
 <link rel="import" href="../document-loader.html">
 <link rel="import" href="../host-info.html">
@@ -25,7 +24,7 @@
       @apply(--layout-vertical);
       @apply(--paper-font-body2);
     }
-    .student-panel {
+    .panel {
       margin-top:10px;
     }
     paper-tabs {
@@ -48,6 +47,13 @@
     paper-progress {
       padding:5px;
     }
+    .level {
+      background:#efefef;
+      padding-left:20px;
+    }
+    .room-info {
+      padding-left:30px;
+    }
     .teacher-dropdown {
       width:250px;
     }
@@ -64,18 +70,7 @@
   <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
   </host-info>
   
-  <paper-tabs selected="{{page}}" attr-for-selected="name" 
-     scrollable>
-    <paper-tab name="teacher">ครูในโรงเรียน</paper-tab>
-    <paper-tab name="student">นักเรียน</paper-tab>
-  </paper-tabs>
-
-  <iron-pages selected="{{page}}" attr-for-selected="name">
-   <div name="teacher" class="layout vertical">
-    <div>  
-     <paper-button on-tap="_loadTeacher" raised>Load</paper-button>
-    </div>
-
+   <div name="teacher" class="layout vertical panel">
     <template is="dom-if" if="{{!_teacherLoaded(hostInfo.value.teachers)}}">
       <document-loader id="teacherLoader"
         interactive
@@ -89,25 +84,23 @@
        จำนวนคุณครูในโรงเรียน 
        <span>{{hostInfo.value.teachers.length}}</span>
        คน
+       <paper-icon-button on-tap="_loadTeacher" icon="cached">
+       </paper-icon-button>
      </div>
-     <paper-dropdown-menu label="รายชื่อครู" class="flex" 
-       horizontal-align="left">
-      <paper-listbox selected="{{_teacherId}}"
-        attr-for-selected="name"
-        class="dropdown-content teacher-dropdown">
-       <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
-        <paper-item name="{{item._teacher}}">
-          {{item.name}}
-        </paper-item>
-       </template>
-      </paper-listbox>
-     </paper-dropdown-menu>
-     <span>{{_teacherId}}</span>
+     <!--
+     <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
+      <div>{{item.name}}</div>
+     </template>
+     -->
    </div>
 
 
-   <div name="student" class="student-panel">
-    <paper-button on-tap="_loadStudent" raised>Load</paper-button>
+   <div name="student" class="panel layout vertical">
+
+    <div class="layout horizontal">
+      <paper-button on-tap="_loadStudent" raised>Load</paper-button>
+    </div>
+
     <template is="dom-if" if="{{!_levelLoaded(hostInfo.value.levels)}}">
       <document-loader db="dmc59_1" view="hostid"
         id="studentLoader"
@@ -115,45 +108,58 @@
         on-finish="_onStudent"
         query$='{"match":["{{host}}"],"limit":-1}'>
       </document-loader>
-     </template>
-     <paper-tabs selected="{{selectedLevel}}" 
-       attr-for-selected="name" scrollable>
+    </template>
+   
+    <div class="layout horizontal">
+     <paper-dropdown-menu label="ระดับชั้น" class="flex" 
+       horizontal-align="left">
+      <paper-listbox selected="{{_selectedLevel}}"
+        attr-for-selected="name"
+        class="dropdown-content teacher-dropdown">
        <template is="dom-repeat" items="{{hostInfo.value.levels}}">
-        <paper-tab name="{{item.level}}">{{item.level}}</paper-tab>
+        <paper-item name="{{item.level}}">
+          {{_levelLabel(item.level)}}
+        </paper-item>
        </template>
-     </paper-tabs>
+      </paper-listbox>
+     </paper-dropdown-menu>
 
-     <iron-pages selected="{{selectedLevel}}" attr-for-selected="name">
-      <template is="dom-repeat" items="{{hostInfo.value.levels}}" as="level">
-        <div name="{{level.level}}" class="layout vertical">
-         <div class="layout horizontal center">
-          <div class="flex-1">Room</div>
-          <div class="flex-1">Students</div>
-          <div class="flex-1">Class Teacher</div>
-          <div class="flex-1"></div>
-         </div>
-         <template is="dom-repeat" items="{{level.rooms}}">
-           <div class="layout horizontal start room-info">
-            <div class="flex-1">{{item.room}}</div>
-            <div class="flex-1">{{item.student}}</div> 
-            <div class="flex-1 layout vertical">
-             <template is="dom-repeat" items="{{item.classteachers}}" as="t">
-              <div>{{_teacherName(hostInfo.value.teachers,t)}}</div>
-             </template>
-            </div>
-            <div class="flex-1 layout vertical">
-              <classteacher-select 
-                selected="{{item.classteachers}}"
-                list="{{hostInfo.value.teachers}}">
-              </classteacher-select>
-            </div>
-          </div>
+     <paper-dropdown-menu label="ห้อง" class="flex" 
+       horizontal-align="left">
+      <paper-listbox selected="{{_selectedRoom}}"
+        attr-for-selected="name"
+        class="dropdown-content teacher-dropdown">
+       <template is="dom-repeat" items="{{_roomList(hostInfo.value.levels,_selectedLevel)}}">
+        <paper-item name="{{item.room}}">
+          {{item.room}}
+        </paper-item>
+       </template>
+      </paper-listbox>
+     </paper-dropdown-menu>
+    </div>
+  
+    <div>
+      จำนวนนักเรียน
+      <span>{{_roomInfo.room.student}}</span>
+    </div>
+
+    <div class="layout vertical">
+      <template is="dom-if" if="{{_notNull(_roomInfo.classteachers)}}">
+      <classteacher-select 
+        title="รายชื่อคุณครูประจำชั้น"
+        selected="{{_roomInfo.classteachers.classteachers}}"
+        list="{{hostInfo.value.teachers}}">
+        <ol>
+         <template is="dom-repeat" 
+            items="{{_roomInfo.classteachers.classteachers}}">
+            <li>{{_teacherName(hostInfo.value.teachers,item)}}</li>
          </template>
-        </div>
+        </ol>
+      </classteacher-select>
       </template>
-     </iron-pages>
+    </div>
+
    </div>
-  </iron-pages>
     
  </template>
  <script>
@@ -168,6 +174,10 @@
        value:function() {
          return "teacher";
        }
+     },
+     _roomInfo:{
+       type:Object,
+       computed:'__computeRoomInfo(hostInfo.value.classteachers,hostInfo.value.levels,_selectedLevel,_selectedRoom)'
      }
    },
    _save:function(e) {
@@ -182,6 +192,57 @@
    },
    _teacherLoaded:function(teachers) {
      return teachers && teachers.length > 0;
+   },
+   _roomList:function(levels,selected) {
+     for(var i=0;i<levels.length;i++) {
+       if(levels[i].level == selected) {
+         return levels[i].rooms;
+       }
+     }
+     return [];
+   },
+   _studentCount:function(levels,level,room) {
+     for(var i=0;i<levels.length;i++) {
+       if(levels[i].level == level) {
+         for(var j=0;j<levels[i].rooms.length;j++) {
+           if(levels[i].rooms[j].room == room) {
+             console.log('found',levels[i].rooms[j].student); 
+             return levels[i].rooms[j].student;
+           }
+         }
+       }
+     }
+     return '';
+   },
+   __computeRoomInfo:function(classteachers,levels,level,room) {
+     // find classteachers
+     console.log('compute roomInfo');
+     var cteachers = null;
+     for(var i=0;i<classteachers.length;i++) {
+       if(classteachers[i].level == level && 
+          classteachers[i].room == room) { 
+          cteachers = classteachers[i];
+       }
+     }
+
+     if(!cteachers) {
+       cteachers = {'level':level,'room':room,'classteachers':[]};
+       classteachers.push(cteachers);
+     }
+
+     for(var i=0;i<levels.length;i++) {
+       if(levels[i].level == level) {
+         for(var j=0;j<levels[i].rooms.length;j++) {
+           if(levels[i].rooms[j].room == room) {
+             console.log({'classteachers':cteachers,
+               'room':levels[i].rooms[j]});
+             return {'classteachers':cteachers,
+               'room':levels[i].rooms[j]};
+           }
+         }
+       }
+     }
+     return {};
    },
    _loadTeacher:function() {
      this.set('hostInfo.value.teachers',[]);
@@ -209,9 +270,18 @@
    _levelLoaded:function(levels) {
      return levels && levels.length > 0;
    },
+   _levelLabel:function(level) {
+     var dict = ['อนุบาล ','ประถมศึกษา ','มัธยมศึกษา '];
+     var intLevel = Number(level);
+     var tmp = '';
+     if(intLevel<=15) tmp=dict[2]+(intLevel-9);
+     if(intLevel<=9) tmp=dict[1]+(intLevel-3);
+     if(intLevel<=3) tmp=dict[0]+intLevel;
+     return tmp;
+   },
    __computeLevels:function(hostInfo) {
      var result = [];
-     var dict = ['อ.','ป.','ม.'];
+     var dict = ['อนุบาล','ประถมศึกษา','มัธยมศึกษา'];
      var level = hostInfo.value.level;
      for(var key in level) {  
        var tmp = {'level':key,'room':[]}; 
@@ -257,6 +327,9 @@
        tmp.push(_l);
      }
      this.set('hostInfo.value.levels',tmp);
+   },
+   _notNull:function(obj) {
+     return obj != null;
    }
   });
  </script>

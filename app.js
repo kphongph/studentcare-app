@@ -40,6 +40,6 @@ app.post('/login',function(req,res) {
 app.get('/view',logview.serve);
 app.post('/view',logview.serve);
 
-app.listen(82, function () {
-  console.log('Example app listening on port 82!')
+app.listen(config.port, function () {
+  console.log('Example app listening on port !',config.port)
 })

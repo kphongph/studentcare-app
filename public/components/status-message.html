@@ -20,8 +20,10 @@
     }
 
   </style>
-  <template is="dom-repeat" items="{{messages}}">
-   <div class$="{{item.type}}">{{item.message}}</div>
+  <template is="dom-repeat" items="[[messages]]">
+   <div class$="{{item.type}}">
+     <span>{{item.message}}</span>
+   </div>
   </template>
  </template>
  <script>
@@ -34,15 +36,17 @@
      },
      messages:{
        type:Array,
-       notify:true,
-       value:[]
+       value:function() {
+         return [];
+       }
      }
    },
    add:function(message) {
      this.push('messages',message);
+     var self = this;
      setTimeout(function() {
-       this.splice('messages',0,1);
-     }.bind(this),this.delay*this.messages.length);
+       self.splice('messages',0,1);
+     },this.delay*this.messages.length);
    }
   });
  </script>

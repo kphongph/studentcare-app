@@ -70,18 +70,7 @@
   <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
   </host-info>
   
-  <paper-tabs selected="{{page}}" attr-for-selected="name" 
-     scrollable>
-    <paper-tab name="teacher">ครูในโรงเรียน</paper-tab>
-    <paper-tab name="student">นักเรียน</paper-tab>
-  </paper-tabs>
-
-  <iron-pages selected="{{page}}" attr-for-selected="name">
    <div name="teacher" class="layout vertical panel">
-    <div>  
-     <paper-button on-tap="_loadTeacher" raised>Load</paper-button>
-    </div>
-
     <template is="dom-if" if="{{!_teacherLoaded(hostInfo.value.teachers)}}">
       <document-loader id="teacherLoader"
         interactive
@@ -95,10 +84,14 @@
        จำนวนคุณครูในโรงเรียน 
        <span>{{hostInfo.value.teachers.length}}</span>
        คน
+       <paper-icon-button on-tap="_loadTeacher" icon="cached">
+       </paper-icon-button>
      </div>
+     <!--
      <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
       <div>{{item.name}}</div>
      </template>
+     -->
    </div>
 
 
@@ -167,7 +160,6 @@
     </div>
 
    </div>
-  </iron-pages>
     
  </template>
  <script>

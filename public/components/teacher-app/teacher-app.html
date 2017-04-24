@@ -11,6 +11,8 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-submenu.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="classteacher-select.html">
 <link rel="import" href="../document-loader.html">
@@ -62,6 +64,8 @@
   <paper-toolbar>
     <paper-icon-button icon="save" on-tap="_save">
     </paper-icon-button>
+    <paper-icon-button icon="cached" on-tap="_reload">
+    </paper-icon-button>
     <span class="title layout horizontal center">
       <div>ข้อมูลครูและนักเรียน</div>
     </span>
@@ -70,74 +74,48 @@
   <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
   </host-info>
   
-   <div name="teacher" class="layout vertical panel">
-    <template is="dom-if" if="{{!_teacherLoaded(hostInfo.value.teachers)}}">
+  <template is="dom-if" if="{{!_teacherLoaded(hostInfo.value.teachers)}}">
       <document-loader id="teacherLoader"
         interactive
         db="teacher_db" view="hostid"
         on-finish="_onTeacherLoaded"
         query$='{"match":["{{host}}"],"limit":-1}'>
       </document-loader>
-    </template>
+  </template>
 
-     <div>
-       จำนวนคุณครูในโรงเรียน 
-       <span>{{hostInfo.value.teachers.length}}</span>
-       คน
-       <paper-icon-button on-tap="_loadTeacher" icon="cached">
-       </paper-icon-button>
-     </div>
-     <!--
-     <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
-      <div>{{item.name}}</div>
+  <div>
+   <span>จำนวนคุณครูในโรงเรียน</span>
+   <span>{{hostInfo.value.teachers.length}}</span>
+   <span>คน</span>
+  </div>
+
+
+
+  <template is="dom-if" if="{{!_levelLoaded(hostInfo.value.levels)}}">
+    <document-loader db="dmc59_1" view="hostid"
+      id="studentLoader"
+      interactive
+      on-finish="_onStudent"
+      query$='{"match":["{{host}}"],"limit":-1}'>
+    </document-loader>
+  </template>
+
+  <paper-dropdown-menu label="ห้องเรียน" horizontal-align="left">
+   <paper-listbox selected="{{_classroom}}"
+    attr-for-selected="name"
+    class="dropdown-content">
+    <template is="dom-repeat" as="level" items="{{hostInfo.value.levels}}">
+     <template is="dom-repeat" items="{{level.rooms}}">
+      <paper-item name$="{{level.level}}-{{item.room}}">
+       <div>
+        <span>{{_levelLabel(level.level)}}</span>/<span>{{item.room}}</span> 
+       </div>
+      </paper-item>
      </template>
-     -->
-   </div>
-
-
-   <div name="student" class="panel layout vertical">
-
-    <div class="layout horizontal">
-      <paper-button on-tap="_loadStudent" raised>Load</paper-button>
-    </div>
-
-    <template is="dom-if" if="{{!_levelLoaded(hostInfo.value.levels)}}">
-      <document-loader db="dmc59_1" view="hostid"
-        id="studentLoader"
-        interactive
-        on-finish="_onStudent"
-        query$='{"match":["{{host}}"],"limit":-1}'>
-      </document-loader>
     </template>
-   
-    <div class="layout horizontal">
-     <paper-dropdown-menu label="ระดับชั้น" class="flex" 
-       horizontal-align="left">
-      <paper-listbox selected="{{_selectedLevel}}"
-        attr-for-selected="name"
-        class="dropdown-content teacher-dropdown">
-       <template is="dom-repeat" items="{{hostInfo.value.levels}}">
-        <paper-item name="{{item.level}}">
-          {{_levelLabel(item.level)}}
-        </paper-item>
-       </template>
-      </paper-listbox>
-     </paper-dropdown-menu>
+   </paper-listbox>
+  </paper-dropdown-menu>
 
-     <paper-dropdown-menu label="ห้อง" class="flex" 
-       horizontal-align="left">
-      <paper-listbox selected="{{_selectedRoom}}"
-        attr-for-selected="name"
-        class="dropdown-content teacher-dropdown">
-       <template is="dom-repeat" items="{{_roomList(hostInfo.value.levels,_selectedLevel)}}">
-        <paper-item name="{{item.room}}">
-          {{item.room}}
-        </paper-item>
-       </template>
-      </paper-listbox>
-     </paper-dropdown-menu>
-    </div>
-  
     <div>
       จำนวนนักเรียน
       <span>{{_roomInfo.room.student}}</span>
@@ -159,7 +137,6 @@
       </template>
     </div>
 
-   </div>
     
  </template>
  <script>
@@ -177,7 +154,7 @@
      },
      _roomInfo:{
        type:Object,
-       computed:'__computeRoomInfo(hostInfo.value.classteachers,hostInfo.value.levels,_selectedLevel,_selectedRoom)'
+       computed:'__computeRoomInfo(hostInfo.value.classteachers,hostInfo.value.levels,_classroom)'
      }
    },
    _save:function(e) {
@@ -214,9 +191,11 @@
      }
      return '';
    },
-   __computeRoomInfo:function(classteachers,levels,level,room) {
+   __computeRoomInfo:function(classteachers,levels,croom) {
      // find classteachers
-     console.log('compute roomInfo');
+     var tmp = croom.split('-');
+     var level = tmp[0];
+     var room = tmp[1];
      var cteachers = null;
      for(var i=0;i<classteachers.length;i++) {
        if(classteachers[i].level == level && 
@@ -244,18 +223,16 @@
      }
      return {};
    },
-   _loadTeacher:function() {
-     this.set('hostInfo.value.teachers',[]);
-     var ele = this.$$('#teacherLoader');
-     if(ele) {
-       ele._reload();
-     }
-   },
-   _loadStudent:function() {
+   _reload:function() {
      this.set('hostInfo.value.levels',[]);
-     var ele = this.$$('#studentLoader');
-     if(ele) {
-       ele._reload();
+     this.set('hostInfo.value.teachers',[]);
+     var sele = this.$$('#studentLoader');
+     var tele = this.$$('#teacherLoader');
+     if(sele) {
+       sele._reload();
+     }
+     if(tele) {
+       tele._reload();
      }
    },
    _onTeacherLoaded:function(e) {

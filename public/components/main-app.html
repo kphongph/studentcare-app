@@ -4,9 +4,8 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-menu/paper-submenu.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
@@ -20,13 +19,6 @@
 <dom-module id="main-app">
   <template>
    <style is="custom-style">
-      html, body {
-        margin: 0;
-        font-family: 'Roboto', 'Noto', sans-serif;
-        -webkit-font-smoothing: antialiased;
-        background: #f1f1f1;
-        max-height: 400px;
-      }
       
       app-toolbar {
         background-color: #d14836;
@@ -61,6 +53,10 @@
           background-color: #fff;
         }
       }
+
+      .sublist paper-item {
+        padding-left: 30px;
+      }
       
       login-box {
         padding:15px;
@@ -80,13 +76,20 @@
           <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="42" width="42">               
         </app-toolbar>
         <app-toolbar>
-          <div main-title>StudentCare App</div>   
+          <div main-title>StudentCare App ทดสอบ</div>   
         </app-toolbar>
         <paper-menu selected="{{page}}"
           attr-for-selected="name">
           <paper-item name="homepage">หน้าแรก</paper-item>
           <template is="dom-if" if="{{signed}}">
-            <paper-item name="assignment">แบบประเมิน</paper-item>
+            <paper-submenu name="assignment">
+              <paper-item class="menu-trigger">แบบประเมิน</paper-item>
+              <paper-menu class="menu-content sublist" selected="{{_assignment}}">
+                <template is="dom-repeat" items="{{assignments}}">
+                 <paper-item>{{item.label}}</paper-item>
+                </template>
+              </paper-menu>
+            </paper-submenu>
             <paper-item name="progress">ความก้าวหน้า</paper-item>
             <paper-item name="classteachers">ครูประจำชั้น</paper-item>
           </template>
@@ -98,25 +101,17 @@
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>StudentCare App</div>
             <login-box signed="{{signed}}" role="{{role}}"></login-box>
-            <!--
-            <paper-progress value="10" indeterminate bottom-item></paper-progress>
-            -->
           </app-toolbar>
         </app-header>
 
       <!-- content -->
       <iron-pages selected="[[page]]" attr-for-selected="name">
         <div name="homepage">          
-             <homepage-app></homepage-app>
+          <homepage-app></homepage-app>
         </div>
         <div name="assignment">
           <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
           </host-info>
-          <paper-listbox selected="{{_assignment}}">
-            <template is="dom-repeat" items="{{assignments}}">
-              <paper-item>{{item.label}}</paper-item>
-            </template>
-          </paper-listbox>
           <iron-pages selected="{{_assignment}}">
             <template is="dom-repeat" items="{{assignments}}">
             <studentcare-app host="{{role.profile.hostid}}" 

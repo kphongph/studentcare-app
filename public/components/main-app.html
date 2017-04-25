@@ -106,6 +106,9 @@
 
       <!-- content -->
       <iron-pages selected="[[page]]" attr-for-selected="name">
+        <div name="homepage">          
+             <homepage-app></homepage-app>
+        </div>
         <div name="assignment">
           <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
           </host-info>
@@ -137,6 +140,7 @@
          </template>
         </div>
       </iron-pages>
+
       </app-header-layout>
     </app-drawer-layout>
     

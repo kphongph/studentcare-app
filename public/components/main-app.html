@@ -167,7 +167,9 @@
       assignments :{
         type:Array,
         notify:true,
-        value:[]
+        value:function() {
+          return [];
+        }
       },
       _loadClass:{
         type:Boolean,

@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
 
 <link rel="import" href="document-loader.html">
 
@@ -15,7 +16,7 @@
 
 <dom-module is="login-box">
   <template>
-  <style include="iron-flex iron-flex-alignment iron-flex-factors">
+  <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
     :host {
       @apply(--layout-vertical);
       @apply(--paper-font-body1);
@@ -25,7 +26,12 @@
     #loginBox{
       display:none;
     }
-
+    
+    paper-button {
+      background-color: var(--paper-indigo-500);
+      color: white;
+    }
+     
     @media (min-width: 400px) {
       #loginBox {
         height:auto;
@@ -43,10 +49,13 @@
        <paper-icon-button icon="account-circle">
        </paper-icon-button>
        <div class="layout horizontal">
-         <paper-button  class="signin-btn" raised on-tap="_signOut">Sign out</paper-button>
+         <paper-icon-button on-tap="_signOut" icon="vaadin:sign-out">
+         </paper-icon-button>
        </div>
      </div>
-     <paper-button raised onclick="modal.open()" hidden$="{{signed}}">Sign in</paper-button>
+     <paper-icon-button onclick="modal.open()" 
+       icon="vaadin:sign-in" hidden$="{{signed}}">
+     </paper-icon-button>
   </div>
 
   <paper-dialog id="modal">

@@ -48,7 +48,6 @@
 
       app-drawer {
         --app-drawer-layout-content-transition;
-        --app-drawer-scrim-background: rgba(0, 0, 100, 0.8);
         --app-drawer-content-container: {
           background-color: #fff;
         }
@@ -77,6 +76,7 @@
           <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="42" width="42">
         </app-toolbar>
         -->
+        <app-toolbar></app-toolbar>
         <app-toolbar>
         </app-toolbar>
         <paper-menu selected="{{page}}"
@@ -101,11 +101,11 @@
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
+            <login-box signed="{{signed}}" role="{{role}}"></login-box>
           </app-toolbar>
         </app-header>
 
       <!-- content -->
-      <login-box signed="{{signed}}" role="{{role}}"></login-box>
       <iron-pages selected="[[page]]" attr-for-selected="name">
         <div name="homepage">          
           <homepage-app></homepage-app>
@@ -194,6 +194,7 @@
     _loadClassInfo:function(role,hostInfo) {
       if(!role.profile) return;
       var key = role.profile._teacher;
+      this.set('assignments',[]);
       if(hostInfo.value.classteachers) {
         for(var i=0;i<hostInfo.value.classteachers.length;i++) {
           var ct = hostInfo.value.classteachers[i];

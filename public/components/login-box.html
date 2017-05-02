@@ -20,7 +20,6 @@
     :host {
       @apply(--layout-vertical);
       @apply(--paper-font-body1);
-      padding:10px;
     }
 
     #loginBox{
@@ -40,26 +39,7 @@
     }
   </style>
 
-  <div>
-     <div class="layout horizontal center" hidden$="{{!signed}}">
-       <div>
-        <span>{{role.profile.firstname}}</span>
-        <span>{{role.profile.lastname}}</span>
-       </div>
-       <paper-icon-button icon="account-circle">
-       </paper-icon-button>
-       <div class="layout horizontal">
-         <paper-icon-button on-tap="_signOut" icon="vaadin:sign-out">
-         </paper-icon-button>
-       </div>
-     </div>
-     <paper-icon-button onclick="modal.open()" 
-       icon="vaadin:sign-in" hidden$="{{signed}}">
-     </paper-icon-button>
-  </div>
-
-  <paper-dialog id="modal">
-  <div class="layout vertical center sign-bar"> 
+  <div class="layout vertical center sign-bar" hidden$="{{signed}}"> 
     <paper-input label="Login ID" value="{{user}}"></paper-input> 
     <paper-input label="Password" type="password" value="{{pass}}">
     </paper-input> 
@@ -68,7 +48,6 @@
       <paper-button raised on-tap="_signIn">Sign in</paper-button>
     </div>
   </div>
-  </paper-dialog>
 
   <document-loader id="roleloader" 
     db="role_db" 
@@ -121,7 +100,7 @@
     _signIn:function(e) {
       this.$.loginAjax.generateRequest();
     },
-    _signOut:function(e) {
+    signOut:function(e) {
       this.set('token',{});
       this.set('role',{});
     },

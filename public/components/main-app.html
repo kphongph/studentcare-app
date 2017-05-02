@@ -58,12 +58,11 @@
         padding-left: 30px;
       }
       
-      login-box {
-        padding:15px;
-      }
-      
       paper-dialog {
         margin:0px;
+      }
+      .user-info {
+        @apply(--paper-font-title);
       }
       @media (min-width: 400px) {
     
@@ -79,6 +78,10 @@
         -->
         <app-toolbar></app-toolbar>
         <app-toolbar>
+          <div class="user-info">
+            <span>{{role.profile.firstname}}</span>
+            <span>{{role.profile.lastname}}</span>
+          </div>
         </app-toolbar>
         <paper-menu selected="{{page}}"
           attr-for-selected="name">
@@ -95,6 +98,7 @@
             <paper-item name="progress">ความก้าวหน้า</paper-item>
             <paper-item name="school">โรงเรียน</paper-item>
             <paper-item name="classteachers">ครูประจำชั้น</paper-item>
+            <paper-item name="homepage" on-tap="_signOut">ออกจากระบบ</paper-item>
           </template>
         </paper-menu>
       </app-drawer>
@@ -103,7 +107,6 @@
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
-            <login-box signed="{{signed}}" role="{{role}}"></login-box>
           </app-toolbar>
         </app-header>
 
@@ -118,9 +121,11 @@
           </template>
         </div>
         <div name="homepage">          
+          <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
           <homepage-app></homepage-app>
         </div>
         <div name="assignment">
+          <template is="dom-if" if="[[_equal(page, 'assignment')]]">
           <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
           </host-info>
           <iron-pages selected="{{_assignment}}">
@@ -131,6 +136,7 @@
             </studentcare-app>
             </template>
           </iron-pages>
+          </template>
         </div>
         <div name="progress">
           <!-- lazy load -->
@@ -150,19 +156,6 @@
       </app-header-layout>
     </app-drawer-layout>
     
-  </template>
-
-    <app-header-layout>
-     <app-header class="main-header">
-      <app-toolbar>
-       <paper-icon-button icon="menu" drawer-toggle>
-       </paper-icon-button>
-       <div main-title></div>
-      </app-toolbar>
-     </app-header>
-    </app-header-layout>
-   </app-drawer-layout>
-
  </template>
  
  <script>
@@ -190,6 +183,9 @@
     observers:[
      '_signedChanged(signed)'
     ],
+    _signOut:function() {
+      this.$.loginBox.signOut();
+    },
     _signedChanged:function(n) {
       if(this.signed) {
       //  this.set('page','assignment');

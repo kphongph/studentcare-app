@@ -15,6 +15,7 @@
 <link rel="import" href="progress-host.html">
 <link rel="import" href="login-box.html">
 <link rel="import" href="./teacher-app/teacher-app.html">
+<link rel="import" href="./school-app/school-app.html">
 
 <dom-module id="main-app">
   <template>
@@ -92,12 +93,13 @@
               </paper-menu>
             </paper-submenu>
             <paper-item name="progress">ความก้าวหน้า</paper-item>
+            <paper-item name="school">โรงเรียน</paper-item>
             <paper-item name="classteachers">ครูประจำชั้น</paper-item>
           </template>
         </paper-menu>
       </app-drawer>
-      <app-header-layout>
-        <app-header>
+      <app-header-layout fullbleed>
+        <app-header fixed>
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
@@ -106,7 +108,15 @@
         </app-header>
 
       <!-- content -->
+      <div>
       <iron-pages selected="[[page]]" attr-for-selected="name">
+        <div name="school">
+          <!-- lazy load -->
+          <template is="dom-if" if="[[_equal(page, 'school')]]">
+            <school-app host="{{role.profile.hostid}}"> 
+            </school-app>
+          </template>
+        </div>
         <div name="homepage">          
           <homepage-app></homepage-app>
         </div>
@@ -136,7 +146,7 @@
          </template>
         </div>
       </iron-pages>
-
+      </div>
       </app-header-layout>
     </app-drawer-layout>
     
@@ -162,7 +172,7 @@
       page:{
         type:String,
         value: function() {
-          return 'assignment';
+          return 'school';
         }
       },
       assignments :{
@@ -183,7 +193,7 @@
     _signedChanged:function(n) {
       if(this.signed) {
       //  this.set('page','assignment');
-        this.set('page','classteachers');
+        this.set('page','school');
       } else {
         this.set('page','homepage');
       }

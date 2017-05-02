@@ -1,0 +1,46 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../leveldb-document.html">
+
+<dom-module is="teacher-card">
+ <template>
+   <style is="custom-style">
+     :host {
+       @apply(--paper-font-body2);
+       @apply(--layout-horizontal);
+       padding-top:5px;
+       padding-bottom:5px;
+       padding-left:10px;
+       cursor:pointer;
+       cursor:hand;
+       border-bottom:1px solid var(--paper-grey-500);
+     }
+
+     :host:hover {
+       background:var(--paper-grey-100);
+     }
+   </style>
+
+   <div>{{doc.name}}</div>
+ </template>
+ <script>
+  Polymer({
+   is:"teacher-card",
+   properties:{
+     doc:{
+       type:Object
+     }
+   },
+   listener:{
+     'tap':'_onTap'
+   },
+   _onTap:function(e) {
+     this.fire('select-teacher',{'key':this.doc._teacher});
+   }
+  });
+ </script>
+</dom-module>

@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="leveldb-document">
+ <template>
+  <style>
+    :host {
+      display:block;
+    }
+  </style>
+
+  <app-localstorage-document
+    key="jwtToken"
+    data="{{token}}">
+  </app-localstorage-document>
+
+ </template>
+ <script>
+  Polymer({
+    is:"leveldb-document",
+    properties:{
+      db:{
+        type:String
+      },
+      url:{
+        type:String
+      },
+      key:{
+        type:String,
+      },
+      document:{
+        type:Object,
+        notify:true,
+      },
+      _execute:{
+        type:Boolean,
+        computed:'__getDocument(db,url,key)'
+      }
+    },
+    __getDocument:function(db,url,key) {
+      var ele = document.createElement('iron-request');
+      var self = this;
+      ele.send({
+        url:url+'/dbs/'+db+'/'+key,
+        method:'GET',
+        handleAs:'json',
+        headers:{
+          'content-type':'application/json',
+          'authorization':'JWT '+this.token.token
+        }
+     }).then(function(res) {
+       console.log(res.response);
+       self.set('document',{'key':key,'value':res.response});
+       return true;
+     });
+    },
+    save:function(e) {
+      var ele = document.createElement('iron-request');
+      var key = '';
+      if(this.document.key) {
+        var key = this.document.key;
+      }
+      ele.send({
+        url:this.url+'/dbs/'+this.db+'/'+key,
+        method:'POST',
+        handleAs:'json',
+        headers:{
+          'content-type':'application/json',
+          'authorization':'JWT '+this.token.token
+        },
+        body:JSON.stringify(this.document.value)
+     }).then(function(res) {
+        console.log(res.response);
+     });
+    }
+  });
+ </script>
+</dom-module>

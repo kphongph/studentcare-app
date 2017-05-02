@@ -1,0 +1,252 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-submenu.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../document-loader.html">
+<link rel="import" href="../leveldb-document.html">
+<link rel="import" href="../host-info.html">
+<link rel="import" href="teacher-card.html">
+
+<dom-module id="school-app">
+ <template>
+  <style is="custom-style"
+     include="iron-flex iron-flex-alignment iron-flex-factors">
+
+    :host {
+      display:box;
+      padding:5px;
+      @apply(--layout-vertical);
+      @apply(--paper-font-body2);
+    }
+  </style>
+
+  <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
+  </host-info>
+  
+  <template is="dom-if" if="{{!_teacherLoaded(hostInfo.value.teachers)}}">
+    <document-loader id="teacherLoader"
+      interactive
+      db="teacher_db" view="hostid"
+      on-finish="_onTeacherLoaded"
+      query$='{"match":["{{host}}"],"limit":-1}'>
+    </document-loader>
+  </template>
+
+  <div>
+   <span>จำนวนคุณครูในโรงเรียน</span>
+   <span>{{hostInfo.value.teachers.length}}</span>
+   <span>คน</span>
+  </div>
+
+  <div>
+   <leveldb-document 
+     url="https://maas.nuqlis.com:9000/api"
+     db="teacher_db"
+     document="{{teacherInfo}}"
+     key="{{_teacher}}">
+   </leveldb-document>
+  </div>
+
+    <div class="flex-1">
+      <paper-input label="ชื่อ" value="{{teacherInfo.value.Firstname}}">
+      </paper-input>
+    </div>
+
+    <div class="layout vertical flex-1">
+     <iron-selector selected="{{_teacher}}" attr-for-selected="name">
+     <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
+      <teacher-card doc="{{item}}" name="{{item._teacher}}">
+      </teacher-card>
+     </template>
+     </iron-selector>
+    </div>
+
+
+ </template>
+ <script>
+  Polymer({
+   is: 'school-app',
+   properties:{
+     host:{
+       type:String
+     },
+     page:{
+       type:String,
+       value:function() {
+         return "teacher";
+       }
+     },
+     _roomInfo:{
+       type:Object,
+       computed:'__computeRoomInfo(hostInfo.value.classteachers,hostInfo.value.levels,_classroom)'
+     }
+   },
+   _save:function(e) {
+     this.$.hostInfo.save();
+   },
+   _teacherName:function(teachers,key) {
+     for(var i=0;i<teachers.length;i++) {
+       if(teachers[i]._teacher == key) {
+         return teachers[i].name;
+       }
+     }
+   },
+   _teacherLoaded:function(teachers) {
+     return teachers && teachers.length > 0;
+   },
+   _roomList:function(levels,selected) {
+     for(var i=0;i<levels.length;i++) {
+       if(levels[i].level == selected) {
+         return levels[i].rooms;
+       }
+     }
+     return [];
+   },
+   _studentCount:function(levels,level,room) {
+     for(var i=0;i<levels.length;i++) {
+       if(levels[i].level == level) {
+         for(var j=0;j<levels[i].rooms.length;j++) {
+           if(levels[i].rooms[j].room == room) {
+             console.log('found',levels[i].rooms[j].student); 
+             return levels[i].rooms[j].student;
+           }
+         }
+       }
+     }
+     return '';
+   },
+   __computeRoomInfo:function(classteachers,levels,croom) {
+     // find classteachers
+     var tmp = croom.split('-');
+     var level = tmp[0];
+     var room = tmp[1];
+     var cteachers = null;
+     for(var i=0;i<classteachers.length;i++) {
+       if(classteachers[i].level == level && 
+          classteachers[i].room == room) { 
+          cteachers = classteachers[i];
+       }
+     }
+
+     if(!cteachers) {
+       cteachers = {'level':level,'room':room,'classteachers':[]};
+       classteachers.push(cteachers);
+     }
+
+     for(var i=0;i<levels.length;i++) {
+       if(levels[i].level == level) {
+         for(var j=0;j<levels[i].rooms.length;j++) {
+           if(levels[i].rooms[j].room == room) {
+             console.log({'classteachers':cteachers,
+               'room':levels[i].rooms[j]});
+             return {'classteachers':cteachers,
+               'room':levels[i].rooms[j]};
+           }
+         }
+       }
+     }
+     return {};
+   },
+   _reload:function() {
+     this.set('hostInfo.value.levels',[]);
+     this.set('hostInfo.value.teachers',[]);
+     var sele = this.$$('#studentLoader');
+     var tele = this.$$('#teacherLoader');
+     if(sele) {
+       sele._reload();
+     }
+     if(tele) {
+       tele._reload();
+     }
+   },
+   _onTeacherLoaded:function(e) {
+     var self = this;
+     e.detail.data.forEach(function(doc) {
+       self.push('hostInfo.value.teachers',{
+        '_teacher':doc.key,
+        'name':doc.value.Firstname+' '+doc.value.Lastname
+       });
+     });
+   },
+   _levelLoaded:function(levels) {
+     return levels && levels.length > 0;
+   },
+   _levelLabel:function(level) {
+     var dict = ['อนุบาล ','ประถมศึกษา ','มัธยมศึกษา '];
+     var intLevel = Number(level);
+     var tmp = '';
+     if(intLevel<=15) tmp=dict[2]+(intLevel-9);
+     if(intLevel<=9) tmp=dict[1]+(intLevel-3);
+     if(intLevel<=3) tmp=dict[0]+intLevel;
+     return tmp;
+   },
+   __computeLevels:function(hostInfo) {
+     var result = [];
+     var dict = ['อนุบาล','ประถมศึกษา','มัธยมศึกษา'];
+     var level = hostInfo.value.level;
+     for(var key in level) {  
+       var tmp = {'level':key,'room':[]}; 
+       var intLevel = Number(key);
+       if(intLevel<=15) tmp['label']=dict[2]+(intLevel-9);
+       if(intLevel<=9) tmp['label']=dict[1]+(intLevel-3);
+       if(intLevel<=3) tmp['label']=dict[0]+intLevel;
+       for(var room in level[key]) {
+         tmp['room'].push({'room':room,'student':level[key][room]});
+       }
+       result.push(tmp);
+     }
+     result.sort(function(a,b) {
+       return Number(a.level)>=Number(b.level)?1:-1; 
+     });
+     return result;
+   },
+   _onStudent:function(e) {
+     var students = e.detail.data;
+     var level = this.hostInfo.value.levels;
+     var _level = {};
+     students.forEach(function(doc) {
+       var student = doc.value;
+       if(!_level[student.LEVEL]) {
+         _level[student.LEVEL] = {};
+       }
+       if(!_level[student.LEVEL][student.CLASSROOM]) {
+         _level[student.LEVEL][student.CLASSROOM] = {'student':0};
+       }
+       _level[student.LEVEL][student.CLASSROOM].student++;
+     });
+
+     var tmp = [];
+     this.hostInfo.value.levels = [];
+     for(var key in _level) {
+       var _l = {'level':key,'rooms':[]};
+       for(var room in _level[key]) {
+         _l.rooms.push({
+           'room':room,
+           'student':_level[key][room].student
+         });
+       }
+       tmp.push(_l);
+     }
+     this.set('hostInfo.value.levels',tmp);
+   },
+   _notNull:function(obj) {
+     return obj != null;
+   }
+  });
+ </script>
+
+</dom-module>

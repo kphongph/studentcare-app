@@ -70,13 +70,14 @@
       }
     </style>
 
-    <app-drawer-layout fullbleed>
+    <app-drawer-layout force-narrow>
       <app-drawer>        
+        <!--
         <app-toolbar>
-          <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="42" width="42">               
+          <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="42" width="42">
         </app-toolbar>
+        -->
         <app-toolbar>
-          <div main-title>StudentCare App ทดสอบ</div>   
         </app-toolbar>
         <paper-menu selected="{{page}}"
           attr-for-selected="name">
@@ -99,12 +100,12 @@
         <app-header>
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>StudentCare App</div>
-            <login-box signed="{{signed}}" role="{{role}}"></login-box>
+            <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
           </app-toolbar>
         </app-header>
 
       <!-- content -->
+      <login-box signed="{{signed}}" role="{{role}}"></login-box>
       <iron-pages selected="[[page]]" attr-for-selected="name">
         <div name="homepage">          
           <homepage-app></homepage-app>
@@ -167,7 +168,9 @@
       assignments :{
         type:Array,
         notify:true,
-        value:[]
+        value:function() {
+          return [];
+        }
       },
       _loadClass:{
         type:Boolean,

@@ -76,7 +76,27 @@
         self.fire('leveldb-response',{'method':'put',
           'response':res.response});
      });
+    },
+    delete:function(e) {
+      var ele = document.createElement('iron-request');
+      var self = this;
+      if(!this.document.key) return;
+      ele.send({
+        url:this.url+'/dbs/'+this.db+'/'+this.document.key,
+        method:'DELETE',
+        handleAs:'json',
+        headers:{
+          'content-type':'application/json',
+          'authorization':'JWT '+this.token.token
+        }
+     }).then(function(res) {
+        self.fire('leveldb-response',{'method':'del',
+          'response':res.response});
+     });
     }
+  });
+ </script>
+</dom-module>
   });
  </script>
 </dom-module>

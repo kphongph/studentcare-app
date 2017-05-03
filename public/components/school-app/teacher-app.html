@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
@@ -30,10 +31,6 @@
       --app-toolbar-font-size:16px;
     }
     
-    app-header-layout {
-      height:400px;
-    }
-
     paper-item {
       border-bottom:1px solid var(--paper-grey-500);
     }
@@ -46,24 +43,47 @@
     }
   </style>
 
-  <app-header-layout has-scrolling-region>
-    <app-header fixed condenses>
-     <app-toolbar fixed>
-      <paper-icon-button icon="refresh" 
-        hidden$="{{_equal(page,'edit')}}"
-        on-tap="_refresh">
-      </paper-icon-button>
-      <paper-icon-button icon="arrow-back" 
-        hidden$="{{_equal(page,'list')}}"
-        on-tap="_back">
-      </paper-icon-button>
-      <div main-title>{{title}}</div>
-      <paper-icon-button icon="save"
-        hidden$="{{_equal(page,'list')}}"
-        on-tap="_save">
-      </paper-icon-button>
-     </app-toolbar>
-    </app-header>
+  <app-header-layout has-scrolling-region style="height: 400px;">
+  <app-header fixed>
+  <app-toolbar >
+    <paper-icon-button icon="refresh" 
+      hidden$="{{_equal(page,'edit')}}"
+      on-tap="_refresh">
+    </paper-icon-button>
+    <paper-icon-button icon="arrow-back" 
+      hidden$="{{_equal(page,'list')}}"
+      on-tap="_back">
+    </paper-icon-button>
+    <div main-title>{{title}}</div>
+    <paper-icon-button icon="add"
+      hidden$="{{!_equal(page,'list')}}"
+      on-tap="_add">
+    </paper-icon-button>
+    <paper-icon-button icon="save"
+      hidden$="{{_equal(page,'list')}}"
+      on-tap="_save">
+    </paper-icon-button>
+    <paper-icon-button icon="delete"
+      hidden$="{{_equal(page,'list')}}"
+      onclick="dialog.open()">
+    </paper-icon-button>
+  </app-toolbar>
+  </app-header>
+
+  <paper-dialog id="dialog">
+  <h2>ยืนยันการลบ</h2>
+  <p>
+    ต้องการลบข้อมูลครู
+    <span>{{teacher.value.Firstname}}</span>
+    <span>{{teacher.value.Lastname}}</span>
+  </p>
+  <div class="buttons">
+    <paper-button dialog-dismiss>Cancel</paper-button>
+    <paper-button dialog-confirm on-tap="_delete" autofocus>
+      Accept
+    </paper-button>
+  </div>
+</paper-dialog>
 
   <app-localstorage-document
     key="jwtToken"
@@ -95,7 +115,8 @@
    <paper-listbox name="list" 
      on-iron-select="_edit"
      attr-for-selected="name" selected="{{_teacherKey}}"> 
-    <template is="dom-repeat" items="{{_lastResponse}}">
+    <template is="dom-repeat" sort="_byName"
+      items="{{_lastResponse}}">
       <paper-item name="{{item.value}}">{{_name(item)}}</paper-item>
     </template>
    </paper-listbox>
@@ -106,8 +127,8 @@
     </paper-input>
    </div>
   </iron-pages>
-
   </app-header-layout>
+
  </template>
  <script>
   Polymer({
@@ -149,6 +170,16 @@
        }
        this.$.status.open();
      }
+
+     if(e.detail.method == 'del') {
+       console.log(e.detail);
+       if(e.detail.response.ok) {
+         this.$.status.text = 'Delete successful';
+       } else {
+         this.$.status.text = e.detail.reponse.message;
+       }
+       this.$.status.open();
+     }
    },
    _refresh:function(e) {
      this.$.status.text = "Refresh teacher content";
@@ -162,9 +193,26 @@
    _equal:function(a,b) {
      return a == b;
    },
+   _add:function(e) {
+     this.set('teacher',{value:{
+       HostID:this.host
+     }});
+     this._setPage('edit');
+   },
+   _delete:function(e) {
+     this.$.leveldb.delete();
+     this._setPage('list');
+     this.$.listAjax.generateRequest();
+   },
    _name:function(doc) {
      return doc.key[2][0]+' '+doc.key[2][1];
+   },
+   _byName:function(a,b) {
+     var t1 = a.key[2][0]+' '+a.key[2][1];
+     var t2 = b.key[2][0]+' '+b.key[2][1];
+     return  t1.localeCompare(t2);
    }
+
   });
  </script>
 

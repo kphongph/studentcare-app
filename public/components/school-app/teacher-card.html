@@ -4,7 +4,6 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../leveldb-document.html">
 
 <dom-module is="teacher-card">
  <template>
@@ -20,12 +19,8 @@
        border-bottom:1px solid var(--paper-grey-500);
      }
 
-     :host:hover {
-       background:var(--paper-grey-100);
-     }
    </style>
-
-   <div>{{doc.name}}</div>
+   <div>{{_name}}</div>
  </template>
  <script>
   Polymer({
@@ -33,13 +28,20 @@
    properties:{
      doc:{
        type:Object
+     },
+     _name:{
+       type:String,
+       computed:'__computeName(doc)'
      }
    },
-   listener:{
+   listeners:{
      'tap':'_onTap'
    },
+   __computeName:function(doc) {
+    return doc.key[2][0]+' '+doc.key[2][1];
+   },
    _onTap:function(e) {
-     this.fire('select-teacher',{'key':this.doc._teacher});
+     this.fire('select-teacher',{'key':this.doc.value});
    }
   });
  </script>

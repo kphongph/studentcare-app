@@ -50,7 +50,8 @@
           'authorization':'JWT '+this.token.token
         }
      }).then(function(res) {
-       console.log(res.response);
+       self.fire('leveldb-response',{'method':'get',
+        'response':res.response});
        self.set('document',{'key':key,'value':res.response});
        return true;
      });
@@ -58,6 +59,7 @@
     save:function(e) {
       var ele = document.createElement('iron-request');
       var key = '';
+      var self = this;
       if(this.document.key) {
         var key = this.document.key;
       }
@@ -71,7 +73,8 @@
         },
         body:JSON.stringify(this.document.value)
      }).then(function(res) {
-        console.log(res.response);
+        self.fire('leveldb-response',{'method':'put',
+          'response':res.response});
      });
     }
   });

@@ -1,0 +1,144 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../leveldb-document.html">
+<link rel="import" href="teacher-card.html">
+
+<dom-module id="teacher-app">
+ <template>
+  <style is="custom-style"
+     include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      display:box;
+      @apply(--layout-vertical);
+      @apply(--paper-font-body2);
+    }
+
+    app-toolbar {
+      background-color:var(--paper-grey-200);
+      height:40px;
+      --app-toolbar-font-size:16px;
+    }
+  </style>
+
+   <iron-pages selected="{{page}}" attr-for-selected="name">
+    <div name="list">
+     <app-toolbar condensed>
+      <paper-icon-button icon="refresh" on-tap="_refresh">
+      </paper-icon-button>
+      <div main-title>{{title}}</div>
+     </app-toolbar>
+    </div>
+    <div name="edit">
+     <app-toolbar condensed>
+      <paper-icon-button icon="arrow-back" on-tap="_back">
+      </paper-icon-button>
+      <div main-title>{{title}}</div>
+      <paper-icon-button icon="save" on-tap="_save">
+      </paper-icon-button>
+     </app-toolbar>
+    </div>
+   </iron-pages>
+
+  <app-localstorage-document
+    key="jwtToken"
+    data="{{token}}">
+  </app-localstorage-document>
+
+  <paper-toast id="status"></paper-toast>
+
+  <iron-ajax auto 
+    id="listAjax"
+    url="https://maas.nuqlis.com:9000/api/query/teacher_db/hostid"
+    method="POST"
+    handle-as="json"
+    content-type="application/json"
+    headers$='{"Authorization":"JWT {{token.token}}"}'
+    last-response="{{_lastResponse}}"
+    body$='{"match":["{{host}}"],"limit":-1}'>
+  </iron-ajax>
+
+  <leveldb-document 
+    id="leveldb"
+    url="https://maas.nuqlis.com:9000/api"
+    db="teacher_db"
+    document="{{teacher}}"
+    key="{{_teacherKey}}">
+  </leveldb-document>
+  
+  <iron-pages selected="{{page}}" attr-for-selected="name">
+   <div name="list">
+    <template is="dom-repeat" items="{{_lastResponse}}">
+     <teacher-card doc="{{item}}"></techer-card>
+    </template>
+   </div>
+   <div name="edit">
+    <paper-input label="ชื่อ" value="{{teacher.value.Firstname}}">
+    </paper-input>
+   </div>
+  </iron-pages>
+ </template>
+ <script>
+  Polymer({
+   is: 'teacher-app',
+   properties:{
+     host:{
+       type:String
+     },
+     page:{
+       type:String,
+       readOnly:true,
+       value:'list'
+     },
+     title:{
+       type:String,
+       computed:'__computeTitle(page)'
+     }
+   },
+   listeners:{
+     'select-teacher':'_onSelectTeacher',
+     'leveldb-response':'_onLevelResponse',
+   },
+   _onSelectTeacher:function(e) {
+     this.set('_teacherKey',e.detail.key);
+     this._setPage('edit');
+   },
+   _back:function(e) {
+     if(this.page == "edit") {
+       this._setPage('list');
+     }
+   },
+   _save:function(e) {
+     this.$.leveldb.save();
+   },
+   _onLevelResponse:function(e) {
+     if(e.detail.method == 'put') {
+       if(e.detail.response.ok) {
+         this.$.status.text = 'Save successful';
+       } else {
+         this.$.status.text = e.detail.reponse.message;
+       }
+       this.$.status.open();
+     }
+   },
+   _refresh:function(e) {
+     this.$.status.text = "Refresh teacher content";
+     this.$.status.open();
+     this.$.listAjax.generateRequest();
+   },
+   __computeTitle:function(page) { 
+     if(page == 'list') return 'รายชื่อครูประจำโรงเรียน';
+     if(page == 'edit') return 'ข้อมูลครู';
+   }
+  });
+ </script>
+
+</dom-module>

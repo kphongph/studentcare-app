@@ -14,7 +14,8 @@
 <link rel="import" href="homepage-app.html">
 <link rel="import" href="progress-host.html">
 <link rel="import" href="login-box.html">
-<link rel="import" href="./school-app/school-app.html">
+<link rel="import" href="host-info.html">
+<link rel="import" href="./school-app/teacher-app.html">
 
 <dom-module id="main-app">
   <template>
@@ -95,7 +96,14 @@
               </paper-menu>
             </paper-submenu>
             <paper-item name="progress">ความก้าวหน้า</paper-item>
-            <paper-item name="school">โรงเรียน</paper-item>
+            <paper-submenu>
+              <paper-item class="menu-trigger">ข้อมูลโรงเรียน</paper-item>
+              <paper-menu class="menu-content sublist" 
+                attr-for-selected="name"
+                selected="{{page}}">
+                <paper-item name="teacher">ข้อมูลครู</paper-item>
+              </paper-menu>
+            </paper-submenu>
             <paper-item name="classteachers">ครูประจำชั้น</paper-item>
             <paper-item name="homepage" on-tap="_signOut">ออกจากระบบ</paper-item>
           </template>
@@ -110,6 +118,8 @@
         </app-header>
 
       <!-- content -->
+      <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
+      </host-info>
       <div>
       <iron-pages selected="[[page]]" attr-for-selected="name">
         <div name="school">
@@ -125,8 +135,6 @@
         </div>
         <div name="assignment">
           <template is="dom-if" if="[[_equal(page, 'assignment')]]">
-          <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
-          </host-info>
           <iron-pages selected="{{_assignment}}">
             <template is="dom-repeat" items="{{assignments}}">
             <studentcare-app host="{{role.profile.hostid}}" 
@@ -137,6 +145,11 @@
           </iron-pages>
           </template>
         </div>
+        <div name="teacher">
+          <template is="dom-if" if="[[_equal(page, 'teacher')]]">
+           <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
+          </template>
+        </div>
         <div name="progress">
           <!-- lazy load -->
           <template is="dom-if" if="[[_equal(page, 'progress')]]">
@@ -144,12 +157,13 @@
            </progress-host>
          </template>
         </div>
+        <!--
         <div name="classteachers">
-          <!-- lazy load -->
           <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
            <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
-         </template>
+          </template>
         </div>
+        -->
       </iron-pages>
       </div>
       </app-header-layout>
@@ -188,7 +202,7 @@
     _signedChanged:function(n) {
       if(this.signed) {
       //  this.set('page','assignment');
-        this.set('page','school');
+        this.set('page','teacher');
       } else {
         this.set('page','homepage');
       }

@@ -5,6 +5,8 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
@@ -27,26 +29,41 @@
       height:40px;
       --app-toolbar-font-size:16px;
     }
+    
+    app-header-layout {
+      height:400px;
+    }
+
+    paper-item {
+      border-bottom:1px solid var(--paper-grey-500);
+    }
+    
+    .edit-content {
+      @apply(--layout-vertical);
+      @apply(--layout-flex);
+      padding:10px;
+      
+    }
   </style>
 
-   <iron-pages selected="{{page}}" attr-for-selected="name">
-    <div name="list">
-     <app-toolbar condensed>
-      <paper-icon-button icon="refresh" on-tap="_refresh">
+  <app-header-layout has-scrolling-region>
+    <app-header fixed condenses>
+     <app-toolbar fixed>
+      <paper-icon-button icon="refresh" 
+        hidden$="{{_equal(page,'edit')}}"
+        on-tap="_refresh">
+      </paper-icon-button>
+      <paper-icon-button icon="arrow-back" 
+        hidden$="{{_equal(page,'list')}}"
+        on-tap="_back">
       </paper-icon-button>
       <div main-title>{{title}}</div>
-     </app-toolbar>
-    </div>
-    <div name="edit">
-     <app-toolbar condensed>
-      <paper-icon-button icon="arrow-back" on-tap="_back">
-      </paper-icon-button>
-      <div main-title>{{title}}</div>
-      <paper-icon-button icon="save" on-tap="_save">
+      <paper-icon-button icon="save"
+        hidden$="{{_equal(page,'list')}}"
+        on-tap="_save">
       </paper-icon-button>
      </app-toolbar>
-    </div>
-   </iron-pages>
+    </app-header>
 
   <app-localstorage-document
     key="jwtToken"
@@ -75,16 +92,22 @@
   </leveldb-document>
   
   <iron-pages selected="{{page}}" attr-for-selected="name">
-   <div name="list">
+   <paper-listbox name="list" 
+     on-iron-select="_edit"
+     attr-for-selected="name" selected="{{_teacherKey}}"> 
     <template is="dom-repeat" items="{{_lastResponse}}">
-     <teacher-card doc="{{item}}"></techer-card>
+      <paper-item name="{{item.value}}">{{_name(item)}}</paper-item>
     </template>
-   </div>
-   <div name="edit">
+   </paper-listbox>
+   <div name="edit" class="edit-content">
     <paper-input label="ชื่อ" value="{{teacher.value.Firstname}}">
+    </paper-input>
+    <paper-input label="นามสกุล" value="{{teacher.value.Lastname}}">
     </paper-input>
    </div>
   </iron-pages>
+
+  </app-header-layout>
  </template>
  <script>
   Polymer({
@@ -104,11 +127,9 @@
      }
    },
    listeners:{
-     'select-teacher':'_onSelectTeacher',
      'leveldb-response':'_onLevelResponse',
    },
-   _onSelectTeacher:function(e) {
-     this.set('_teacherKey',e.detail.key);
+   _edit:function(e) {
      this._setPage('edit');
    },
    _back:function(e) {
@@ -137,6 +158,12 @@
    __computeTitle:function(page) { 
      if(page == 'list') return 'รายชื่อครูประจำโรงเรียน';
      if(page == 'edit') return 'ข้อมูลครู';
+   },
+   _equal:function(a,b) {
+     return a == b;
+   },
+   _name:function(doc) {
+     return doc.key[2][0]+' '+doc.key[2][1];
    }
   });
  </script>

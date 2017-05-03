@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 
@@ -9,7 +10,7 @@
  <template>
    <style is="custom-style">
      :host {
-       @apply(--paper-font-body2);
+       @apply(--paper-font-display);
        @apply(--layout-horizontal);
        padding-top:5px;
        padding-bottom:5px;
@@ -20,7 +21,7 @@
      }
 
    </style>
-   <div>{{_name}}</div>
+   <paper-item>{{_name}}</paper-item>
  </template>
  <script>
   Polymer({

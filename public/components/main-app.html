@@ -71,11 +71,6 @@
 
     <app-drawer-layout force-narrow>
       <app-drawer>        
-        <!--
-        <app-toolbar>
-          <img src="https://qinfo.co/img/icon-Qinfo.JPG" alt="Smiley face" height="42" width="42">
-        </app-toolbar>
-        -->
         <app-toolbar></app-toolbar>
         <app-toolbar>
           <div class="user-info">
@@ -111,10 +106,18 @@
       </app-drawer>
       <app-header-layout fullbleed>
         <app-header fixed>
-          <app-toolbar>
+          <iron-pages selected="[[page]]" attr-for-selected="name" 
+            fallback-selection="default">
+          <app-toolbar name="default">
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
           </app-toolbar>
+          <app-toolbar name="teacher">
+            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            <div main-title>ข้อมูลครูประจำโรงเรียน</div>   
+            <paper-icon-button icon="refresh" on-tap="_teacherListRefresh"></paper-icon-button>
+          </app-toolbar>
+          </iron-pages>
         </app-header>
 
       <!-- content -->
@@ -228,6 +231,9 @@
           }
         }
       }
+    },
+    _teacherListRefresh:function(e) {
+      this.$$('teacher-app').refresh();
     }
   });
 

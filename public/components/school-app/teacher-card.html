@@ -2,26 +2,86 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../leveldb-document.html">
 
 <dom-module is="teacher-card">
  <template>
    <style is="custom-style">
-     :host {
-       @apply(--paper-font-display);
-       @apply(--layout-horizontal);
-       padding-top:5px;
-       padding-bottom:5px;
-       padding-left:10px;
-       cursor:pointer;
-       cursor:hand;
-       border-bottom:1px solid var(--paper-grey-500);
-     }
+    :host {
+      cursor:pointer;
+      cursor:hand;
+    }
 
+    .title {
+      @apply(--paper-font-display);
+      padding:10px;
+      padding-left:20px;
+      border-bottom:1px solid var(--paper-grey-500);
+      background:white;
+    }
+
+    .content {
+      @apply(--paper-font-title);
+      margin-top:20px;
+      margin-bottom:20px;
+      background:white;
+    }
+    .content-title {
+      padding:10px;
+      border-bottom:1px solid var(--paper-grey-500);
+    }
+
+    .content-main {
+      padding:10px;
+      border-bottom:1px solid var(--paper-grey-500);
+    }
+
+    .content-action {
+      padding:5px;
+      border-bottom:1px solid var(--paper-grey-500);
+      background-color:var(--paper-grey-200);
+    }
+    
    </style>
-   <paper-item>{{_name}}</paper-item>
+
+   <div class="title" on-tap="_toggleContent" 
+     hidden$="{{showContent}}">
+     {{_name}}
+   </div>
+
+   
+   <div hidden$="{{!showContent}}" class="content">
+     <paper-material elevation="3">
+     <div on-tap="_toggleContent" 
+       class="content-title">{{_name}}
+     </div>
+     <template is="dom-if" if="{{showContent}}">
+      <leveldb-document
+       id="leveldb"
+       url="https://maas.nuqlis.com:9000/api"
+       db="teacher_db"
+       document="{{teacher}}"
+       key="{{doc.value}}">
+      </leveldb-document>
+     </template>
+
+     <div class="content-main">
+     <paper-input label="ชื่อ" value="{{teacher.value.Firstname}}">
+     </paper-input>
+     <paper-input label="นามสกุล" value="{{teacher.value.Lastname}}">
+     </paper-input>
+     </div>
+     <div class="content-action">
+      <paper-icon-button icon="save" on-tap="_save"></paper-icon-button>
+     </div>
+    </paper-material>
+   </div>
+
  </template>
  <script>
   Polymer({
@@ -30,20 +90,28 @@
      doc:{
        type:Object
      },
+     showContent:{
+       type:Boolean,
+       notify:true,
+       value:false
+     },
      _name:{
        type:String,
        computed:'__computeName(doc)'
      }
    },
-   listeners:{
-     'tap':'_onTap'
+   _toggleContent:function(e) {
+     this.set('showContent',!this.showContent);
    },
    __computeName:function(doc) {
     return doc.key[2][0]+' '+doc.key[2][1];
    },
    _onTap:function(e) {
      this.fire('select-teacher',{'key':this.doc.value});
-   }
+   },
+   _save:function(e) {
+     this.$$('#leveldb').save();
+   },
   });
  </script>
 </dom-module>

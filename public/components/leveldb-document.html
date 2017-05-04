@@ -35,10 +35,10 @@
       },
       _execute:{
         type:Boolean,
-        computed:'__getDocument(db,url,key)'
+        computed:'__getDocument(db,url,key,token)'
       }
     },
-    __getDocument:function(db,url,key) {
+    __getDocument:function(db,url,key,token) {
       var ele = document.createElement('iron-request');
       var self = this;
       ele.send({

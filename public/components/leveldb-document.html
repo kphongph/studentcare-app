@@ -60,8 +60,11 @@
       var ele = document.createElement('iron-request');
       var key = '';
       var self = this;
+      var method = 'put';
       if(this.document.key) {
         var key = this.document.key;
+      } else {
+        method='add';
       }
       ele.send({
         url:this.url+'/dbs/'+this.db+'/'+key,
@@ -73,7 +76,7 @@
         },
         body:JSON.stringify(this.document.value)
      }).then(function(res) {
-        self.fire('leveldb-response',{'method':'put',
+        self.fire('leveldb-response',{'method':method,
           'response':res.response});
      });
     },

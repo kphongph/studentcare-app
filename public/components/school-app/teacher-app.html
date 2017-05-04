@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
@@ -29,6 +30,13 @@
     .teacher-list {
       @apply(--layout-horizontal);
       @apply(--layout-center-justified);
+    }
+
+    paper-fab {
+      position:fixed;
+      right:25px;
+      bottom:30px;
+      --paper-fab-background: var(--paper-red-500);
     }
 
     .teacher-list div {
@@ -57,20 +65,21 @@
     }
   </style>
 
-  <paper-dialog id="dialog">
-  <h2>ยืนยันการลบ</h2>
-  <p>
-    ต้องการลบข้อมูลครู
-    <span>{{teacher.value.Firstname}}</span>
-    <span>{{teacher.value.Lastname}}</span>
-  </p>
-  <div class="buttons">
-    <paper-button dialog-dismiss>Cancel</paper-button>
-    <paper-button dialog-confirm on-tap="_delete" autofocus>
-      Accept
-    </paper-button>
-  </div>
-</paper-dialog>
+  <paper-dialog id="addDialog">
+   <h2>ข้อมูลพื้นฐาน</h2>
+   <p>
+    <paper-input label="ชื่อ" value="{{teacher.value.Firstname}}">
+    </paper-input>
+    <paper-input label="นามสกุล" value="{{teacher.value.Lastname}}">
+    </paper-input>
+   </p>
+   <div class="buttons">
+     <paper-button dialog-dismiss>Cancel</paper-button>
+     <paper-button dialog-confirm on-tap="_save" autofocus>
+       Accept
+     </paper-button>
+   </div>
+  </paper-dialog>
 
   <app-localstorage-document
     key="jwtToken"
@@ -99,23 +108,14 @@
   </leveldb-document>
   
   <iron-pages selected="{{page}}" attr-for-selected="name">
-   <!--
-   <paper-listbox name="list" 
-     on-iron-select="_edit"
-     attr-for-selected="name" selected="{{_teacherKey}}"> 
-   -->
    <div name="list" class="teacher-list">
     <div>
     <template is="dom-repeat" sort="_byName"
       items="{{_lastResponse}}">
-      <!--paper-item name="{{item.value}}">{{_name(item)}}</paper-item-->
       <teacher-card doc="{{item}}"></teacher-card>
     </template>
     </div>
    </div>
-   <!--
-   </paper-listbox>
-   -->
    <div name="edit" class="edit-content">
     <paper-input label="ชื่อ" value="{{teacher.value.Firstname}}">
     </paper-input>
@@ -123,6 +123,8 @@
     </paper-input>
    </div>
   </iron-pages>
+
+  <paper-fab icon="add" on-tap="_prepareInsert"></paper-fab>
 
  </template>
  <script>
@@ -166,10 +168,21 @@
        this.$.status.open();
      }
 
+     if(e.detail.method == 'add') {
+       if(e.detail.response.ok) {
+         this.$.status.text = 'Insert successful';
+         this.$.listAjax.generateRequest();
+       } else {
+         this.$.status.text = e.detail.reponse.message;
+       }
+       this.$.status.open();
+     }
+
      if(e.detail.method == 'del') {
        console.log(e.detail);
        if(e.detail.response.ok) {
          this.$.status.text = 'Delete successful';
+         this.$.listAjax.generateRequest();
        } else {
          this.$.status.text = e.detail.reponse.message;
        }
@@ -188,16 +201,11 @@
    _equal:function(a,b) {
      return a == b;
    },
-   _add:function(e) {
+   _prepareInsert:function(e) {
      this.set('teacher',{value:{
        HostID:this.host
      }});
-     this._setPage('edit');
-   },
-   _delete:function(e) {
-     this.$.leveldb.delete();
-     this._setPage('list');
-     this.$.listAjax.generateRequest();
+     this.$.addDialog.open();
    },
    _name:function(doc) {
      return doc.key[2][0]+' '+doc.key[2][1];

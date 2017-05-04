@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
@@ -78,9 +79,26 @@
      </div>
      <div class="content-action">
       <paper-icon-button icon="save" on-tap="_save"></paper-icon-button>
+      <paper-icon-button icon="delete" on-tap="_prepareDelete">
+      </paper-icon-button>
      </div>
     </paper-material>
    </div>
+
+   <paper-dialog id="_dialog">
+   <h2>ยืนยันการลบ</h2>
+   <p>
+     ต้องการลบข้อมูลครู
+     <span>{{teacher.value.Firstname}}</span>
+     <span>{{teacher.value.Lastname}}</span>
+   </p>
+   <div class="buttons">
+     <paper-button dialog-dismiss>Cancel</paper-button>
+     <paper-button dialog-confirm on-tap="_delete" autofocus>
+       Accept
+     </paper-button>
+   </div>
+   </paper-dialog>
 
  </template>
  <script>
@@ -106,12 +124,15 @@
    __computeName:function(doc) {
     return doc.key[2][0]+' '+doc.key[2][1];
    },
-   _onTap:function(e) {
-     this.fire('select-teacher',{'key':this.doc.value});
-   },
    _save:function(e) {
      this.$$('#leveldb').save();
    },
+   _delete:function(e) {
+     this.$$('#leveldb').delete();
+   },
+   _prepareDelete:function(e) {
+     this.$._dialog.open();
+   }
   });
  </script>
 </dom-module>

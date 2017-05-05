@@ -16,6 +16,7 @@
 <link rel="import" href="login-box.html">
 <link rel="import" href="host-info.html">
 <link rel="import" href="./school-app/teacher-app.html">
+<link rel="import" href="./student-app/student-app.html">
 
 <dom-module id="main-app">
   <template>
@@ -97,6 +98,7 @@
                 attr-for-selected="name"
                 selected="{{page}}">
                 <paper-item name="teacher">ข้อมูลครู</paper-item>
+                <paper-item name="student">ข้อมูลนักเรียน</paper-item>
               </paper-menu>
             </paper-submenu>
             <paper-item name="classteachers">ครูประจำชั้น</paper-item>
@@ -117,6 +119,10 @@
             <div main-title>ข้อมูลครูประจำโรงเรียน</div>   
             <paper-icon-button icon="refresh" on-tap="_teacherListRefresh"></paper-icon-button>
           </app-toolbar>
+          <app-toolbar name="student">
+            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            <div main-title>ข้อมูลนักเรียน</div>   
+          </app-toolbar>
           </iron-pages>
         </app-header>
 
@@ -135,6 +141,11 @@
         <div name="homepage">          
           <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
           <homepage-app></homepage-app>
+        </div>
+        <div name="student">          
+          <template is="dom-if" if="[[_equal(page, 'student')]]">
+           <student-app host="{{role.profile.hostid}}"></student-app>
+          </template>
         </div>
         <div name="assignment">
           <template is="dom-if" if="[[_equal(page, 'assignment')]]">
@@ -204,8 +215,7 @@
     },
     _signedChanged:function(n) {
       if(this.signed) {
-      //  this.set('page','assignment');
-        this.set('page','teacher');
+        this.set('page','student');
       } else {
         this.set('page','homepage');
       }

@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="document-loader.html">
 
@@ -21,7 +22,7 @@
     on-finish="_finish"
     query$='{"match":["{{host}}"]}'>
   </document-loader>
-   
+
  </template>
  <script>
   Polymer({
@@ -30,25 +31,34 @@
       host:{
         type:String
       },
+      year:{
+        type:String
+      },
       document:{
         type:Object,
         notify:true
       },
+      _found:{
+        type:Boolean
+      }
     },
     _finish:function(e) {
       var data = e.detail.data;
       if(data.length == 0) {
         this.set('document',{
           value:{
-            dmc:{host:this.host},
+            dmc:{
+              host:this.host
+            },
             doc_type:'host_info',
-            teachers:[],
             classteachers:[],
             levels:[]
           }
         });
+        this.set('_found',false);
       } else {
         this.set('document',data[0]);
+        this.set('_found',true);
       }
     },
     save:function(e) {

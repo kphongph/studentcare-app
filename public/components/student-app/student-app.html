@@ -7,8 +7,7 @@
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../document-loader.html">
-<link rel="import" href="../leveldb-document.html">
+<link rel="import" href="student-loader.html">
 
 <dom-module id="student-app">
  <template>
@@ -25,10 +24,9 @@
 
   <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
   </host-info>
-  <template is="dom-repeat" items="{{hostInfo.value.levels}}">
-    <span>{{item.level}}</span>
-  </template>
 
+  <student-loader host="{{host}}" year="2016"></student-loader>
+   
  </template>
  <script>
   Polymer({

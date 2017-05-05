@@ -1,0 +1,46 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="main-app.html">
+<link rel="import" href="school-app/school-structure.html">
+
+<dom-module is="main-route">
+ <template>
+  <app-location route="{{route}}" use-hash-as-path></app-location>
+  <app-route
+    route="{{route}}"
+    pattern="/:page"
+    data="{{routeData}}"
+    tail="{{subroute}}">
+  </app-route>
+
+  <app-route
+    route="{{route}}"
+    pattern="/school_structure/:id"
+    data="{{host}}">
+  </app-route>
+
+  <iron-pages selected="[[routeData.page]]" 
+    fallback-selection="main"
+    attr-for-selected="name">
+   <main-app name="main"></main-app>
+   <school-structure name="school_structure" host="{{host.id}}">
+   </school-structure>
+  </iron-pages>
+ </template>
+ <script>
+    Polymer({
+      is:'main-route',
+      properties:{
+        page:{
+          type:String
+        }
+      },
+      ready: function(e){
+       this.set('route.path', '/search/');
+      }
+    });
+ </script>
+</dom-module>

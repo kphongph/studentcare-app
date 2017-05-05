@@ -1,0 +1,78 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../document-loader.html">
+<link rel="import" href="../leveldb-document.html">
+
+<dom-module id="student-loader">
+ <template>
+  <style is="custom-style"
+     include="iron-flex iron-flex-alignment iron-flex-factors">
+
+    :host {
+      display:box;
+      padding:5px;
+      @apply(--layout-vertical);
+      @apply(--paper-font-body2);
+    }
+  </style>
+
+  <document-loader 
+    db="{{db}}" 
+    view="hostid"
+    id="studentLoader"
+    interactive
+    on-finish="_onLoaded"
+    data="{{students}}"
+    query$='{"match":["{{host}}"],"limit":15}'>
+  </document-loader>
+  
+  <template is="dom-repeat" items="{{students}}">
+    <div>
+      <span>{{item.key}}</span>
+      <span>{{item.value.IDNO}}</span>
+      <span>{{item.value.LEVEL}}</span>
+      <span>{{item.value.CLASSROOM}}</span>
+      <span>{{item.value.NAME}}</span>
+      <span>{{item.value.LNAME}}</span>
+    </div>
+  </template>
+
+ </template>
+ <script>
+  Polymer({
+   is: 'student-loader',
+   properties:{
+     host:{
+       type:String
+     },
+     year:{ 
+       type:String
+     },
+     db:{
+       type:String,
+       computed:'__computeDb(year)'
+     }
+   },
+   __computeDb:function(year) {
+     if(year == '2016') return 'dmc59_1';
+   },
+   _onLoaded:function(e) {
+     var data = e.detail.data;
+     var levels = {};
+     data.forEach(function(student) {
+       var key = student.value.LEVEL+'-'+student.value.CLASSROOM;
+       if(!levels[key]) levels[key] = {'students':[]};
+       levels[key].students.push({
+         'key':student.key,
+         'id':student.value.IDNO,
+         'name':student.value.NAME+' '+student.value.LNAME
+       });
+     });
+     console.log(levels);
+   }
+  });
+ </script>
+
+</dom-module>

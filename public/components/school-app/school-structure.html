@@ -1,0 +1,87 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-submenu.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../document-loader.html">
+<link rel="import" href="../leveldb-document.html">
+<link rel="import" href="../host-info.html">
+<link rel="import" href="teacher-card.html">
+<link rel="import" href="teacher-app.html">
+
+<dom-module id="school-structure">
+ <template>
+  <style is="custom-style"
+     include="iron-flex iron-flex-alignment iron-flex-factors">
+
+    :host {
+      display:box;
+      @apply(--paper-font-body2);
+      --paper-tab-ink:var(--paper-red-500);
+    }
+    paper-tabs {
+      background-color:var(--paper-grey-300);
+      --paper-tabs-selection-bar-color:var(--paper-red-500);
+    }
+  </style>
+
+  <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
+  </host-info>
+
+   <paper-tabs scrollable sticky>
+    <template is="dom-repeat" as="level" items="{{hostInfo.value.levels}}">
+     <template is="dom-repeat" items="{{level.rooms}}">
+      <paper-tab>
+       <span>{{_labelLevel(level.level)}}</span>
+       /
+       <span>{{item.room}}</span>
+      </paper-tab>
+     </template>
+    </template>
+   </paper-tabs>
+
+  <div class="layout horizontal"> 
+   <div class="layout vertical">
+    <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
+     <paper-checkbox>{{item.name}}</paper-checkbox>
+    </template>
+   </div>
+  </div>
+  </app-header-layout>
+
+ </template>
+ <script>
+  Polymer({
+   is:'school-structure',
+   properties:{
+     host:{
+       type:String
+     }
+   },
+   _labelLevel:function(level) {
+     var dict = ['อนุบาล ','ประถมศึกษา ','มัธยมศึกษา '];
+     var intLevel = Number(level);
+     var tmp = '';
+     if(intLevel<=15) tmp=dict[2]+(intLevel-9);
+     if(intLevel<=9) tmp=dict[1]+(intLevel-3);
+     if(intLevel<=3) tmp=dict[0]+intLevel;
+     return tmp;
+   },
+
+  });
+ </script>
+
+</dom-module>

@@ -105,8 +105,7 @@
     <div class="flex">
      <student-list host="{{host}}" 
         year="{{hostInfo.value.dmc.year}}"
-        level="{{_levelRoom.level}}"
-        room="{{_levelRoom.room}}">
+        level-room="{{room}}">
      </student-list>
     </div>
    </div>
@@ -134,15 +133,7 @@
        type:Array,
        notify:true,
        computed:'__computeTeachTeacher(room,hostInfo)' 
-     },
-     _levelRoom:{
-       type:Object,
-       computed:'__computeLevelRoom(room)' 
      }
-   },
-   __computeLevelRoom:function(room) {
-     var tmp = room.split('-');
-     return {'level':tmp[0],'room':tmp[1]};
    },
    _teacherName:function(id,hostInfo) {
      var teachers = hostInfo.value.teachers;

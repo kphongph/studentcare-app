@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../document-loader.html">
+<link rel="import" href="../leveldb-document.html">
 
 <dom-module id="student-list">
  <template>
@@ -20,7 +21,10 @@
       @apply(--layout-horizontal);
       @apply(--layout-center);
       background:var(--paper-grey-300);
-      padding-right:10px;
+      padding:5px;
+    }
+    .title {
+      padding-left:10px;
     }
     .student {
       @apply(--paper-font-body2);
@@ -29,22 +33,42 @@
   </style>
 
   <paper-material elevation="1">
+
+  <document-loader
+    db="students_care" 
+    id="classLoader"
+    view="class_info"
+    on-finish="_onClassInfoLoaded"
+    data="{{classInfo}}">
+  </document-loader>
+
+  <leveldb-document
+    id="classRoom"
+    url="https://maas.nuqlis.com:9000/api"
+    db="students_care"
+    document="{{classRoom}}">
+  </leveldb-document>
+
   <document-loader 
     manual
     db="{{db}}" 
     id="loader"
     total="{{total}}"
     view="host_level_room"
+    on-finish="_onStudentLoaded"
     data="{{students}}">
   </document-loader>
   
   <div class="control-panel">
-   <paper-icon-button icon="file-download" on-tap="_loadStudent">
-   </paper-icon-button>
-   <div>{{total}}</div>
+   <div hidden$="{{loaded}}" class="layout horizontal center">
+    <paper-icon-button icon="file-download" on-tap="_loadStudent">
+    </paper-icon-button>
+    <div>{{total}}</div>
+   </div>
+   <div class="title">รายชื่อนักเรียน</div>
   </div>
   
-  <template is="dom-repeat" items="{{students}}">
+  <template is="dom-repeat" items="{{classRoom.value.students}}">
    <div class="student">{{_labelStudent(item)}}</div>
   </template>
   </paper-material>
@@ -57,17 +81,14 @@
      host:{
        type:String
      },
-     level:{
-       type:String
-     },
-     room:{
+     levelRoom:{
        type:String
      },
      year:{ 
        type:String
      },
-     students:{
-       type:Array,
+     classRoom:{
+       type:Object,
        notify:true
      },
      db:{
@@ -76,13 +97,43 @@
      }
    },
    observers:[
-     '_execute(host,level,room)'
+     '_loadClass(host,year,levelRoom)'
    ],
-   _execute:function(host,level,room) {
-     this.$.loader.query = {'match':[host,level,room],'limit':-1};
+   _loadClass:function(host,year,levelRoom) {
+     var self = this;
+     var tmp = levelRoom.split('-');
+     this.$.classLoader.query = {'match':[host,year,tmp[0],tmp[1]],'limit':1};
+   },
+   _onClassInfoLoaded:function(e) {
+     var response = e.detail.data;
+     if(response.length == 0) {
+       var tmp = this.levelRoom.split('-');
+       
+       this.set('classRoom',{'value':{
+         'doc_type':'class_info',
+         'host':this.host, 
+         year:this.year,
+         level:tmp[0],
+         room:tmp[1],
+         students:[]
+       }});
+       this.$.loader.query = {'match':[
+         this.host,tmp[0],tmp[1]],'limit':-1};
+       this.set('loaded',false);
+     } else {
+       this.set('loaded',true);
+       this.set('classRoom',{'key':response[0].key,
+          'value':response[0].value});
+     }
    },
    _loadStudent:function(e) {
+     var self = this;
      this.$.loader.start();
+   },
+   _onStudentLoaded:function(e) {
+     this.set('classRoom.value.students',e.detail.data);
+     this.$.classRoom.save();
+     this.set('loaded',true);
    },
    __computeDb:function(year) {
      var tmp = "dmc59_1";

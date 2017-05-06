@@ -22,6 +22,9 @@
     .control-panel {
       background:var(--paper-grey-400);
     }
+    .pad {
+      margin:5px;
+    }
    
   </style>
 
@@ -38,7 +41,7 @@
       <span>{{title}}</span>
     </div>
 
-    <div hidden$="{{show}}">
+    <div hidden$="{{show}}" class="pad">
       <content></content>
     </div>
    
@@ -89,7 +92,6 @@
       this.set('show',!this.show);
     },
     __computeReady:function(selected,list) {
-      console.log('ready',selected,list);
       return true;
     }
   });

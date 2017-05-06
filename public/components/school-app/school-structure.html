@@ -1,26 +1,16 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../../bower_components/paper-menu/paper-submenu.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../document-loader.html">
-<link rel="import" href="../leveldb-document.html">
 <link rel="import" href="../host-info.html">
-<link rel="import" href="teacher-card.html">
-<link rel="import" href="teacher-app.html">
+<link rel="import" href="classteacher-select.html">
 
 <dom-module id="school-structure">
  <template>
@@ -29,37 +19,94 @@
 
     :host {
       display:box;
-      @apply(--paper-font-body2);
+      @apply(--paper-font-body1);
       --paper-tab-ink:var(--paper-red-500);
+    }
+    .content {
+      padding:10px;
+    }
+    app-toolbar {
+      background-color:var(--paper-red-500);
+      color:white;
     }
     paper-tabs {
       background-color:var(--paper-grey-300);
       --paper-tabs-selection-bar-color:var(--paper-red-500);
+    }
+    .inherit {
+      color: inherit;
+      background-color: inherit;
+    }
+    .class-teacher {
+      max-width:400px;
+      background-color:white;
+    }
+    .teacher-name {
+      padding:2px;
+    }
+    paper-material {
+      padding:5px;
+    }
+    paper-material .title {
+      @apply(--paper-font-title);
     }
   </style>
 
   <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
   </host-info>
 
-   <paper-tabs scrollable sticky>
-    <template is="dom-repeat" as="level" items="{{hostInfo.value.levels}}">
-     <template is="dom-repeat" items="{{level.rooms}}">
-      <paper-tab>
-       <span>{{_labelLevel(level.level)}}</span>
-       /
-       <span>{{item.room}}</span>
-      </paper-tab>
+  <app-header-layout>
+   <app-header fixed>
+    <app-toolbar>
+     <a href="#/" class="inherit">
+     <paper-icon-button icon="arrow-back"></paper-icon-button>
+     </a>
+     <div main-title>โครงสร้าง</div>
+     <paper-icon-button icon="save" on-tap="_save"></paper-icon-button>
+    </app-toolbar>
+    <paper-tabs scrollable selected="{{room}}" 
+      on-iron-select="_onSelect"
+      attr-for-selected="name">
+     <template is="dom-repeat" as="level" sort="_sortLevel" 
+        items="{{hostInfo.value.levels}}">
+      <template is="dom-repeat" sort="_sortRoom" 
+         items="{{level.rooms}}">
+       <paper-tab name$="{{level.level}}-{{item.room}}">
+        <span>{{_labelLevel(level.level)}}</span>/
+        <span>{{item.room}}</span>
+       </paper-tab>
+      </template>
      </template>
-    </template>
-   </paper-tabs>
+    </paper-tabs>
+   </app-header>
 
-  <div class="layout horizontal"> 
-   <div class="layout vertical">
-    <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
-     <paper-checkbox>{{item.name}}</paper-checkbox>
-    </template>
+   <div class="layout vertical content" hidden$="{{!showContent}}"> 
+    <div class="layout horizontal center-justified">
+     <div class="class-teacher flex">
+     <classteacher-select 
+       title="รายชื่อครูประจำชั้น"
+       selected="{{_classTeacher}}"
+       list="{{hostInfo.value.teachers}}">
+       <template is="dom-repeat" items="{{_classTeacher}}">
+        <div class="teacher-name">{{_teacherName(item,hostInfo)}}</div>
+       </template>
+     </classteacher-select>
+     </div>
+    </div>
+
+    <div class="layout horizontal center-justified">
+     <div class="class-teacher flex">
+     <classteacher-select 
+       title="รายชื่อครูผู้สอน"
+       selected="{{_teachTeacher}}"
+       list="{{hostInfo.value.teachers}}">
+       <template is="dom-repeat" items="{{_teachTeacher}}">
+        <div class="teacher-name">{{_teacherName(item,hostInfo)}}</div>
+       </template>
+     </classteacher-select>
+     </div>
+    </div>
    </div>
-  </div>
   </app-header-layout>
 
  </template>
@@ -69,6 +116,62 @@
    properties:{
      host:{
        type:String
+     },
+     showContent:{
+       type:Boolean,
+       notify:true,
+       value:false
+     },
+     _classTeacher:{
+       type:Array,
+       notify:true,
+       computed:'__computeClassTeacher(room,hostInfo)' 
+     },
+     _teachTeacher:{
+       type:Array,
+       notify:true,
+       computed:'__computeTeachTeacher(room,hostInfo)' 
+     }
+   },
+   _teacherName:function(id,hostInfo) {
+     var teachers = hostInfo.value.teachers;
+     var name = '';
+     for(var i=0;i<teachers.length;i++) {
+       if(teachers[i]._teacher == id) {
+         name=teachers[i].name;
+         break;
+       }
+     };
+     return name;
+   },
+   _sortLevel:function(a,b) {
+     return Number(a.level) >= Number(b.level)?1:-1;
+   },
+   _sortRoom:function(a,b) {
+     return Number(a.room) >= Number(b.room)?1:-1;
+   },
+   __computeClassTeacher:function(room,hostInfo) {
+     var _room = room.split('-');
+     var teachers = hostInfo.value.classteachers;
+     for(var i=0;i<teachers.length;i++) {
+       if(teachers[i].level == _room[0] && 
+          teachers[i].room == _room[1]) { 
+         return teachers[i].classteachers;
+       }
+     }
+     return [];
+   },
+   __computeTeachTeacher:function(room,hostInfo) {
+     var _room = room.split('-');
+     var teachers = hostInfo.value.classteachers;
+     for(var i=0;i<teachers.length;i++) {
+       if(teachers[i].level == _room[0] && 
+          teachers[i].room == _room[1]) { 
+         if(!teachers[i].teachteachers) {
+           teachers[i].teachteachers = [];
+         }
+         return teachers[i].teachteachers;
+       }
      }
    },
    _labelLevel:function(level) {
@@ -80,7 +183,12 @@
      if(intLevel<=3) tmp=dict[0]+intLevel;
      return tmp;
    },
-
+   _save:function(e) {
+     this.$.hostInfo.save();
+   },
+   _onSelect:function(e) {
+     this.set('showContent',true);
+   }
   });
  </script>
 

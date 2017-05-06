@@ -111,7 +111,6 @@
                 </a>
               </paper-menu>
             </paper-submenu>
-            <paper-item name="classteachers">ครูประจำชั้น</paper-item>
             <paper-item name="homepage" on-tap="_signOut">ออกจากระบบ</paper-item>
           </template>
         </paper-menu>
@@ -132,10 +131,6 @@
           <app-toolbar name="student">
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>ข้อมูลนักเรียน</div>   
-          </app-toolbar>
-          <app-toolbar name="school-structure">
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>โครงสร้าง</div>
           </app-toolbar>
           </iron-pages>
         </app-header>
@@ -233,7 +228,7 @@
     },
     _signedChanged:function(n) {
       if(this.signed) {
-        this.set('page','school-structure');
+        this.set('page','homepage');
       } else {
         this.set('page','homepage');
       }

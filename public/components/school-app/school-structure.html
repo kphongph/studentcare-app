@@ -21,6 +21,8 @@
     :host {
       display:box;
       @apply(--paper-font-body1);
+      @apply(--layout-horizontal);
+      @apply(--layout-flex);
       --paper-tab-ink:var(--paper-red-500);
     }
     .content {
@@ -53,10 +55,7 @@
     }
   </style>
 
-  <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
-  </host-info>
-
-  <app-header-layout>
+  <app-header-layout fullbleed has-scrolling-region>
    <app-header fixed>
     <app-toolbar>
      <a href="#/" class="inherit">
@@ -80,35 +79,39 @@
      </template>
     </paper-tabs>
    </app-header>
+   <div>
+    <div class="layout horizontal" hidden$="{{!showContent}}"> 
+     <div class="layout vertical class-teacher">
+      <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
+      </host-info>
+      <classteacher-select 
+        title="รายชื่อครูประจำชั้น"
+        selected="{{_classTeacher}}"
+        list="{{hostInfo.value.teachers}}">
+        <template is="dom-repeat" items="{{_classTeacher}}">
+         <div class="teacher-name">{{_teacherName(item,hostInfo)}}</div>
+        </template>
+      </classteacher-select>
 
-   <div class="layout horizontal" hidden$="{{!showContent}}"> 
-    <div class="layout vertical class-teacher">
-     <classteacher-select 
-       title="รายชื่อครูประจำชั้น"
-       selected="{{_classTeacher}}"
-       list="{{hostInfo.value.teachers}}">
-       <template is="dom-repeat" items="{{_classTeacher}}">
-        <div class="teacher-name">{{_teacherName(item,hostInfo)}}</div>
-       </template>
-     </classteacher-select>
+      <classteacher-select 
+        title="รายชื่อครูผู้สอน"
+        selected="{{_teachTeacher}}"
+        list="{{hostInfo.value.teachers}}">
+        <template is="dom-repeat" items="{{_teachTeacher}}">
+         <div class="teacher-name">{{_teacherName(item,hostInfo)}}</div>
+        </template>
+      </classteacher-select>
+     </div>
 
-     <classteacher-select 
-       title="รายชื่อครูผู้สอน"
-       selected="{{_teachTeacher}}"
-       list="{{hostInfo.value.teachers}}">
-       <template is="dom-repeat" items="{{_teachTeacher}}">
-        <div class="teacher-name">{{_teacherName(item,hostInfo)}}</div>
-       </template>
-     </classteacher-select>
-    </div>
-
-    <div class="flex">
-     <student-list host="{{host}}" 
-        year="{{hostInfo.value.dmc.year}}"
-        level-room="{{room}}">
-     </student-list>
+     <div class="flex">
+      <student-list host="{{host}}" 
+         year="{{hostInfo.value.dmc.year}}"
+         level-room="{{room}}">
+      </student-list>
+     </div>
     </div>
    </div>
+
   </app-header-layout>
 
  </template>

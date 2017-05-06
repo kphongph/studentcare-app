@@ -20,11 +20,14 @@
       background:#efefef;
     }
     .control-panel {
-      background:var(--paper-grey-400);
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      background:var(--paper-grey-300);
+      padding-right:10px;
     }
-    .pad {
-      margin:5px;
-    }
+    .list {
+      padding:5px;
+    } 
    
   </style>
 
@@ -38,10 +41,10 @@
         hidden$="{{!show}}"
         on-tap="_toggle">
       </paper-icon-button>
-      <span>{{title}}</span>
+      <div>{{title}}</div>
     </div>
 
-    <div hidden$="{{show}}" class="pad">
+    <div hidden$="{{show}}" class="list">
       <content></content>
     </div>
    

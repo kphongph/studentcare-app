@@ -11,7 +11,6 @@
   <style include="iron-flex iron-flex-alignment iron-flex-factors">
     :host {
       display:box;
-      @apply(--layout-vertical);
       @apply(--paper-font-body2);
     }
     paper-tabs {
@@ -22,6 +21,7 @@
       padding:5px;
     }
   </style>
+
   <app-localstorage-document 
     key="jwtToken" 
     data="{{token}}">
@@ -37,17 +37,15 @@
     on-response="_listAllResponse">
   </iron-ajax>
 
-  <status-message id="message" delay="1000" hidden$="{{!interactive}}">
-  </status-message>
-
-  <div class="layout horizontal center" hidden$="{{!interactive}}">
   <template is="dom-if" if="{{loading}}">
-    (<span>{{_loaded}}</span>/
-     <span>{{_total}}</span>)
-    <paper-progress value="{{_loaded}}" max="{{_total}}">
-    </paper-progress>
+    <div class="layout horizontal center">
+     <paper-progress value="{{_loaded}}" max="{{total}}">
+     </paper-progress>
+     <div>
+       (<span>{{_loaded}}</span>/<span>{{total}}</span>)
+     </div>
+    </div>
   </template>
-  </div>
 
  </template>
  <script>
@@ -70,7 +68,7 @@
          return [];
        }
      },
-     interactive:{
+     manual:{
        type:Boolean,
        notify:true,
        value:false
@@ -79,12 +77,16 @@
        type:Boolean,
        notify:true,
        value:false
+     },
+     total:{
+       type:Number,
+       notify:true
      }
    },
    observers:[
-    '_tokenLoaded(token,query)'
+    '_tokenLoaded(token,query,db)'
    ],
-   _tokenLoaded:function(token,query) {
+   _tokenLoaded:function(token,query,db) {
      if(token && token.token != null) {
        this.$.listAllAjax.generateRequest();
      }
@@ -97,29 +99,23 @@
          'message':JSON.stringify(response.message)});
        return;
      }
-     this.set('_total',response.length);
-     this.$.message.add({
-       'type':'info',
-       'message':'Loading '+this.db+':'+this.view});
-     
-     this.$.message.add({
-       'type':'info',
-       'message':'Found '+response.length+' documents'});
-     this.$.message.add({
-       'type':'info',
-       'message':'Loading '+response.length+' documents'});
+     this.set('total',response.length);
+     this.set('response',response);
+     console.log(this.manual);
+     if(!this.manual) {
+       this.start();
+     }
+   },
+   start:function(e) {
      this.set('loading',true);
      this.set('data',[]);
-     this.__load(response,0);
+     this.__load(this.response,0);
    },
    __load:function(list,index) {
      var self = this; 
      if(index>=list.length) {
        this.set('loading',false);
        this.fire('finish',{'data':this.data});
-       this.$.message.add({
-         'type':'info',
-         'message':''+index+' documents loaded'});
        return; 
      } else {
        var ele = document.createElement('iron-request');

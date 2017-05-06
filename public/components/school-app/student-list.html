@@ -1,0 +1,100 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../document-loader.html">
+
+<dom-module id="student-list">
+ <template>
+  <style is="custom-style"
+     include="iron-flex iron-flex-alignment iron-flex-factors">
+
+    :host {
+      display:box;
+      padding:5px;
+      @apply(--layout-vertical);
+      @apply(--paper-font-body2);
+    }
+    .control-panel {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      background:var(--paper-grey-300);
+      padding-right:10px;
+    }
+    .student {
+      @apply(--paper-font-body2);
+      padding:5px;
+    }
+  </style>
+
+  <paper-material elevation="1">
+  <document-loader 
+    manual
+    db="{{db}}" 
+    id="loader"
+    total="{{total}}"
+    view="host_level_room"
+    data="{{students}}">
+  </document-loader>
+  
+  <div class="control-panel">
+   <paper-icon-button icon="file-download" on-tap="_loadStudent">
+   </paper-icon-button>
+   <div>{{total}}</div>
+  </div>
+  
+  <template is="dom-repeat" items="{{students}}">
+   <div class="student">{{_labelStudent(item)}}</div>
+  </template>
+  </paper-material>
+
+ </template>
+ <script>
+  Polymer({
+   is: 'student-list',
+   properties:{
+     host:{
+       type:String
+     },
+     level:{
+       type:String
+     },
+     room:{
+       type:String
+     },
+     year:{ 
+       type:String
+     },
+     students:{
+       type:Array,
+       notify:true
+     },
+     db:{
+       type:String,
+       computed:'__computeDb(year)'
+     }
+   },
+   observers:[
+     '_execute(host,level,room)'
+   ],
+   _execute:function(host,level,room) {
+     this.$.loader.query = {'match':[host,level,room],'limit':-1};
+   },
+   _loadStudent:function(e) {
+     this.$.loader.start();
+   },
+   __computeDb:function(year) {
+     var tmp = "dmc59_1";
+     if(year == '2016') tmp='dmc59_1';
+     return tmp;
+   },
+   _labelStudent:function(student) {
+     return student.value.IDNO+' '+
+       student.value.NAME+' '+
+       student.value.LNAME;
+   }
+  });
+ </script>
+
+</dom-module>

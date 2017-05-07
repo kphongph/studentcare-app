@@ -23,9 +23,6 @@
       padding:5px;
       border-bottom:1px solid var(--paper-grey-500);
     }
-    :host[deleted] {
-      display:none;
-    }
     .control-panel {
       @apply(--layout-horizontal);
       @apply(--layout-center);
@@ -47,7 +44,7 @@
    </leveldb-document>
 
    <div class="layout horizontal center">
-    <div class="layout vertical">
+    <div class="layout vertical flex">
      <div>{{content.type}}</div>
      <div>
       <moment-element datetime="{{content.ts}}" 
@@ -56,8 +53,10 @@
       {{content.name}}
      </div>
     </div>
-    <paper-icon-button icon="delete" on-tap="_delete">
-    </paper-icon-button>
+    <div class="layout horizontal end-justified">
+     <paper-icon-button icon="delete" on-tap="_delete">
+     </paper-icon-button>
+    </div>
    </div>
    
  </template>
@@ -67,13 +66,6 @@
    properties:{
      formView:{
        type:Object
-     },
-     deleted:{
-       type:Boolean,
-       readOnly:true,
-       reflectToAttribute:true,
-       notify:true,
-       value:false
      },
      content:{
        type:Object,
@@ -100,7 +92,7 @@
    },
    _onResponse:function(e) {
      if(e.detail.response.ok) {
-       this._setDeleted(true);
+       this.fire('delete',this.formView);
      }
    }
   });

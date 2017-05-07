@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../document-loader.html">
 <link rel="import" href="../leveldb-document.html">
 <link rel="import" href="form-card.html">
@@ -53,6 +54,8 @@
     data="{{assignments}}">
    </document-loader>
 
+   <paper-toast id="message"></paper-toast>
+
    <div class="control-panel">
     <div class="title">สร้างแบบประเมิน</div>
    </div>
@@ -72,7 +75,7 @@
     </div>
 
     <template is="dom-repeat" items="{{_viewForms}}">
-     <form-card form-view="{{item}}">
+     <form-card form-view="{{item}}" on-delete="_removeItem">
      </form-card>
     </template>
    
@@ -99,6 +102,14 @@
    _labelForm:function(item) {
       return item.key[6][1]+' '+item.key[6][3];
    },
+   _removeItem:function(e) {
+     for(var i=0;i<this._viewForms.length;i++) {
+       if(this._viewForms[i].value == e.detail.value) {
+         this.splice('_viewForms',i,1);
+         break;
+       }
+     }
+   },
    _generate:function(e) {
      var _tmp = this.levelRoom.split('-');
      var _level = _tmp[0];
@@ -118,11 +129,11 @@
          };
        }
      });
-     var count = 0;
+     var count=0;
      this.students.forEach(function(student) {
        var key = student.value.IDNO+'-'+student.value.NAME+' '+
          student.value.LNAME;
-       if(!dict[key] && count < 1) {
+       if(!dict[key]) {
          count++;
          var assignment =  {
            doc_type:"assignment",
@@ -141,14 +152,15 @@
              name: student.value.NAME+' '+student.value.LNAME
            }
          };
-      
          self.$.assignmentSaver.document = {'value':assignment};
          self.$.assignmentSaver.save();
        }
      });
+     this.$.message.text="creating "+count+" assignments";
+     this.$.message.open();
    },
    _onSaveResponse:function(e) {
-     console.log(e.detail);
+     this.__listForm(this.hostInfo,this.levelRoom);
    },
    __listForm:function(hostInfo,levelRoom) {
      var tmp = levelRoom.split('-');

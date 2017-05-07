@@ -229,19 +229,42 @@
       if(!role.profile) return;
       var key = role.profile._teacher;
       this.set('assignments',[]);
+      var dict = {};
       if(hostInfo.value.classteachers) {
         for(var i=0;i<hostInfo.value.classteachers.length;i++) {
           var ct = hostInfo.value.classteachers[i];
-          if(ct.classteachers.indexOf(key) != -1) {
-            _level = ct.level;
-            _room = ct.room;
-            this.push('assignments',{
-              'label':_level+'/'+_room,
-              'level':_level,
-              'room':_room
-            });
+          if(ct.teachers && ct.teachers.indexOf(key) != -1) {
+            var _key = ct.level+'-'+ct.room;
+            if(!dict[_key]) {
+              dict[_key]={
+                'level':ct.level,
+                'room':ct.room
+              };
+            }
           }
         }
+      }
+      if(hostInfo.value.teachteachers) {
+        for(var i=0;i<hostInfo.value.teachteachers.length;i++) {
+          var ct = hostInfo.value.teachteachers[i];
+          if(ct.teachers && ct.teachers.indexOf(key) != -1) {
+            var _key = ct.level+'-'+ct.room;
+            if(!dict[_key]) {
+              dict[_key]={
+                'level':ct.level,
+                'room':ct.room
+              };
+            }
+          }
+        }
+      }
+      for(var key in dict) {
+        console.log(dict[key]);
+        this.push('assignments',{
+          'label':dict[key].level+'/'+dict[key].room,
+          'level':dict[key].level,
+          'room':dict[key].room
+        });
       }
     },
     _teacherListRefresh:function(e) {

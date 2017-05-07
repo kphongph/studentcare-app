@@ -158,26 +158,32 @@
    __computeClassTeacher:function(room,hostInfo) {
      var _room = room.split('-');
      var teachers = hostInfo.value.classteachers;
+     if(!teachers) this.set('hostInfo.value.classteachers',[]);
      for(var i=0;i<teachers.length;i++) {
        if(teachers[i].level == _room[0] && 
           teachers[i].room == _room[1]) { 
-         return teachers[i].classteachers;
+         if(!teachers[i].teachers) teachers[i].teachers = [];
+         return teachers[i].teachers;
        }
      }
-     return [];
+     var tmp = {'level':_room[0],'room':_room[1],'teachers':[]};
+     this.push('hostInfo.value.classteachers',tmp);
+     return tmp.teachers;
    },
    __computeTeachTeacher:function(room,hostInfo) {
      var _room = room.split('-');
-     var teachers = hostInfo.value.classteachers;
+     var teachers = hostInfo.value.teachteachers;
+     if(!teachers) this.set('hostInfo.value.teachteachers',[]);
      for(var i=0;i<teachers.length;i++) {
        if(teachers[i].level == _room[0] && 
           teachers[i].room == _room[1]) { 
-         if(!teachers[i].teachteachers) {
-           teachers[i].teachteachers = [];
-         }
-         return teachers[i].teachteachers;
+         if(!teachers[i].teachers) teachers[i].teachers = [];
+         return teachers[i].teachers;
        }
      }
+     var tmp = {'level':_room[0],'room':_room[1],'teachers':[]};
+     this.push('hostInfo.value.teachteachers',tmp);
+     return tmp.teachers;
    },
    _labelLevel:function(level) {
      var dict = ['อนุบาล ','ประถมศึกษา ','มัธยมศึกษา '];

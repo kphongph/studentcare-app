@@ -1,0 +1,149 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../document-loader.html">
+<link rel="import" href="../leveldb-document.html">
+
+<dom-module id="form-generator">
+ <template>
+  <style is="custom-style"
+     include="iron-flex iron-flex-alignment iron-flex-factors">
+
+    :host {
+      display:box;
+      @apply(--layout-vertical);
+      @apply(--paper-font-body2);
+      padding:5px;
+    }
+    .control-panel {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      background:var(--paper-grey-300);
+    }
+    .content {
+      padding:5px;
+    }
+    .title {
+      padding-left:10px;
+    }
+  </style>
+  
+  <paper-material elevation="1">
+
+   <leveldb-document
+    id="assignmentSaver"
+    url="https://maas.nuqlis.com:9000/api"
+    on-leveldb-response="_onSaveResponse"
+    db="students_care">
+   </leveldb-document>
+
+
+   <document-loader
+    manual
+    db="students_care"
+    id="loader"
+    response="{{_viewForms}}"
+    view="assignments_by_room"
+    data="{{assignments}}">
+   </document-loader>
+
+   <div class="control-panel">
+    <div class="title">สร้างแบบประเมิน</div>
+   </div>
+   
+   <div class="layout vertical content">
+    <paper-dropdown-menu label="แบบประเมิน">
+     <paper-listbox class="dropdown-content" 
+       attr-for-selected="name"
+       selected="{{formType}}">
+      <paper-item name="dl2-form">
+        แบบประเมินพฤติกรรมเด็ก (SDQ) ฉบับครูเป็นผู้ประเมินนักเรียน
+      </paper-item>
+     </paper-listbox>
+    </paper-dropdown-menu>
+    <div class="layout horizontal">
+     <paper-button raised on-tap="_generate">สร้าง</paper-button>
+    </div>
+   
+   </div>
+  </paper-material>
+ </template>
+ <script>
+  Polymer({
+   is: 'form-generator',
+   properties:{
+     hostInfo:{
+       type:Object
+     },
+     levelRoom:{
+       type:String
+     },
+     students:{
+       type:Array
+     }
+   },
+   observers:[
+     '__listForm(hostInfo,levelRoom)'
+   ],
+   _generate:function(e) {
+     var _tmp = this.levelRoom.split('-');
+     var _level = _tmp[0];
+     var _room = _tmp[1];
+     var _currentForm = this.$.loader.response;
+     var dict = {};
+     _currentForm.forEach(function(form) {
+       var tmp = form.key[6];
+       var key = tmp[2]+'-'+tmp[3];
+       if(tmp[1]==this.formType && !dict[key]) {
+         dict[key]={
+           'form_type':tmp[1],
+           'cid':tmp[2],
+           'name':tmp[3]
+         };
+       }
+     });
+     var self = this;
+     var count = 0;
+     this.students.forEach(function(student) {
+       var key = student.value.IDNO+'-'+student.value.NAME+' '+
+         student.value.LNAME;
+       if(!dict[key] && count < 1) {
+         count++;
+         var assignment =  {
+           doc_type:"assignment",
+           status: "new",
+           form_value: {},
+           form_result: {},
+           dmc: {
+             host: self.hostInfo.value.dmc.host,
+             level: _level,
+             room: _room
+           },
+           ts: (new Date()).getTime()*-1,
+           form_type: self.formType,
+           student: {
+             cid: student.value.IDNO,
+             name: student.value.NAME+' '+student.value.LNAME
+           }
+         };
+         self.$.assignmentSaver.document = {'value':assignment};
+         self.$.assignmentSaver.save();
+       }
+     });
+   },
+   _onSaveResponse:function(e) {
+     console.log(e.detail);
+   },
+   __listForm:function(hostInfo,levelRoom) {
+     var tmp = levelRoom.split('-');
+     this.$.loader.query = {'match':[hostInfo.value.dmc.host,
+       tmp[0],tmp[1]],limit:-1};
+   }
+  });
+ </script>
+</dom-module>

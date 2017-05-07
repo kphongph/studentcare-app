@@ -12,6 +12,7 @@
 <link rel="import" href="../host-info.html">
 <link rel="import" href="classteacher-select.html">
 <link rel="import" href="student-list.html">
+<link rel="import" href="form-generator.html">
 
 <dom-module id="school-structure">
  <template>
@@ -104,11 +105,21 @@
      </div>
 
      <div class="flex">
-      <student-list host="{{host}}" 
+      <div class="layout vertical">
+       <student-list host="{{host}}" 
+         students="{{students}}"
          year="{{hostInfo.value.dmc.year}}"
          level-room="{{room}}">
-      </student-list>
+       </student-list>
+       <form-generator 
+         students="{{students}}"
+         level-room="{{room}}"
+         host-info="{{hostInfo}}">
+       </form-generator>
+      </div>
+    
      </div>
+
     </div>
    </div>
 

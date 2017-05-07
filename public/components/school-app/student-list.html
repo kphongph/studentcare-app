@@ -13,15 +13,14 @@
 
     :host {
       display:box;
-      padding:5px;
       @apply(--layout-vertical);
       @apply(--paper-font-body2);
+      padding:5px;
     }
     .control-panel {
       @apply(--layout-horizontal);
       @apply(--layout-center);
       background:var(--paper-grey-300);
-      padding:5px;
     }
     .title {
       padding-left:10px;
@@ -34,22 +33,22 @@
 
   <paper-material elevation="1">
 
-  <document-loader
+   <document-loader
     db="students_care" 
     id="classLoader"
     view="class_info"
     on-finish="_onClassInfoLoaded"
     data="{{classInfo}}">
-  </document-loader>
+   </document-loader>
 
-  <leveldb-document
+   <leveldb-document
     id="classRoom"
     url="https://maas.nuqlis.com:9000/api"
     db="students_care"
     document="{{classRoom}}">
-  </leveldb-document>
+   </leveldb-document>
 
-  <document-loader 
+   <document-loader 
     manual
     db="{{db}}" 
     id="loader"
@@ -57,20 +56,27 @@
     view="host_level_room"
     on-finish="_onStudentLoaded"
     data="{{students}}">
-  </document-loader>
+   </document-loader>
   
-  <div class="control-panel">
-   <div hidden$="{{loaded}}" class="layout horizontal center">
-    <paper-icon-button icon="file-download" on-tap="_loadStudent">
-    </paper-icon-button>
-    <div>{{total}}</div>
+   <div class="control-panel">
+    <div hidden$="{{!loaded}}" class="layout horizontal center">
+     <paper-icon-button icon="menu" on-tap="_toggleContent">
+     </paper-icon-button>
+    </div>
+    <div hidden$="{{loaded}}" class="layout horizontal center">
+     <paper-icon-button icon="file-download" on-tap="_loadStudent">
+     </paper-icon-button>
+     <div>{{total}}</div>
+    </div>
+    <div class="title">รายชื่อนักเรียน</div>
    </div>
-   <div class="title">รายชื่อนักเรียน</div>
-  </div>
   
-  <template is="dom-repeat" items="{{classRoom.value.students}}">
-   <div class="student">{{_labelStudent(item)}}</div>
-  </template>
+   <div hidden$="{{!showContent}}">
+    <template is="dom-repeat" items="{{students}}">
+     <div class="student">{{_labelStudent(item)}}</div>
+    </template>
+   </div>
+
   </paper-material>
 
  </template>
@@ -91,6 +97,16 @@
        type:Object,
        notify:true
      },
+     showContent: {
+       type:Boolean,
+       notify:true,
+       value:true
+     },
+     students: {
+       type:Array,
+       notify:true,
+       computed:'__computeStudents(classRoom)'
+     },
      db:{
        type:String,
        computed:'__computeDb(year)'
@@ -99,6 +115,9 @@
    observers:[
      '_loadClass(host,year,levelRoom)'
    ],
+   __computeStudents:function(classRoom) {
+     return classRoom.value.students;
+   },
    _loadClass:function(host,year,levelRoom) {
      var self = this;
      var tmp = levelRoom.split('-');
@@ -144,6 +163,9 @@
      return student.value.IDNO+' '+
        student.value.NAME+' '+
        student.value.LNAME;
+   },
+   _toggleContent:function(e) {
+     this.set('showContent',!this.showContent);
    }
   });
  </script>

@@ -54,8 +54,7 @@
     id="loader"
     total="{{total}}"
     view="host_level_room"
-    on-finish="_onStudentLoaded"
-    data="{{students}}">
+    on-finish="_onStudentLoaded">
    </document-loader>
   
    <div class="control-panel">
@@ -90,6 +89,10 @@
      levelRoom:{
        type:String
      },
+     students:{
+       type:Array,
+       notify:true
+     },
      year:{ 
        type:String
      },
@@ -102,11 +105,6 @@
        notify:true,
        value:true
      },
-     students: {
-       type:Array,
-       notify:true,
-       computed:'__computeStudents(classRoom)'
-     },
      db:{
        type:String,
        computed:'__computeDb(year)'
@@ -116,11 +114,16 @@
      '_loadClass(host,year,levelRoom)'
    ],
    __computeStudents:function(classRoom) {
-     return classRoom.value.students;
+     console.log(classRoom.value.students);
+     if(classRoom.value.students) {
+       return classRoom.value.students;
+     }
+     return [];
    },
    _loadClass:function(host,year,levelRoom) {
      var self = this;
      var tmp = levelRoom.split('-');
+     this.set('students',[]);
      this.$.classLoader.query = {'match':[host,year,tmp[0],tmp[1]],'limit':1};
    },
    _onClassInfoLoaded:function(e) {
@@ -141,16 +144,17 @@
        this.set('loaded',false);
      } else {
        this.set('loaded',true);
+       this.set('students',response[0].value.students);
        this.set('classRoom',{'key':response[0].key,
           'value':response[0].value});
      }
    },
    _loadStudent:function(e) {
-     var self = this;
      this.$.loader.start();
    },
    _onStudentLoaded:function(e) {
      this.set('classRoom.value.students',e.detail.data);
+     this.set('students',e.detail.data);
      this.$.classRoom.save();
      this.set('loaded',true);
    },

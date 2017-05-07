@@ -93,7 +93,10 @@
        type:String
      },
      students:{
-       type:Array
+       type:Array,
+       value:function() {
+         return [];
+       } 
      }
    },
    observers:[
@@ -120,7 +123,6 @@
      _currentForm.forEach(function(form) {
        var tmp = form.key[6];
        var key = tmp[2]+'-'+tmp[3];
-       console.log(tmp[1]);
        if(tmp[1]==self.formType && !dict[key]) {
          dict[key]={
            'form_type':tmp[1],

@@ -106,16 +106,16 @@
 
      <div class="flex">
       <div class="layout vertical">
-       <student-list host="{{host}}" 
-         students="{{students}}"
-         year="{{hostInfo.value.dmc.year}}"
-         level-room="{{room}}">
-       </student-list>
        <form-generator 
          students="{{students}}"
          level-room="{{room}}"
          host-info="{{hostInfo}}">
        </form-generator>
+       <student-list host="{{host}}" 
+         students="{{students}}"
+         year="{{hostInfo.value.dmc.year}}"
+         level-room="{{room}}">
+       </student-list>
       </div>
     
      </div>

@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../document-loader.html">
 <link rel="import" href="../leveldb-document.html">
+<link rel="import" href="form-card.html">
 
 <dom-module id="form-generator">
  <template>
@@ -69,6 +70,11 @@
     <div class="layout horizontal">
      <paper-button raised on-tap="_generate">สร้าง</paper-button>
     </div>
+
+    <template is="dom-repeat" items="{{_viewForms}}">
+     <form-card form-view="{{item}}">
+     </form-card>
+    </template>
    
    </div>
   </paper-material>
@@ -90,16 +96,21 @@
    observers:[
      '__listForm(hostInfo,levelRoom)'
    ],
+   _labelForm:function(item) {
+      return item.key[6][1]+' '+item.key[6][3];
+   },
    _generate:function(e) {
      var _tmp = this.levelRoom.split('-');
      var _level = _tmp[0];
      var _room = _tmp[1];
      var _currentForm = this.$.loader.response;
      var dict = {};
+     var self = this;
      _currentForm.forEach(function(form) {
        var tmp = form.key[6];
        var key = tmp[2]+'-'+tmp[3];
-       if(tmp[1]==this.formType && !dict[key]) {
+       console.log(tmp[1]);
+       if(tmp[1]==self.formType && !dict[key]) {
          dict[key]={
            'form_type':tmp[1],
            'cid':tmp[2],
@@ -107,7 +118,6 @@
          };
        }
      });
-     var self = this;
      var count = 0;
      this.students.forEach(function(student) {
        var key = student.value.IDNO+'-'+student.value.NAME+' '+
@@ -131,6 +141,7 @@
              name: student.value.NAME+' '+student.value.LNAME
            }
          };
+      
          self.$.assignmentSaver.document = {'value':assignment};
          self.$.assignmentSaver.save();
        }

@@ -1,0 +1,108 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/moment-element/moment-element.html">
+<link rel="import" href="../document-loader.html">
+<link rel="import" href="../leveldb-document.html">
+
+<dom-module id="form-card">
+ <template>
+  <style is="custom-style"
+     include="iron-flex iron-flex-alignment iron-flex-factors">
+
+    :host {
+      display:box;
+      @apply(--layout-vertical);
+      @apply(--paper-font-body2);
+      padding:5px;
+      border-bottom:1px solid var(--paper-grey-500);
+    }
+    :host[deleted] {
+      display:none;
+    }
+    .control-panel {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      background:var(--paper-grey-300);
+    }
+    .content {
+      padding:5px;
+    }
+    .title {
+      padding-left:10px;
+    }
+  </style>
+  
+   <leveldb-document
+    id="assignment"
+    url="https://maas.nuqlis.com:9000/api"
+    on-leveldb-response="_onResponse"
+    db="students_care">
+   </leveldb-document>
+
+   <div class="layout horizontal center">
+    <div class="layout vertical">
+     <div>{{content.type}}</div>
+     <div>
+      <moment-element datetime="{{content.ts}}" 
+        output-format="MMM DD[,] YYYY">
+      </moment-element>
+      {{content.name}}
+     </div>
+    </div>
+    <paper-icon-button icon="delete" on-tap="_delete">
+    </paper-icon-button>
+   </div>
+   
+ </template>
+ <script>
+  Polymer({
+   is: 'form-card',
+   properties:{
+     formView:{
+       type:Object
+     },
+     deleted:{
+       type:Boolean,
+       readOnly:true,
+       reflectToAttribute:true,
+       notify:true,
+       value:false
+     },
+     content:{
+       type:Object,
+       computed:'__computeContent(formView)'
+     }
+   },
+   __computeContent:function(formView) {
+     var ts = new Date();
+     var type_dict = {
+       'dl2-form':'แบบประเมินพฤติกรรมเด็ก (SDQ) ฉบับครูเป็นผู้ประเมินนักเรียน'
+     };
+     ts.setTime(formView.key[6][4]*-1);
+     return {
+       type:type_dict[formView.key[6][1]],
+       ts:ts,
+       status:formView.key[6][0],
+       name:formView.key[6][3]
+     }
+   },
+   _delete:function(e) {
+     console.log(this.formView);
+     this.$.assignment.document={'key':this.formView.value};
+     this.$.assignment.delete();
+   },
+   _onResponse:function(e) {
+     if(e.detail.response.ok) {
+       this._setDeleted(true);
+     }
+   }
+  });
+ </script>
+</dom-module>

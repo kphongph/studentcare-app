@@ -82,7 +82,8 @@
    </app-header>
    <div>
     <div class="layout horizontal" hidden$="{{!showContent}}"> 
-     <div class="layout vertical class-teacher">
+ 
+     <div class="layout vertical class-teacher" hidden$="{{!isLarge}}">
       <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
       </host-info>
       <classteacher-select 
@@ -121,6 +122,11 @@
    </div>
 
   </app-header-layout>
+
+  <iron-media-query query="(min-width: 1000px)" 
+    query-matches="{{isLarge}}">
+  </iron-media-query>
+
 
  </template>
  <script>

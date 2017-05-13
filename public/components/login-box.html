@@ -52,7 +52,7 @@
   <document-loader id="roleloader" 
     db="role_db" 
     on-finish="_updateRole"
-    view="user_app">
+    view="app_user">
   </document-loader>
   
   <iron-ajax 
@@ -111,7 +111,7 @@
       var a = token.split(".");
       var uClaim = b64utos(a[1]);
       var pClaim = KJUR.jws.JWS.readSafeJSONString(uClaim);
-      var query = {'match':[pClaim.UserID,"student-care"]};
+      var query = {'match':["student-care",pClaim.UserID]};
       this.$.roleloader.query=JSON.stringify(query);
     },
     _updateRole:function(e) {
@@ -123,6 +123,7 @@
     },
     _onResponse:function(e) {
       var res = e.detail.response;
+      console.log(res);
       if(res.success) {
         this.set('token',{'token':res.token});
         this.set('_message','');

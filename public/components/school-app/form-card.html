@@ -20,7 +20,6 @@
       display:box;
       @apply(--layout-vertical);
       @apply(--paper-font-body2);
-      padding:5px;
       border-bottom:1px solid var(--paper-grey-500);
     }
     .control-panel {
@@ -34,6 +33,10 @@
     .title {
       padding-left:10px;
     }
+    .form {
+      text-overflow:ellipsis;
+      max-length:200px;
+    }
   </style>
   
    <leveldb-document
@@ -44,16 +47,14 @@
    </leveldb-document>
 
    <div class="layout horizontal center">
-    <div class="layout vertical flex">
-     <div>{{content.type}}</div>
-     <div>
-      <moment-element datetime="{{content.ts}}" 
-        output-format="MMM DD[,] YYYY">
-      </moment-element>
-      {{content.name}}
-     </div>
+    <div class="flex-1">{{content.name}}</div>
+    <div class="flex-1">
+     <moment-element datetime="{{content.ts}}" 
+       output-format="MMM DD[,] YYYY">
+     </moment-element>
     </div>
-    <div class="layout horizontal end-justified">
+    <div class="flex-2 form">{{content.type}}</div>
+    <div class="end-justified">
      <paper-icon-button icon="delete" on-tap="_delete">
      </paper-icon-button>
     </div>

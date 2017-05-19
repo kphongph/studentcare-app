@@ -72,6 +72,9 @@
         color: inherit;
         text-decoration: none;
       }
+      studentcare-app {
+        padding:10px;
+      }
     </style>
 
     <app-drawer-layout force-narrow>
@@ -114,13 +117,10 @@
       </app-drawer>
       <app-header-layout fullbleed>
         <app-header fixed>
-          <iron-pages selected="[[page]]" attr-for-selected="name" 
-            fallback-selection="default">
           <app-toolbar name="default">
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
           </app-toolbar>
-          </iron-pages>
         </app-header>
 
       <!-- content -->

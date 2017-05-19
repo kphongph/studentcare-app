@@ -1,0 +1,98 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/studentcare-components/view-iterator.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+
+<dom-module id="student-list">
+ <template>
+  <style is="custom-style"
+     include="iron-flex iron-flex-alignment iron-flex-factors">
+
+    :host {
+      display:box;
+      padding:5px;
+      @apply(--layout-vertical);
+      @apply(--paper-font-body2);
+    }
+    view-iterator {
+      display:none;
+    }
+    app-toolbar {
+      background-color:var(--paper-red-500);
+      color:white;
+    }
+    paper-item {
+      border-bottom:1px solid var(--paper-grey-400);
+    }
+  </style>
+
+  <view-iterator
+    id="viewer"
+    url="https://maas.nuqlis.com:9000/api"
+    view-name="host_level_room"
+    db-name="{{db}}"
+    data="{{students}}"
+    query$='{"match":["{{host}}","{{level}}","{{room}}"],"limit":5}'>
+  </view-iterator>
+
+  <app-header-layout>
+   <app-header fixed condenses>
+    <app-toolbar>
+      <div main-title>รายชื่อนักเรียน</div>
+    </app-toolbar>
+   </app-header>
+   <div>
+    <template is="dom-repeat" items="{{students}}">
+     <paper-item>
+      <paper-item-body two-line>
+        <div>{{item.key.4.0}}</div> 
+        <div secondary>{{item.key.4.2}} {{item.key.4.3}}</div>
+      </paper-item-body>
+     </paper-item>
+    </template>
+   </div>
+  </app-header-layout>
+
+ </template>
+ <script>
+  Polymer({
+   is: 'student-list',
+   properties:{
+     host:{
+       type:String
+     },
+     year:{ 
+       type:String
+     },
+     level:{ 
+       type:String
+     },
+     room:{ 
+       type:String
+     },
+     db:{
+       type:String,
+       computed:'__computeDb(year)'
+     }
+   },
+   __computeDb:function(year) {
+     if(year == '2016') return 'dmc59_1';
+   },
+   loadMoreData:function(e) {
+     console.log('load');
+     if(this.$.viewer.token) {
+       this.$.viewer.next(function() {
+         this.$.loader.clearTriggers();
+       });
+     }
+     this.$.loader.clearTriggers();
+  
+   }
+  });
+ </script>
+
+</dom-module>

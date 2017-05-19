@@ -18,9 +18,9 @@
   </app-localstorage-document>
 
   <document-loader db="students_care"
+    id="loader"
     view="host_info"
-    on-finish="_finish"
-    query$='{"match":["{{host}}"]}'>
+    on-finish="_finish">
   </document-loader>
 
  </template>
@@ -40,6 +40,16 @@
       },
       _found:{
         type:Boolean
+      },
+      _execute:{
+        type:Boolean,
+        computed:"__computeExecute(host)"
+      }
+    },
+    __computeExecute:function(host) {
+      if(host != null) {
+        console.log('execute');
+        this.$.loader.query = {'match':[host]};
       }
     },
     _finish:function(e) {

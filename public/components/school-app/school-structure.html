@@ -11,8 +11,6 @@
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../host-info.html">
 <link rel="import" href="classteacher-select.html">
-<link rel="import" href="student-list.html">
-<link rel="import" href="form-generator.html">
 
 <dom-module id="school-structure">
  <template>
@@ -42,7 +40,6 @@
       background-color: inherit;
     }
     .class-teacher {
-      max-width:400px;
       background-color:white;
     }
     .teacher-name {
@@ -81,7 +78,7 @@
     </paper-tabs>
    </app-header>
    <div>
-    <div class="layout horizontal" hidden$="{{!showContent}}"> 
+    <div class="layout vertical" hidden$="{{!showContent}}"> 
  
      <div class="layout vertical class-teacher" hidden$="{{!isLarge}}">
       <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
@@ -103,30 +100,12 @@
          <div class="teacher-name">{{_teacherName(item,hostInfo)}}</div>
         </template>
       </classteacher-select>
-      <student-list host="{{host}}" 
-         students="{{students}}"
-         year="{{hostInfo.value.dmc.year}}"
-         level-room="{{room}}">
-      </student-list>
-     </div>
-
-     <div class="flex">
-       <form-generator 
-         students="{{students}}"
-         level-room="{{room}}"
-         host-info="{{hostInfo}}">
-       </form-generator>
      </div>
 
     </div>
    </div>
 
   </app-header-layout>
-
-  <iron-media-query query="(min-width: 1000px)" 
-    query-matches="{{isLarge}}">
-  </iron-media-query>
-
 
  </template>
  <script>

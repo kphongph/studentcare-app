@@ -5,12 +5,14 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="main-app.html">
 <link rel="import" href="school-app/school-structure.html">
+<link rel="import" href="student-app/student-list.html">
 
 <dom-module is="main-route">
  <template>
   <style>
   </style>
   <app-location route="{{route}}" use-hash-as-path></app-location>
+
   <app-route
     route="{{route}}"
     pattern="/:page"
@@ -24,12 +26,41 @@
     data="{{host}}">
   </app-route>
 
+  <app-route
+    route="{{route}}"
+    pattern="/form/:host/:level/:room"
+    data="{{form}}">
+  </app-route>
+
+  <app-route
+    route="{{route}}"
+    pattern="/students/:year/:host/:level/:room"
+    data="{{students}}">
+  </app-route>
+
+
   <iron-pages selected="[[routeData.page]]" 
     fallback-selection="main"
     attr-for-selected="name">
-   <main-app name="main"></main-app>
-   <school-structure name="school_structure" host="{{host.id}}">
-   </school-structure>
+   <div name="students">
+    <template is="dom-if" if="{{_equals(routeData.page,'students')}}">
+    <student-list 
+      year="{{students.year}}"
+      host="{{students.host}}"
+      level="{{students.level}}"
+      room="{{students.room}}">
+    </student-list>
+    </template>
+   </div>
+   <div name="main">
+    <main-app></main-app>
+   </div>
+   <div name="school_structure">
+    <template is="dom-if" if="{{_equals(routeData.page,'school_structure')}}">
+     <school-structure host="{{host.id}}">
+     </school-structure>
+    </template>
+   </div>
   </iron-pages>
  </template>
  <script>
@@ -42,6 +73,9 @@
       },
       ready: function(e){
        this.set('route.path', '/search/');
+      },
+      _equals:function(a,b) {
+        return a == b;
       }
     });
  </script>

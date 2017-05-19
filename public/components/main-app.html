@@ -91,21 +91,20 @@
               <paper-item class="menu-trigger">แบบประเมิน</paper-item>
               <paper-menu class="menu-content sublist" selected="{{_assignment}}">
                 <template is="dom-repeat" items="{{assignments}}">
-                 <paper-item>{{item.label}}</paper-item>
+                  <paper-item raised>{{item.label}}</paper-item>
                 </template>
               </paper-menu>
             </paper-submenu>
-            <paper-item name="progress">ความก้าวหน้า</paper-item>
             <paper-submenu>
               <paper-item class="menu-trigger">ข้อมูลโรงเรียน</paper-item>
               <paper-menu class="menu-content sublist" 
                 attr-for-selected="name"
                 selected="{{page}}">
-                <paper-item name="teacher">ข้อมูลครู</paper-item>
                 <a class="paper-item-link" 
                   href$="#/school_structure/{{role.profile.hostid}}" 
                   tabindex="-1">
-                  <paper-item raised>โครงสร้าง</paper-item>
+                  <paper-item raised>ครูผู้สอนและประจำชั้น
+                  </paper-item>
                 </a>
               </paper-menu>
             </paper-submenu>
@@ -120,11 +119,6 @@
           <app-toolbar name="default">
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
-          </app-toolbar>
-          <app-toolbar name="teacher">
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>ข้อมูลครูประจำโรงเรียน</div>   
-            <paper-icon-button icon="refresh" on-tap="_teacherListRefresh"></paper-icon-button>
           </app-toolbar>
           </iron-pages>
         </app-header>
@@ -143,22 +137,20 @@
           <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
           <homepage-app></homepage-app>
         </div>
-        <div name="school-structure"> 
-          <school-structure host="{{role.profile.hostid}}">
-          </school-structure>
-        </div>
         <div name="assignment">
           <template is="dom-if" if="[[_equal(page, 'assignment')]]">
            <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
            </host-info>
-          <iron-pages selected="{{_assignment}}">
-            <template is="dom-repeat" items="{{assignments}}">
-            <studentcare-app host="{{role.profile.hostid}}" 
-              level="{{item.level}}" 
-              room="{{item.room}}">
-            </studentcare-app>
-            </template>
-          </iron-pages>
+           <iron-pages selected="{{_assignment}}">
+           <template is="dom-repeat" items="{{assignments}}">
+             <studentcare-app 
+                host="{{role.profile.hostid}}"
+                level="{{item.level}}"
+                room="{{item.room}}"
+                year="2016">
+             </studentcare-app>
+           </template>
+           </iron-pages>
           </template>
         </div>
         <div name="teacher">
@@ -173,13 +165,6 @@
            </progress-host>
          </template>
         </div>
-        <!--
-        <div name="classteachers">
-          <template is="dom-if" if="[[_equal(page, 'classteachers')]]">
-           <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
-          </template>
-        </div>
-        -->
       </iron-pages>
       </div>
       </app-header-layout>
@@ -259,7 +244,6 @@
         }
       }
       for(var key in dict) {
-        console.log(dict[key]);
         this.push('assignments',{
           'label':dict[key].level+'/'+dict[key].room,
           'level':dict[key].level,

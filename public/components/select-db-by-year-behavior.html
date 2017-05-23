@@ -1,0 +1,15 @@
+<script>
+  SelectDbByYearBehavior = {
+    properties: {
+      year:String,
+      studentDb:{
+        type:String,
+        computed:'__computeStudentDb(year)'
+      }
+    },
+    __computeStudentDb:function(year) {
+      if(year == "2016") return "dmc59_1";
+      return "dmc59_1";
+    }
+  };
+</script>

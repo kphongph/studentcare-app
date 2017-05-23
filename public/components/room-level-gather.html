@@ -1,0 +1,81 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="select-db-by-year-behavior.html">
+
+<dom-module is="room-level-gather">
+ <template>
+  <app-localstorage-document
+    key="jwtToken"
+    data="{{token}}">
+  </app-localstorage-document>
+ </template>
+ <script>
+   Polymer({
+     is:'room-level-gather',
+     properties:{
+       host:String,
+       auto:{
+         type:Boolean,
+         reflectToAttribute:true,
+         value:function() {
+           return false;
+         }
+       },
+       level:{
+         type:String,
+         reflectToAttribute:true
+       },
+       rooms:{
+         type:Array,
+         notify:true,
+         value:function() {
+           return [];
+         }
+       }
+     },
+     observers:[
+       '_execute(token.token,host,level,auto)'
+     ],
+     behaviors:[
+       SelectDbByYearBehavior
+     ],
+     _execute:function(token,host,level,auto) {
+       var self = this;
+       if(auto) {
+       this.set('rooms',[]);
+       this._checkRoom(1,function(room) {
+         console.log(self.rooms);
+         console.log('done',level,room);
+       });
+       }
+     },
+     _checkRoom:function(room,cb) {
+       var room_st = ''+room;
+       var self = this;
+       var ele = document.createElement('iron-request');
+       var query = {match:[this.host,this.level,room_st],limit:1};
+       ele.send({
+         url:'https://maas.nuqlis.com:9000/api/query/'+this.studentDb+'/host_level_room',
+         method:'POST',
+         headers:{
+           'Authorization':'JWT '+this.token.token,
+           'Content-Type':'application/json'
+         },
+         body:query,
+         handleAs:'json'
+       }).then(function(res) {
+         if(res.response.constructor === Array) {
+           if(res.response.length > 0) {
+             self.push('rooms',{'room':''+room});
+             self._checkRoom(room+1,cb); 
+           } else {
+             cb(room);
+           }
+         }
+       });
+     }
+   });
+ </script>
+</dom-module>

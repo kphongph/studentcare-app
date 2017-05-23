@@ -10,6 +10,7 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../host-info.html">
+<link rel="import" href="../host-management.html">
 <link rel="import" href="classteacher-select.html">
 
 <dom-module id="school-structure">
@@ -78,8 +79,8 @@
     </paper-tabs>
    </app-header>
    <div>
+    <host-management host="{{host}}" year="{{year}}"></host-management>
     <div class="layout vertical" hidden$="{{!showContent}}"> 
- 
      <div class="layout vertical class-teacher" hidden$="{{!isLarge}}">
       <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
       </host-info>
@@ -115,6 +116,7 @@
      host:{
        type:String
      },
+     year:String,
      showContent:{
        type:Boolean,
        notify:true,

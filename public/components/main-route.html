@@ -22,7 +22,7 @@
 
   <app-route
     route="{{route}}"
-    pattern="/school_structure/:id"
+    pattern="/school_structure/:year/:id"
     data="{{host}}">
   </app-route>
 
@@ -57,7 +57,7 @@
    </div>
    <div name="school_structure">
     <template is="dom-if" if="{{_equals(routeData.page,'school_structure')}}">
-     <school-structure host="{{host.id}}">
+     <school-structure host="{{host.id}}" year="{{host.year}}">
      </school-structure>
     </template>
    </div>

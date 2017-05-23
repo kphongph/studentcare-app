@@ -72,6 +72,7 @@
       }
     },
     save:function(e) {
+      var self = this;
       var ele = document.createElement('iron-request');
       var key = '';
       if(this.document.key) {
@@ -87,7 +88,7 @@
         },
         body:JSON.stringify(this.document.value)
      }).then(function(res) {
-        console.log(res.response);
+        self.fire('host-info-saved',res.response);
      });
     }
   });

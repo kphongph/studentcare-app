@@ -92,8 +92,13 @@
    ],
    _tokenLoaded:function(token,query,db) {
      if(token && token.token != null) {
-       this.$.listAllAjax.generateRequest();
+       if(!this.manual) {
+         this.$.listAllAjax.generateRequest();
+       }
      }
+   },
+   manual_start:function() {
+     this.$.listAllAjax.generateRequest();
    },
    _listAllResponse:function(e) {
      var response = e.detail.response;
@@ -105,9 +110,7 @@
      }
      this.set('total',response.length);
      this.set('response',response);
-     if(!this.manual) {
-       this.start();
-     }
+     this.start();
    },
    start:function(e) {
      this.set('loading',true);

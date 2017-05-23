@@ -1,15 +1,15 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../host-info.html">
 <link rel="import" href="../host-management.html">
 <link rel="import" href="classteacher-select.html">
 
@@ -61,10 +61,13 @@
      <paper-icon-button icon="arrow-back"></paper-icon-button>
      </a>
      <div main-title>โครงสร้าง</div>
+     <paper-icon-button icon="settings" on-tap="_configManage">
+     </paper-icon-button>
+     <paper-icon-button icon="create" on-tap="_edit"></paper-icon-button>
      <paper-icon-button icon="save" on-tap="_save"></paper-icon-button>
     </app-toolbar>
-    <paper-tabs scrollable selected="{{room}}" 
-      on-iron-select="_onSelect"
+    <iron-pages selected="{{page}}" attr-for-selected="name">
+    <paper-tabs scrollable selected="{{room}}" name="classEdit"
       attr-for-selected="name">
      <template is="dom-repeat" as="level" sort="_sortLevel" 
         items="{{hostInfo.value.levels}}">
@@ -77,13 +80,19 @@
       </template>
      </template>
     </paper-tabs>
+    </iron-pages>
    </app-header>
+
    <div>
-    <host-management host="{{host}}" year="{{year}}"></host-management>
-    <div class="layout vertical" hidden$="{{!showContent}}"> 
-     <div class="layout vertical class-teacher" hidden$="{{!isLarge}}">
-      <host-info host="{{host}}" id="hostInfo" document="{{hostInfo}}">
-      </host-info>
+    <paper-toast id="toast"></paper-toast>
+    <iron-pages selected="{{page}}" attr-for-selected="name">
+    <host-management host="{{host}}" name="configManage"
+       id="hostManagement"
+       host-info="{{hostInfo}}" 
+       year="{{year}}">
+    </host-management>
+    <div class="layout vertical" name="classEdit"> 
+     <div class="layout vertical class-teacher">
       <classteacher-select 
         title="รายชื่อครูประจำชั้น"
         selected="{{_classTeacher}}"
@@ -102,16 +111,18 @@
         </template>
       </classteacher-select>
      </div>
-
     </div>
+    </iron-pages>
    </div>
-
   </app-header-layout>
 
  </template>
  <script>
   Polymer({
    is:'school-structure',
+   listeners:{
+     'host-info-saved':'_onHostInfoSaved'
+   },
    properties:{
      host:{
        type:String
@@ -131,6 +142,11 @@
        type:Array,
        notify:true,
        computed:'__computeTeachTeacher(room,hostInfo)' 
+     },
+     page:{
+       type:String,
+       readOnly:true,
+       value:'classEdit'
      }
    },
    _teacherName:function(id,hostInfo) {
@@ -153,7 +169,10 @@
    __computeClassTeacher:function(room,hostInfo) {
      var _room = room.split('-');
      var teachers = hostInfo.value.classteachers;
-     if(!teachers) this.set('hostInfo.value.classteachers',[]);
+     if(!teachers) {
+       teachers = [];
+       this.set('hostInfo.value.classteachers',[]);
+     }
      for(var i=0;i<teachers.length;i++) {
        if(teachers[i].level == _room[0] && 
           teachers[i].room == _room[1]) { 
@@ -168,7 +187,10 @@
    __computeTeachTeacher:function(room,hostInfo) {
      var _room = room.split('-');
      var teachers = hostInfo.value.teachteachers;
-     if(!teachers) this.set('hostInfo.value.teachteachers',[]);
+     if(!teachers) {
+       teachers = [];
+       this.set('hostInfo.value.teachteachers',[]);
+     }
      for(var i=0;i<teachers.length;i++) {
        if(teachers[i].level == _room[0] && 
           teachers[i].room == _room[1]) { 
@@ -190,10 +212,21 @@
      return tmp;
    },
    _save:function(e) {
-     this.$.hostInfo.save();
+     this.$.hostManagement.save();
    },
-   _onSelect:function(e) {
-     this.set('showContent',true);
+   _edit:function(e) {
+     this._setPage('classEdit');
+   },
+   _configManage:function(e) {
+     this._setPage('configManage');
+   },
+   _onHostInfoSaved:function(e) { 
+     if(e.detail.ok) {
+       this.$.toast.text = 'บันทึกเรียบร้อย'; 
+     } else {
+       this.$.toast.text = e.detail.message; 
+     }
+     this.$.toast.open();
    }
   });
  </script>

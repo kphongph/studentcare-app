@@ -2,28 +2,70 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-request.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="host-info.html">
+
+<link rel="import" href="document-loader.html">
 <link rel="import" href="room-level-gather.html">
 <link rel="import" href="select-db-by-year-behavior.html">
 
 <dom-module is="host-management">
  <template>
-  <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+  <style is="custom-style" 
+    include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      @apply(--layout-vertical);
+      @apply(--paper-font-body1);
+    }
+    iron-icon.check {
+      --iron-icon-fill-color:var(--paper-green-500);
+    }
+    .title {
+      @apply(--paper-font-title);
+    }
+    .info-panel {
+      padding:20px;
+    }
   </style>
   <app-localstorage-document
     key="jwtToken"
     data="{{token}}">
   </app-localstorage-document>
-  <div>Host Management {{year}} {{studentDb}}</div>
   <host-info id="hostInfo" 
      host="{{host}}" year="{{year}}" 
      document="{{hostInfo}}">
   </host-info>
-  <paper-button raised on-tap="_load">Load</paper-button>
-  <paper-button raised on-tap="_save">Save</paper-button>
-  <div id="level" class="layout vertical">
+  <div class="layout horizontal">
+    <paper-button raised on-tap="_reload">Load</paper-button>
+  </div>
+  <div class="layout horizontal">
+   <div class="layout vertical info-panel"> 
+    <div class="title">ข้อมูลครูประจำโรงเรียน</div>
+    <ol>
+    <template is="dom-repeat" items="{{hostInfo.value.teachers}}">
+      <li>{{item.name}}</li>
+    </template>
+    </ol>
+     <div class="layout horizontal">
+      <div hidden$="{{!loading}}">ข้อมูลครูประจำโรงเรียน</div>
+      <document-loader id="teacherLoader"
+        class="flex"
+        manual
+        loading="{{loading}}"
+        db="teacher_db" view="hostid"
+        on-finish="_onTeacherLoaded"
+        query$='{"match":["{{host}}"],"limit":-1}'>
+      </document-loader>
+     </div>
+   </div>
+
+   <div id="level" class="layout vertical info-panel">
+    <div class="title">ข้อมูลห้องเรียน</div>
+    <ol>
     <template is="dom-repeat" as="clevel" items="{{hostInfo.value.levels}}">
       <room-level-gather host="{{host}}" 
         auto
@@ -32,33 +74,48 @@
         year="{{year}}">
       </room-level-gather>
       <template is="dom-repeat" items="{{clevel.rooms}}">
-        <div>
+        <li>
          {{_labelLevel(clevel.level)}} / {{item.room}}
-        </div>
+        </li>
       </template>
     </template>
+    </ol>
+   </div>
   </div>
+
  </template>
  <script>
    Polymer({
      is:'host-management',
      properties:{
        host:String,
-       _reload:{
+       hostInfo:{
+         type:Object,
+         notify:true
+       },
+       _requiredLoadTeacher:{
          type:Boolean,
-         notify:true,
-         value:function() {
-           return false;
-         }
+         computed:'__computedRequiredLoadTeacher(hostInfo)'
+       },
+       _requiredLoadLevel:{
+         type:Boolean,
+         computed:'__load(hostInfo)'
        }
      },
      behaviors:[
        SelectDbByYearBehavior
      ],
-     _load:function(e) {
-       var self = this;
-       this.set('_reload',true);
+     _reload:function() {
+       this.set('hostInfo.value.teachers',[]);
        this.set('hostInfo.value.levels',[]);
+       this.notifyPath('hostInfo');
+       this.__load(this.hostInfo);
+       this.$.teacherLoader.manual_start();
+     },
+     __load:function(hostInfo) {
+       if(hostInfo.value.levels.length>0) return;
+       this.set('hostInfo.value.levels',[]);
+       var self = this;
        for(var l = 1;l<16;l++) {
          var l_st = ''+l
          if(l<10) l_st='0'+l_st;
@@ -100,8 +157,27 @@
        if(intLevel<=3) tmp=dict[0]+intLevel;
        return tmp;
      },
-     _save:function(e) {
+     _onTeacherLoaded:function(e) {
+       this.set('hostInfo.value.teachers',[]);
+       var self = this;
+       e.detail.data.forEach(function(teacher) {
+         self.push('hostInfo.value.teachers',{
+           '_teacher':teacher.key,
+           'name':teacher.value.Firstname+' '+teacher.value.Lastname
+         });
+       });
+     },
+     save:function(e) {
+       //console.log(this.hostInfo);
        this.$.hostInfo.save();
+     },
+     __computedRequiredLoadTeacher:function(hostInfo) {
+       if(hostInfo.value.teachers) {
+         if(hostInfo.value.teachers.length > 0) {
+           return false;
+         }
+       }
+       return true;
      }
    });
  </script>

@@ -44,9 +44,10 @@
      _execute:function(token,host,level,auto) {
        var self = this;
        if(auto) {
-       this.set('rooms',[]);
-       this._checkRoom(1,function(room) {
-       });
+         if(this.rooms.length == 0) {
+           this._checkRoom(1,function(room) {
+           });
+         }
        }
      },
      _checkRoom:function(room,cb) {

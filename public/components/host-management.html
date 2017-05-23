@@ -7,7 +7,6 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/google-chart/google-chart.html">
 <link rel="import" href="host-info.html">
 
 <link rel="import" href="document-loader.html">
@@ -70,11 +69,21 @@
 
    <div id="level" class="layout vertical info-panel">
     <div class="title">ข้อมูลห้องเรียน</div>
-    <google-chart
-     type='table'
-     options='{"title": "ข้อมูลห้องเรียนในแต่ละระดับชั้น"}'
-     data="{{_barData}}">
-    </google-chart>
+    <ol>
+    <template is="dom-repeat" as="clevel" items="{{hostInfo.value.levels}}">
+      <room-level-gather host="{{host}}" 
+        auto
+        rooms="{{clevel.rooms}}"
+        level="{{clevel.level}}" 
+        year="{{year}}">
+      </room-level-gather>
+      <template is="dom-repeat" items="{{clevel.rooms}}">
+        <li>
+         {{_labelLevel(clevel.level)}} / {{item.room}}
+        </li>
+      </template>
+    </template>
+    </ol>
    </div>
   </div>
 
@@ -95,10 +104,6 @@
        _requiredLoadLevel:{
          type:Boolean,
          computed:'__load(hostInfo)'
-       },
-       _barData:{
-         type:Array,
-         computed:'__computeBarData(hostInfo.value.levels)'
        }
      },
      behaviors:[

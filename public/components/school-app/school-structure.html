@@ -68,6 +68,7 @@
     </app-toolbar>
     <iron-pages selected="{{page}}" attr-for-selected="name">
     <paper-tabs scrollable selected="{{room}}" name="classEdit"
+      on-iron-select="_onSelect"
       attr-for-selected="name">
      <template is="dom-repeat" as="level" sort="_sortLevel" 
         items="{{hostInfo.value.levels}}">
@@ -91,7 +92,7 @@
        host-info="{{hostInfo}}" 
        year="{{year}}">
     </host-management>
-    <div class="layout vertical" name="classEdit"> 
+    <div class="layout vertical" name="classEdit" hidden$="{{!showContent}}"> 
      <div class="layout vertical class-teacher">
       <classteacher-select 
         title="รายชื่อครูประจำชั้น"
@@ -227,6 +228,9 @@
        this.$.toast.text = e.detail.message; 
      }
      this.$.toast.open();
+   },
+   _onSelect:function(e) {
+     this.set('showContent',true);
    }
   });
  </script>

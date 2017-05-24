@@ -5,10 +5,16 @@ var bodyParser = require('body-parser');
 var request = require('request');
 
 var app = express();
+
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended:true}));
-
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 var stream = require('./stream');
 logview.config({
@@ -37,7 +43,6 @@ app.post('/login',function(req,res) {
     }
   });
 });
-
 app.get('/view',logview.serve);
 app.post('/view',logview.serve);
 

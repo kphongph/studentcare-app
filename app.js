@@ -1,4 +1,5 @@
 var express = require('express');
+var cors = require('cors');
 var logview = require('leveldb-logview');
 var config = require('./config');
 var bodyParser = require('body-parser');
@@ -7,8 +8,9 @@ var request = require('request');
 var app = express();
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended:true}));
-
 app.use(bodyParser.json());
+app.use(cors());
+
 
 var stream = require('./stream');
 logview.config({

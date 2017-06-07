@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/paper-menu/paper-submenu.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
@@ -98,8 +99,10 @@
                 </template>
               </paper-menu>
             </paper-submenu>
-            <paper-submenu>
-              <paper-item class="menu-trigger">ข้อมูลโรงเรียน</paper-item>
+            <paper-submenu hidden$="{{!_isAdmin(role.roles)}}">
+              <paper-item class="menu-trigger">
+                ส่วนผู้ดูแลระบบ
+              </paper-item>
               <paper-menu class="menu-content sublist" 
                 attr-for-selected="name"
                 selected="{{page}}">
@@ -209,6 +212,9 @@
     },
     _equal: function(value1, value2) {
       return value1 === value2;
+    },
+    _isAdmin: function(list) {
+      return list.indexOf("schooladmin") > -1;
     },
     _loadClassInfo:function(role,hostInfo) {
       if(!role.profile) return;

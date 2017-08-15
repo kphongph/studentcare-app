@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
+/*
 var stream = require('./stream');
 logview.config({
   'url':'https://maas.nuqlis.com:9000/api/log/students_care',
@@ -22,6 +23,8 @@ logview.config({
 
 app.use(logview.handle_match);
 app.use(logview.monitor);
+*/
+
 app.post('/login',function(req,res) {
   //console.log(req.body.user,req.body.pass);
   request({
@@ -40,8 +43,10 @@ app.post('/login',function(req,res) {
   });
 });
 
+/*
 app.get('/view',logview.serve);
 app.post('/view',logview.serve);
+*/
 
 app.listen(config.port, function () {
   console.log('Example app listening on port !',config.port)

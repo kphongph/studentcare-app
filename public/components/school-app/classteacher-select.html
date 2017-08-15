@@ -6,6 +6,8 @@
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 
+<link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
+
 <link rel="import" href="teacher-item.html">
 
 <dom-module id="classteacher-select">
@@ -28,7 +30,10 @@
     .list {
       padding:5px;
     } 
-   
+         .font-face-normal {
+        font-family: 'Itim', cursive;
+        font-size:17px;
+      }
   </style>
 
   <paper-material elevation="1">
@@ -54,7 +59,7 @@
       selected-values="{{selected}}">
       <template is="dom-repeat" items="{{list}}">
         <teacher-item key="{{item._teacher}}">
-          {{item.name}}
+          <div  class="font-face-normal">{{item.name}}</div>
         </teacher-item>
       </template>
     </iron-selector>

@@ -49,7 +49,7 @@
     __computeExecute:function(host) {
       if(host != null) {
         console.log('execute');
-        this.$.loader.query = {'match':[host]};
+        this.$.loader.query = {'match':["host_info",host]};
       }
     },
     _finish:function(e) {

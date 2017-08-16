@@ -108,6 +108,7 @@
                 </template>
               </paper-menu>
             </paper-submenu>
+            <!--
             <paper-submenu hidden$="{{!_isAdmin(role.roles)}}">
               <paper-item class="menu-trigger"  >
                 <div class="font-face-menu">ส่วนผู้ดูแลระบบ</div>
@@ -125,6 +126,7 @@
             </paper-submenu>
             <paper-item name="homepage"  class="font-face-menu">พี่มัท</paper-item>
             <paper-item name="homepage"  class="font-face-menu"></paper-item>
+            -->
             <paper-item name="homepage" on-tap="_signOut" class="font-face-menu">ออกจากระบบ</paper-item>
           </template>
         </paper-menu>
@@ -231,6 +233,7 @@
       if(!role.profile) return;
       var key = role.profile._teacher;
       this.set('assignments',[]);
+
       var dict = {};
       if(hostInfo.value.classteachers) {
         for(var i=0;i<hostInfo.value.classteachers.length;i++) {

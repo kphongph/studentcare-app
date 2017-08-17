@@ -157,16 +157,21 @@
           <template is="dom-if" if="[[_equal(page, 'assignment')]]">
            <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
            </host-info>
+           <!--
+           <span>{{selectedAssignment.level}}</span>
            <iron-pages selected="{{_assignment}}">
            <template is="dom-repeat" items="{{assignments}}">
-             <studentcare-app 
-                host="{{role.profile.hostid}}"
-                level="{{item.level}}"
-                room="{{item.room}}"
-                year="2016">
-             </studentcare-app>
+           -->
+           <studentcare-app 
+              host="{{role.profile.hostid}}"
+              level="{{selectedAssignment.level}}"
+              room="{{selectedAssignment.room}}"
+              year="2016">
+           </studentcare-app>
+           <!--
            </template>
            </iron-pages>
+           -->
           </template>
         </div>
         <div name="teacher">
@@ -205,6 +210,10 @@
           return [];
         }
       },
+      selectedAssignment: {
+        type:Object,
+        computed:'_getSelectedAssignment(assignments,_assignment)'
+      },
       _loadClass:{
         type:Boolean,
         computed:'_loadClassInfo(role,hostInfo)'
@@ -222,6 +231,10 @@
       } else {
         this.set('page','homepage');
       }
+    },
+    _getSelectedAssignment:function(assignments,_assignment) {
+      if(!assignments) return;
+      return assignments[_assignment];
     },
     _equal: function(value1, value2) {
       return value1 === value2;

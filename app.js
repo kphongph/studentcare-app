@@ -1,7 +1,7 @@
 var express = require('express');
 var cors = require('cors');
 var logview = require('leveldb-logview');
-// var config = require('./config');
+var config = require('./config');
 var bodyParser = require('body-parser');
 var request = require('request');
 
@@ -48,6 +48,6 @@ app.get('/view',logview.serve);
 app.post('/view',logview.serve);
 */
 
-app.listen(8081, function () {
-  console.log('Example app listening on port !',8081)
+app.listen(config.port, function () {
+  console.log('Example app listening on port !',config.port)
 })

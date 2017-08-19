@@ -35,8 +35,12 @@ app.post('/login',function(req,res) {
     'pass':req.body.pass
    }
   },function(err,response,body) {
-    if(response.headers && response.headers.authorization) {
-      res.json({success:true,'token':response.headers.authorization});
+    if(!err) {
+      if(response.headers && response.headers.authorization) {
+        res.json({success:true,'token':response.headers.authorization});
+      } else {
+        res.json({success:false});
+      }
     } else {
       res.json({success:false});
     }

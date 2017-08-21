@@ -29,5 +29,9 @@
     "moment-element": "abdonrd/moment-element#^0.4.4",
     "paper-slider": "PolymerElements/paper-slider#^2.0.0",
     "google-chart": "GoogleWebComponents/google-chart#^1.1.2"
+  },
+  "resolutions": {
+    "app-layout": "^1.0.1",
+    "webcomponentsjs": "^v1.0.2"
   }
 }

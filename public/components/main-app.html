@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<!--<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
@@ -17,7 +17,16 @@
 <link rel="import" href="login-box.html">
 <link rel="import" href="host-info.html">
 <link rel="import" href="./school-app/teacher-app.html">
-<link rel="import" href="./school-app/school-structure.html">
+<link rel="import" href="./school-app/school-structure.html">-->
+
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/demo/sample-content.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 
 <link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
 
@@ -25,7 +34,7 @@
   <template>
    <style is="custom-style">
       
-      app-toolbar {
+      /*app-toolbar {
         background-color: #f44336;
         color: #fff;
       }
@@ -42,23 +51,24 @@
         width: 100%;
         --paper-progress-active-color: rgba(255, 255, 255, 0.5);
         --paper-progress-container-color: transparent;
-      }
-      app-header {
+      }*/
+      
+      /*app-header {
         @apply(--layout-fixed-top);
         color: #fff;
         --app-header-background-rear-layer: {
           background-color: #ef6c00;
         };
-      }
+      }*/
 
-      app-drawer {
+     /*app-drawer {
         --app-drawer-layout-content-transition;
         --app-drawer-content-container: {
           background-color: #fff;
         }
-      }
+      }*/
 
-      .sublist paper-item {
+      /*.sublist paper-item {
         padding-left: 30px;
       }
       
@@ -74,8 +84,9 @@
       .paper-item-link {
         color: inherit;
         text-decoration: none;
-      }
-      studentcare-app {
+      }*/
+
+      /*studentcare-app {
         padding:10px;
       }
       .font-face-normal {
@@ -84,21 +95,78 @@
       .font-face-menu {
         font-family: 'Itim', cursive;
         font-size:20px; 
-      }
+      }*/
 
-      iron-icon{
+      /*iron-icon{
         height: 50px;
         width: 50px;
       }
 
       paper-item{
         height: 60px;
+      }*/
+
+    html, body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: #f1f1f1;
+      max-height: 368px;
+    }
+    app-toolbar {
+      background-color: #4285f4;
+      color: #fff;
+    }
+
+    paper-icon-button {
+      --paper-icon-button-ink-color: white;
+    }
+
+    paper-icon-button + [main-title] {
+      margin-left: 24px;
+    }
+    paper-progress {
+      display: block;
+      width: 100%;
+      --paper-progress-active-color: rgba(255, 255, 255, 0.5);
+      --paper-progress-container-color: transparent;
+    }
+    app-header {
+      @apply --layout-fixed-top;
+      color: #fff;
+      --app-header-background-rear-layer: {
+        background-color: #ef6c00;
+      };
+    }
+    app-drawer {
+      --app-drawer-scrim-background: rgba(0, 0, 100, 0.8);
+      --app-drawer-content-container: {
+        background-color: #B0BEC5;
       }
-    </style>    
-    
-   <app-drawer-layout class="font-face-normal"> <!-- force-narrow-->
-      <app-drawer>        
-        <app-toolbar>XXXX</app-toolbar>
+    }
+    sample-content {
+      padding-top: 64px;
+    }
+    </style> 
+
+  <app-header reveals>
+    <app-toolbar>
+      <paper-icon-button icon="menu" on-tap="openDrawer"></paper-icon-button>
+      <div main-title>My app</div>
+      <paper-icon-button icon="delete"></paper-icon-button>
+      <paper-icon-button icon="search"></paper-icon-button>
+      <paper-icon-button icon="close"></paper-icon-button>
+      <paper-progress value="10" indeterminate bottom-item></paper-progress>
+    </app-toolbar>
+  </app-header>
+  <app-drawer id="drawer" swipe-open></app-drawer>
+  <sample-content size="10"></sample-content>
+
+   <!--<app-drawer-layout class="font-face-normal">-->
+
+     <!-- force-narrow-->
+      <!--<app-drawer>        
+        <app-toolbar></app-toolbar>
         <paper-menu selected="{{page}}"
           attr-for-selected="name">
           <paper-item name="homepage" class="font-face-menu">หน้าแรก</paper-item>
@@ -114,22 +182,19 @@
             <paper-item name="homepage" on-tap="_signOut" class="font-face-menu">ออกจากระบบ</paper-item>
           </template>
         </paper-menu>
-      </app-drawer>
+      </app-drawer>-->
 
-
-      <app-header-layout fullbleed>
+      <!-- content -->
+      <!--<app-header-layout fullbleed>
         <app-header fixed>
           <app-toolbar name="default">
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
           </app-toolbar>
         </app-header>
-
-      <!-- content -->
       <div>
       <iron-pages selected="[[page]]" attr-for-selected="name">
         <div name="school">
-          <!-- lazy load -->
           <template is="dom-if" if="[[_equal(page, 'school')]]">
             <school-app host="{{role.profile.hostid}}"> 
             </school-app>
@@ -157,7 +222,6 @@
           </template>
         </div>
         <div name="progress">
-          <!-- lazy load -->
           <template is="dom-if" if="[[_equal(page, 'progress')]]">
            <progress-host host="{{role.profile.hostid}}">
            </progress-host>
@@ -166,7 +230,7 @@
       </iron-pages>
       </div>
       </app-header-layout>
-    </app-drawer-layout>
+    </app-drawer-layout>-->
     
  </template>
  
@@ -199,6 +263,10 @@
     observers:[
      '_signedChanged(signed)'
     ],
+
+    openDrawer: function() {
+      this.$.drawer.toggle();
+    },
     _signOut:function() {
       this.$.loginBox.signOut();
     },

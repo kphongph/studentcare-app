@@ -19,14 +19,26 @@
 <link rel="import" href="./school-app/teacher-app.html">
 <link rel="import" href="./school-app/school-structure.html">-->
 
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<!--<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-layout/demo/sample-content.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">-->
+
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 
 <link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
 
@@ -51,24 +63,24 @@
         width: 100%;
         --paper-progress-active-color: rgba(255, 255, 255, 0.5);
         --paper-progress-container-color: transparent;
-      }*/
+      }
       
-      /*app-header {
+      app-header {
         @apply(--layout-fixed-top);
         color: #fff;
         --app-header-background-rear-layer: {
           background-color: #ef6c00;
         };
-      }*/
+      }
 
-     /*app-drawer {
+     app-drawer {
         --app-drawer-layout-content-transition;
         --app-drawer-content-container: {
           background-color: #fff;
         }
-      }*/
+      }
 
-      /*.sublist paper-item {
+      .sublist paper-item {
         padding-left: 30px;
       }
       
@@ -84,9 +96,9 @@
       .paper-item-link {
         color: inherit;
         text-decoration: none;
-      }*/
+      }
 
-      /*studentcare-app {
+      studentcare-app {
         padding:10px;
       }
       .font-face-normal {
@@ -95,9 +107,9 @@
       .font-face-menu {
         font-family: 'Itim', cursive;
         font-size:20px; 
-      }*/
+      }
 
-      /*iron-icon{
+      iron-icon{
         height: 50px;
         width: 50px;
       }
@@ -105,63 +117,75 @@
       paper-item{
         height: 60px;
       }*/
-
-    html, body {
+    body {
       margin: 0;
-      font-family: 'Roboto', 'Noto', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      background: #f1f1f1;
-      max-height: 368px;
+      font-family: 'Itim', cursive;
+      background-color: #eee;
     }
-    app-toolbar {
+
+    app-header {
       background-color: #4285f4;
       color: #fff;
     }
 
-    paper-icon-button {
-      --paper-icon-button-ink-color: white;
+    app-header paper-icon-button {
+      --paper-icon-button-ink-color: #fff;
     }
 
-    paper-icon-button + [main-title] {
-      margin-left: 24px;
+    app-drawer-layout {
+      --app-drawer-layout-content-transition: margin 0.2s;
     }
-    paper-progress {
-      display: block;
-      width: 100%;
-      --paper-progress-active-color: rgba(255, 255, 255, 0.5);
-      --paper-progress-container-color: transparent;
-    }
-    app-header {
-      @apply --layout-fixed-top;
-      color: #fff;
-      --app-header-background-rear-layer: {
-        background-color: #ef6c00;
-      };
-    }
+
     app-drawer {
-      --app-drawer-scrim-background: rgba(0, 0, 100, 0.8);
       --app-drawer-content-container: {
-        background-color: #B0BEC5;
+        background-color: #eee;
       }
     }
-    sample-content {
-      padding-top: 64px;
+
+    .drawer-content {
+      margin-top: 80px;
+      height: calc(100% - 80px);
+      overflow: auto;
     }
     </style> 
 
-  <app-header reveals>
-    <app-toolbar>
-      <paper-icon-button icon="menu" on-tap="openDrawer"></paper-icon-button>
-      <div main-title>My app</div>
-      <paper-icon-button icon="delete"></paper-icon-button>
-      <paper-icon-button icon="search"></paper-icon-button>
-      <paper-icon-button icon="close"></paper-icon-button>
-      <paper-progress value="10" indeterminate bottom-item></paper-progress>
-    </app-toolbar>
-  </app-header>
-  <app-drawer id="drawer" swipe-open></app-drawer>
-  <sample-content size="10"></sample-content>
-
+    <app-header-layout>
+      <app-header fixed effects="waterfall" slot="header">
+        <app-toolbar>
+          <paper-icon-button id="toggle" icon="menu" on-tap="openDrawer"></paper-icon-button>
+          <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>
+        </app-toolbar>
+      </app-header>
+      <app-drawer-layout id="drawerLayout">
+        <app-drawer slot="drawer" id="drawer" swipe-open>
+          <div class="drawer-content">
+            <paper-icon-item>
+              <iron-icon icon="inbox" slot="item-icon"></iron-icon> <span>Inbox</span>
+            </paper-icon-item>
+            <paper-icon-item>
+              <iron-icon icon="query-builder" slot="item-icon"></iron-icon> <span>Snoozed</span>
+            </paper-icon-item>
+            <paper-icon-item>
+              <iron-icon icon="done" slot="item-icon"></iron-icon> <span>Done</span>
+            </paper-icon-item>
+            <paper-icon-item>
+              <iron-icon icon="drafts" slot="item-icon"></iron-icon> <span>Drafts</span>
+            </paper-icon-item>
+            <paper-icon-item>
+              <iron-icon icon="send" slot="item-icon"></iron-icon> <span>Sent</span>
+            </paper-icon-item>
+            <paper-icon-item>
+              <iron-icon icon="delete" slot="item-icon"></iron-icon> <span>Trash</span>
+            </paper-icon-item>
+            <paper-icon-item>
+              <iron-icon icon="report" slot="item-icon"></iron-icon> <span>Spam</span>
+            </paper-icon-item>
+          </div>
+        </app-drawer>
+        <sample-content size="100"></sample-content>
+      </app-drawer-layout>
+    </app-header-layout>
+    
    <!--<app-drawer-layout class="font-face-normal">-->
 
      <!-- force-narrow-->
@@ -263,7 +287,6 @@
     observers:[
      '_signedChanged(signed)'
     ],
-
     openDrawer: function() {
       this.$.drawer.toggle();
     },

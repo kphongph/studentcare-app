@@ -7,9 +7,9 @@
 <link rel="import" href="school-app/school-structure.html">
 <link rel="import" href="student-app/student-list.html">
 
-<dom-module is="main-route">
+<dom-module id="main-route">
  <template>
-  <style>
+  <style>    
   </style>
   <app-location route="{{route}}" use-hash-as-path></app-location>
 
@@ -19,13 +19,7 @@
     data="{{routeData}}"
     tail="{{subroute}}">
   </app-route>
-
-  <app-route
-    route="{{route}}"
-    pattern="/school_structure/:year/:id"
-    data="{{host}}">
-  </app-route>
-
+ 
   <app-route
     route="{{route}}"
     pattern="/form/:host/:level/:room"
@@ -37,7 +31,6 @@
     pattern="/students/:year/:host/:level/:room"
     data="{{students}}">
   </app-route>
-
 
   <iron-pages selected="[[routeData.page]]" 
     fallback-selection="main"
@@ -54,14 +47,9 @@
    </div>
    <div name="main">
     <main-app></main-app>
-   </div>
-   <div name="school_structure">
-    <template is="dom-if" if="{{_equals(routeData.page,'school_structure')}}">
-     <school-structure host="{{host.id}}" year="{{host.year}}">
-     </school-structure>
-    </template>
-   </div>
+   </div>   
   </iron-pages>
+  
  </template>
  <script>
     Polymer({
@@ -72,6 +60,7 @@
         }
       },
       ready: function(e){
+        console.log('ready');
        this.set('route.path', '/search/');
       },
       _equals:function(a,b) {

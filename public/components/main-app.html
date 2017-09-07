@@ -94,27 +94,29 @@
       paper-item{
         height: 60px;
       }
-    </style>
-
+    </style>    
+    
    <app-drawer-layout class="font-face-normal"> <!-- force-narrow-->
       <app-drawer>        
-        <app-toolbar></app-toolbar>
+        <app-toolbar>XXXX</app-toolbar>
         <paper-menu selected="{{page}}"
           attr-for-selected="name">
-          <paper-item name="homepage" class="font-face-menu"><iron-icon src="/images/home.png"></iron-icon>&nbsp;&nbsp;หน้าแรก</paper-item>
+          <paper-item name="homepage" class="font-face-menu">หน้าแรก</paper-item>
           <template is="dom-if" if="{{signed}}">
             <paper-submenu name="assignment">
-              <paper-item class="menu-trigger font-face-menu"><iron-icon src="/images/assignment.png"></iron-icon>&nbsp;&nbsp;แบบประเมิน</paper-item>
+              <paper-item class="menu-trigger font-face-menu">แบบประเมิน</paper-item>
               <paper-menu class="menu-content sublist" selected="{{_assignment}}">
                 <template is="dom-repeat" items="{{assignments}}">
                   <paper-item raised  class="font-face-normal">{{item.label}}</paper-item>
                 </template>
               </paper-menu>
             </paper-submenu>
-            <paper-item name="homepage" on-tap="_signOut" class="font-face-menu"><iron-icon src="/images/logout.png"></iron-icon>&nbsp;&nbsp;ออกจากระบบ</paper-item>
+            <paper-item name="homepage" on-tap="_signOut" class="font-face-menu">ออกจากระบบ</paper-item>
           </template>
         </paper-menu>
       </app-drawer>
+
+
       <app-header-layout fullbleed>
         <app-header fixed>
           <app-toolbar name="default">

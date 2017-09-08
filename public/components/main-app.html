@@ -19,6 +19,7 @@
 <link rel="import" href="./school-app/teacher-app.html">
 <link rel="import" href="./school-app/school-structure.html">-->
 
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
@@ -142,6 +143,12 @@
       background-color: #2a363b;
       color: #fff;
     }
+
+    .font-face-big-bold{
+      font-family: 'Itim', cursive;
+      font-size: 130%;
+      color: #fff;
+    }
     app-drawer-layout:not([narrow]) [drawer-toggle] {
       display: none;
     }
@@ -153,36 +160,48 @@
     </style> 
 
     <app-drawer-layout>
+      <app-drawer swipe-open slot="drawer">
+        <app-header-layout class="drawer-content"  has-scrolling-region>
+          <app-header class="whiteHeader" waterfall fixed slot="header">
+            <app-toolbar class="drawer-content">
+              <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>
+            </app-toolbar>
+          </app-header>
+          <paper-listbox selected="{{page}}" attr-for-selected="name">
+            <paper-icon-item name="login" class="drawer-content">
+              <iron-icon src="/images/home.png" slot="item-icon"></iron-icon>
+              <span>หน้าแรก</span>
+            </paper-icon-item>
+            <paper-icon-item name="assignment" class="drawer-content">
+              <iron-icon src="/images/classroom.png" slot="item-icon"></iron-icon>
+              <span>แบบประเมิน</span>
+            </paper-icon-item>
+            <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
+              <iron-icon src="/images/logout.png" slot="item-icon"></iron-icon>
+              <span>ออกจากระบบ</span>
+            </paper-icon-item>
+          </paper-listbox>
+        </app-header-layout>
+      </app-drawer>
+        
       <app-header-layout>
         <app-header class="blueHeader" condenses reveals effects="waterfall" slot="header">
             <app-toolbar>
               <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
               </app-toolbar>
-          <app-toolbar></app-toolbar>
           <app-toolbar>
             <div spacer main-title>&nbsp;</div>
           </app-toolbar>
+              <iron-pages selected="{{page}}" attr-for-selected="name">
+                <div name="login"><login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box></div>
+                <div name="assignment">2</div>
+                <div name="homepage">3</div>
+              </iron-pages>
         </app-header>
-        <login-box></login-box>
       </app-header-layout>
-
-        <app-drawer swipe-open slot="drawer">
-          <app-header-layout class="drawer-content"  has-scrolling-region>
-            <app-header class="whiteHeader" waterfall fixed slot="header">
-              <app-toolbar class="drawer-content">
-                <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>
-              </app-toolbar>
-            </app-header>
-            <paper-icon-item class="drawer-content">
-              <iron-icon class="grayIcon" src="/images/home.png" slot="item-icon"></iron-icon>
-              <span>หน้าแรก</span>
-            </paper-icon-item>
-          </app-header-layout>
-        </app-drawer>
-      </app-drawer-layout>
+    </app-drawer-layout>
     
    <!--<app-drawer-layout class="font-face-normal">-->
-
      <!-- force-narrow-->
       <!--<app-drawer>        
         <app-toolbar></app-toolbar>

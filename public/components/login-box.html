@@ -74,11 +74,11 @@
     </div>
   </div>
 
-  <document-loader id="roleloader" 
+  <!--<document-loader id="roleloader" 
     db="role_db" 
     on-finish="_updateRole"
     view="app_user">
-  </document-loader>
+  </document-loader>-->
   
   <iron-ajax 
     id="loginAjax"
@@ -153,7 +153,7 @@
         this.set('token',{'token':res.token});
         this.set('_message','');
         // get role
-        this.__getRole(res.token);
+        //this.__getRole(res.token);
         //this.$.modal.close();
       } else {
         this.set('_message','Invalid User/Password');

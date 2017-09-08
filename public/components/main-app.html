@@ -31,9 +31,16 @@
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="import" href="login-box.html">
 <link rel="import" href="collapse-button.html">
+<link rel="import" href="homepage-app.html">
+<link rel="import" href="progress-host.html">
+<link rel="import" href="host-info.html">
+<link rel="import" href="./school-app/teacher-app.html">
+<link rel="import" href="./school-app/school-structure.html">
 
 <link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
 
@@ -168,22 +175,25 @@
             </app-toolbar>
           </app-header>
           <paper-listbox selected="{{page}}" attr-for-selected="name">
-            <paper-icon-item name="login" class="drawer-content">
+            <paper-icon-item name="homepage" class="drawer-content">
               <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
               <span>หน้าแรก</span>
             </paper-icon-item>
-            <collapse-button>
-              <paper-icon-item name="assignment" 
-                slot="sublist-collapse-item"
-                class="drawer-content">
-                <iron-icon src="{{imgAssignment}}" slot="item-icon"></iron-icon>
-                <span>แบบประเมิน</span>
-              </paper-icon-item>
-                <paper-item>Item 1.1</paper-item>
-                <paper-item>Item 1.2</paper-item>
-                <paper-item>Item 1.3</paper-item>
-            </collapse-button>
-            <paper-icon-item name="homepage" class="drawer-content" >
+            <template is="dom-if" if="{{signed}}">
+              <collapse-button>
+                <paper-icon-item name="assignment" 
+                  slot="sublist-collapse-item"
+                  class="drawer-content"
+                  selected="{{_assignment}}">
+                  <iron-icon src="{{imgAssignment}}" slot="item-icon"></iron-icon>
+                  <span>แบบประเมิน</span>
+                </paper-icon-item>
+                  <template is="dom-repeat" items="{{assignments}}">
+                    <paper-item raised  class="font-face-normal">{{item.label}}</paper-item>
+                  </template>
+              </collapse-button>
+            </template>
+            <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
               <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
               <span>ออกจากระบบ</span>
             </paper-icon-item>
@@ -200,9 +210,42 @@
             <div spacer main-title>&nbsp;</div>
           </app-toolbar>
             <iron-pages selected="{{page}}" attr-for-selected="name">
-              <div name="login"><login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box></div>
+              <!--<div name="login"><login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box></div>
               <div name="assignment">2</div>
-              <div name="homepage">3</div>
+              <div name="homepage">3</div>-->
+              <div name="school">
+                  <template is="dom-if" if="[[_equal(page, 'school')]]">
+                    <school-app host="{{role.profile.hostid}}"> 
+                    </school-app>
+                  </template>
+                </div>
+                <div name="homepage">          
+                  <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
+                  <homepage-app></homepage-app>
+                </div>
+                <div name="assignment">
+                  <template is="dom-if" if="[[_equal(page, 'assignment')]]">
+                   <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
+                   </host-info>
+                   <studentcare-app 
+                      host="{{role.profile.hostid}}"
+                      level="{{selectedAssignment.level}}"
+                      room="{{selectedAssignment.room}}"
+                      year="2016">
+                   </studentcare-app>
+                  </template>
+                </div>
+                <div name="teacher">
+                  <template is="dom-if" if="[[_equal(page, 'teacher')]]">
+                   <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
+                  </template>
+                </div>
+                <div name="progress">
+                  <template is="dom-if" if="[[_equal(page, 'progress')]]">
+                   <progress-host host="{{role.profile.hostid}}">
+                   </progress-host>
+                 </template>
+                </div>
             </iron-pages>
         </app-header>
       </app-header-layout>

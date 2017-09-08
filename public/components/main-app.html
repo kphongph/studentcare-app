@@ -19,15 +19,6 @@
 <link rel="import" href="./school-app/teacher-app.html">
 <link rel="import" href="./school-app/school-structure.html">-->
 
-<!--<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-layout/demo/sample-content.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">-->
-
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
@@ -39,6 +30,8 @@
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+
+<link rel="import" href="login-box.html">
 
 <link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
 
@@ -117,74 +110,76 @@
       paper-item{
         height: 60px;
       }*/
+
     body {
       margin: 0;
       font-family: 'Itim', cursive;
       background-color: #eee;
     }
 
-    app-header {
-      background-color: #4285f4;
+    .blueHeader {
+      background-color: #e84a5f;
       color: #fff;
     }
 
-    app-header paper-icon-button {
-      --paper-icon-button-ink-color: #fff;
+    .blueHeader paper-icon-button {
+      --paper-icon-button-ink-color: white;
     }
 
-    app-drawer-layout {
-      --app-drawer-layout-content-transition: margin 0.2s;
+    .whiteHeader {
+      font-family: 'Itim', cursive;
+      font-size: 115%;
+      background-color: white;
     }
 
-    app-drawer {
-      --app-drawer-content-container: {
-        background-color: #eee;
-      }
+    .iconItem {
+      color: #666;
     }
 
     .drawer-content {
-      margin-top: 80px;
-      height: calc(100% - 80px);
-      overflow: auto;
+      font-family: 'Itim', cursive;
+      font-size: 100%;
+      background-color: #2a363b;
+      color: #fff;
+    }
+    app-drawer-layout:not([narrow]) [drawer-toggle] {
+      display: none;
+    }
+
+    iron-icon{
+      height: 40px;
+      width: 40px;
     }
     </style> 
 
-    <app-header-layout>
-      <app-header fixed effects="waterfall" slot="header">
-        <app-toolbar>
-          <paper-icon-button id="toggle" icon="menu" on-tap="openDrawer"></paper-icon-button>
-          <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>
-        </app-toolbar>
-      </app-header>
-      <app-drawer-layout id="drawerLayout">
-        <app-drawer slot="drawer" id="drawer" swipe-open>
-          <div class="drawer-content">
-            <paper-icon-item>
-              <iron-icon icon="inbox" slot="item-icon"></iron-icon> <span>Inbox</span>
+    <app-drawer-layout>
+      <app-header-layout>
+        <app-header class="blueHeader" condenses reveals effects="waterfall" slot="header">
+            <app-toolbar>
+              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+              </app-toolbar>
+          <app-toolbar></app-toolbar>
+          <app-toolbar>
+            <div spacer main-title>&nbsp;</div>
+          </app-toolbar>
+        </app-header>
+        <login-box></login-box>
+      </app-header-layout>
+
+        <app-drawer swipe-open slot="drawer">
+          <app-header-layout class="drawer-content"  has-scrolling-region>
+            <app-header class="whiteHeader" waterfall fixed slot="header">
+              <app-toolbar class="drawer-content">
+                <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>
+              </app-toolbar>
+            </app-header>
+            <paper-icon-item class="drawer-content">
+              <iron-icon class="grayIcon" src="/images/home.png" slot="item-icon"></iron-icon>
+              <span>หน้าแรก</span>
             </paper-icon-item>
-            <paper-icon-item>
-              <iron-icon icon="query-builder" slot="item-icon"></iron-icon> <span>Snoozed</span>
-            </paper-icon-item>
-            <paper-icon-item>
-              <iron-icon icon="done" slot="item-icon"></iron-icon> <span>Done</span>
-            </paper-icon-item>
-            <paper-icon-item>
-              <iron-icon icon="drafts" slot="item-icon"></iron-icon> <span>Drafts</span>
-            </paper-icon-item>
-            <paper-icon-item>
-              <iron-icon icon="send" slot="item-icon"></iron-icon> <span>Sent</span>
-            </paper-icon-item>
-            <paper-icon-item>
-              <iron-icon icon="delete" slot="item-icon"></iron-icon> <span>Trash</span>
-            </paper-icon-item>
-            <paper-icon-item>
-              <iron-icon icon="report" slot="item-icon"></iron-icon> <span>Spam</span>
-            </paper-icon-item>
-          </div>
+          </app-header-layout>
         </app-drawer>
-        <sample-content size="100"></sample-content>
       </app-drawer-layout>
-    </app-header-layout>
     
    <!--<app-drawer-layout class="font-face-normal">-->
 

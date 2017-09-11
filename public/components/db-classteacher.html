@@ -1,14 +1,13 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html"> 
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html"> 
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <dom-module id="db-classteacher">
  <template>
   <style>
   </style>
-  {{token.token}}
   <app-localstorage-document 
-    id="storage"
     key="jwtToken" 
     data="{{token}}">
   </app-localstorage-document>
@@ -23,33 +22,26 @@
       }
     },
     observers:[
-     '__executeQuery(token)'
+     '__executeQuery(token,tid)'
     ],
-    __executeQuery:function(token) {        
-      console.log(token);
-      /*var ele = document.createElement('iron-request'); 
+    __executeQuery:function(token,tid) {        
+      //console.log(token.token); 
+      console.log(tid.profile._teacher);
+      var _teacher_id= tid.profile._teacher;
+      var ele = document.createElement('iron-request'); 
       var self = this;
       ele.send({
-        url:dbUrl,
-        body:query,
+        url:'https://maas.nuqlis.com:8000/v2/obec/classteacher/query',
+        body:'{"query":{"teacher_id":"8ef813cbdd9f11e6bc01774977b2f887"}}',
         method:"POST",
         handleAs:"json",
         headers:{
-          "Authorization":"JWT "+token,
+          "Authorization":"JWT "+token.token,
           "Content-Type":"application/json"
         }
-      }).then(function(res) {          
-        var list = [];
-        initialSet.forEach(function(item) {
-          list.push({'text':item,'value':item});
-        });          
-        res.response.forEach(function(item) {
-          if(initialSet.indexOf(item)==-1) {
-            list.push({'text':item,'value':item});
-          }
-        })
-        self.set('list',list);
-      });*/
+      }).then(function(res) {    
+        console.log(res.response);      
+      });
     }
   });
  </script>

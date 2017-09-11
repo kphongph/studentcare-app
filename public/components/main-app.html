@@ -148,8 +148,10 @@
                 </template>
               </div>-->
               <div name="homepage">          
-                <!--<homepage-app></homepage-app>-->
-                <db-classteacher></db-classteacher>
+                <homepage-app></homepage-app>
+                <template is="dom-if" if="{{signed}}">
+                  <db-classteacher tid="{{role}}"></db-classteacher>
+                </template>
               </div>
               <div name="login">          
                 <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>

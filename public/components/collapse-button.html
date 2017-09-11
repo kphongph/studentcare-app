@@ -9,12 +9,12 @@
         padding-left: 30px;
       }
     </style>
-    <!-- This slot is your main item. The one the users click to get to the submenu -->
-    <slot name="sublist-collapse-item" on-tap="toggle"></slot>
-    <iron-collapse class="sublist" id="collapse" horizontal$="[[horizontal]]" no-animation$="[[noAnimation]]" opened$="[[opened]]">
-      <!-- This slot does not have a name, therefor everything you will add in the collapse-button will go here and will be in the iron-collapse element -->
-      <slot></slot>
-    </iron-collapse>
+    <!-- This slot is your main item. The one the users click to get to the submenu -->    
+      <slot name="sublist-collapse-item" on-tap="toggle"></slot>
+      <iron-collapse class="sublist" id="collapse" horizontal$="[[horizontal]]" no-animation$="[[noAnimation]]" opened$="[[opened]]">
+        <!-- This slot does not have a name, therefor everything you will add in the collapse-button will go here and will be in the iron-collapse element -->
+        <slot></slot>
+      </iron-collapse>    
   </template>
 
 </dom-module>
@@ -48,7 +48,8 @@
       this.unselectable = 'on';
     }
     toggle(e) {
-      e.stopPropagation();
+      //console.log(this.opened);
+      //e.stopPropagation();
       // This is what makes your submenu hidden or visible.
       this.opened = !this.opened;
     }

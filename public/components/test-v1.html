@@ -1,9 +1,27 @@
 <link rel="import" href="../bower_components/polymer/polymer.html"> 
 
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="collapse-button.html">
+
 <!-- <link rel="import" href="../bower_components/polymer/polymer-element.html"> -->
 <dom-module id="test-v1">
   <template>
     Hello v1
+
+      <paper-listbox>
+        <collapse-button>
+          <paper-item slot="sublist-collapse-item">item 1</paper-item>
+            <paper-item class="font-face-normal">item 1.1</paper-item>
+            <paper-item class="font-face-normal">item 1.2</paper-item>
+        </collapse-button>
+        <paper-item>item 2</paper-item>
+        <collapse-button>
+          <paper-item slot="sublist-collapse-item">item 3</paper-item>
+            <paper-item class="font-face-normal">item 3.1</paper-item>
+            <paper-item class="font-face-normal">item 3.2</paper-item>
+        </collapse-button>
+      </paper-listbox>
   </template>
   <script>
     /*

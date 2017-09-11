@@ -20,6 +20,7 @@
 <link rel="import" href="./school-app/school-structure.html">-->
 
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
@@ -171,33 +172,56 @@
         <app-header-layout class="drawer-content"  has-scrolling-region>
           <app-header class="whiteHeader" waterfall fixed slot="header">
             <app-toolbar class="drawer-content">
-              <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>
+              <div main-title>ระบบดูแลช่วยเหลือนักเรียน {{page}}</div>
             </app-toolbar>
           </app-header>
           <paper-listbox selected="{{page}}" attr-for-selected="name">
-            <paper-icon-item name="homepage" class="drawer-content">
+            <paper-icon-item class="drawer-content" name="homepage">
               <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
-              <span>หน้าแรก</span>
+              <span name="homepage" id="homepage">หน้าแรก</span>
             </paper-icon-item>
+
             <template is="dom-if" if="{{signed}}">
-              <collapse-button>
-                <paper-icon-item name="assignment" 
+              <paper-collapse-item icon="icons:favorite" 
+                name="assignment"
+                header="แบบประเมิน">
+                <paper-listbox selected="{{_assignment}}">
+                <template is="dom-repeat" items="{{assignments}}">
+                  <paper-item                     
+                    class="font-face-normal">{{item.label}}</paper-item>                  
+                </template>
+                </paper-listbox>
+              </paper-collapse-item>
+              <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
+                <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
+                <span>ออกจากระบบ</span>
+              </paper-icon-item>     
+            </paper-listbox>
+            </template>
+            
+            <!--<paper-icon-item class="drawer-content" name="homepage11">
+                <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
+                <span name="homepage" id="homepage">หน้าแรก 11</span>
+              </paper-icon-item>
+            <template is="dom-if" if="{{signed}}">
+              <collapse-button name="assignment">
+                <paper-icon-item name="assignment"
                   slot="sublist-collapse-item"
                   class="drawer-content"
                   selected="{{_assignment}}">
                   <iron-icon src="{{imgAssignment}}" slot="item-icon"></iron-icon>
                   <span>แบบประเมิน</span>
                 </paper-icon-item>
-                  <template is="dom-repeat" items="{{assignments}}">
-                    <paper-item raised  class="font-face-normal">{{item.label}}</paper-item>
-                  </template>
-              </collapse-button>
+                <template is="dom-repeat" items="{{assignments}}">
+                  <paper-item raised  class="font-face-normal">{{item.label}}</paper-item>
+                </template>
+              </collapse-button>   
             </template>
             <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
               <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
               <span>ออกจากระบบ</span>
-            </paper-icon-item>
-          </paper-listbox>
+            </paper-icon-item>     
+          </paper-listbox>-->
         </app-header-layout>
       </app-drawer>
         
@@ -211,38 +235,42 @@
           </app-toolbar>
             <iron-pages selected="{{page}}" attr-for-selected="name">
               <div name="school">
-                  <template is="dom-if" if="[[_equal(page, 'school')]]">
-                    <school-app host="{{role.profile.hostid}}"> 
-                    </school-app>
-                  </template>
-                </div>
-                <div name="homepage">          
-                  <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
-                  <homepage-app></homepage-app>
-                </div>
-                <div name="assignment">
-                  <template is="dom-if" if="[[_equal(page, 'assignment')]]">
-                   <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
-                   </host-info>
-                   <studentcare-app 
-                      host="{{role.profile.hostid}}"
-                      level="{{selectedAssignment.level}}"
-                      room="{{selectedAssignment.room}}"
-                      year="2016">
-                   </studentcare-app>
-                  </template>
-                </div>
-                <div name="teacher">
-                  <template is="dom-if" if="[[_equal(page, 'teacher')]]">
-                   <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
-                  </template>
-                </div>
-                <div name="progress">
-                  <template is="dom-if" if="[[_equal(page, 'progress')]]">
-                   <progress-host host="{{role.profile.hostid}}">
-                   </progress-host>
-                 </template>
-                </div>
+                <template is="dom-if" if="[[_equal(page, 'school')]]">
+                  <school-app host="{{role.profile.hostid}}"> 
+                  </school-app>
+                </template>
+              </div>
+              <div name="homepage">          
+
+                <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
+                <homepage-app></homepage-app>
+              </div>
+              <div name="assignment">                
+                <template is="dom-if" if="[[_equal(page, 'assignment')]]">
+                  <!--
+                  <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
+                  </host-info>
+                  -->                  
+
+                  <studentcare-app 
+                    host="{{role.profile.hostid}}"
+                    level="{{selectedAssignment.level}}"
+                    room="{{selectedAssignment.room}}"
+                    year="2016">
+                  </studentcare-app>
+                </template>
+              </div>
+              <div name="teacher">
+                <template is="dom-if" if="[[_equal(page, 'teacher')]]">
+                  <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
+                </template>
+              </div>
+              <div name="progress">
+                <template is="dom-if" if="[[_equal(page, 'progress')]]">
+                  <progress-host host="{{role.profile.hostid}}">
+                  </progress-host>
+                </template>
+              </div>
             </iron-pages>
         </app-header>
       </app-header-layout>
@@ -342,7 +370,7 @@
       },
       _loadClass:{
         type:Boolean,
-        computed:'_loadClassInfo(role,hostInfo)'
+        computed:'_loadClassInfo(role)'
       },
       imgHome:{
         type:String,
@@ -379,6 +407,11 @@
         this.set('page','homepage');
       }
     },
+    _setActiveAssignment:function(event) {            
+      console.log('active');
+      this.set('page','assignment');
+      
+    },
     _imgHome:function(){
       return this.resolveUrl("/images/home.png");
     },
@@ -389,6 +422,8 @@
       return this.resolveUrl("/images/logout.png");
     },
     _getSelectedAssignment:function(assignments,_assignment) {
+      console.log(assignments);
+      console.log(_assignment);      
       if(!assignments) return;
       return assignments[_assignment];
     },
@@ -398,13 +433,14 @@
     _isAdmin: function(list) {
       return list && list.indexOf("schooladmin") > -1;
     },
-    _loadClassInfo:function(role,hostInfo) {
+    _loadClassInfo:function(role) {
       if(!role.profile) return;
       var key = role.profile._teacher;
       //console.log(key);
       this.set('assignments',[]);
 
       var dict = {};
+      /*
       if(hostInfo.value.classteachers) {
         for(var i=0;i<hostInfo.value.classteachers.length;i++) {
           var ct = hostInfo.value.classteachers[i];
@@ -433,6 +469,7 @@
           }
         }
       }
+      */
       for(var key in dict) {
         var classroom = "";
         var room = "";
@@ -461,13 +498,21 @@
         }else if(dict[key].level=="15"){
           classroom = "มัธยมศึกษาปีที่ 6";
         }
-
+        /*
         this.push('assignments',{
           'label':classroom+'/'+dict[key].room,
           'level':dict[key].level,
           'room':dict[key].room
         });
+        */
+       
       }
+
+      this.push('assignments',{
+          'label':'ประถมศึกษาปีที่ 1/1',
+          'level':'04',
+          'room':'1'
+        });
     },
     _teacherListRefresh:function(e) {
       this.$$('teacher-app').refresh();

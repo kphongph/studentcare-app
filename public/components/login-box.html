@@ -74,12 +74,6 @@
       </div>
     </div>
   </div>
-
-  <!--<document-loader id="roleloader" 
-    db="role_db" 
-    on-finish="_updateRole"
-    view="app_user">
-  </document-loader>-->
   
   <iron-ajax 
     id="loginAjax"
@@ -88,6 +82,16 @@
     on-response="_onResponse"
     content-type="application/json"
     body$='{"user":"{{user}}","pass":"{{pass}}"}'>
+  </iron-ajax>
+
+
+  <iron-ajax 
+    id="getRoleAjax"
+    url="https://maas.nuqlis.com:8000/v2/cores/role_db/query"
+    method="POST"
+    on-response="_onRoleResponse"
+    content-type="application/json"
+    body$='{"query":{"user":"{{user}}","application":"student-care"}}'>
   </iron-ajax>
    
   <app-localstorage-document 
@@ -114,7 +118,9 @@
      role: {
        type:Object,
        notify:true,
-       value:{}
+       value:function() {
+         return {};
+       }
      },
      signed:{
        type:Boolean,
@@ -133,13 +139,14 @@
     _computeSigned:function(token) {
       return token.token != null;
     },
-    __getRole:function(token) {
-      var a = token.split(".");
-      var uClaim = b64utos(a[1]);
-      var pClaim = KJUR.jws.JWS.readSafeJSONString(uClaim);
-      var query = {'match':["student-care",pClaim.UserID]};
-      this.$.roleloader.query=JSON.stringify(query);
+    _onRoleResponse:function(e) {
+      var response = e.detail.response;
+      if(response.length == 1) {
+        var doc = response[0];
+        this.set('role',doc);
+      }
     },
+    /*
     _updateRole:function(e) {
       //console.log(e.detail);
       if(e.detail.data.length >= 1) {
@@ -147,15 +154,18 @@
         this.set('role',e.detail.data[0].value);
       }
     },
+    */
     _onResponse:function(e) {
-      var res = e.detail.response;
-      console.log(res);
+      var res = e.detail.response;      
       if(res.success) {
         this.set('token',{'token':res.token});
         this.set('_message','');
         // get role
-        //this.__getRole(res.token);
-        //this.$.modal.close();
+        this.$.getRoleAjax.headers = {
+          'Authorization':'JWT '+res.token
+        };
+                
+        this.$.getRoleAjax.generateRequest();        
       } else {
         this.set('_message','Invalid User/Password');
       }

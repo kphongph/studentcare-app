@@ -1,24 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<!--<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../bower_components/paper-menu/paper-submenu.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
-<link rel="import" href="../bower_components/paper-styles/typography.html">
-<link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="homepage-app.html">
-<link rel="import" href="progress-host.html">
-<link rel="import" href="login-box.html">
-<link rel="import" href="host-info.html">
-<link rel="import" href="./school-app/teacher-app.html">
-<link rel="import" href="./school-app/school-structure.html">-->
-
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
@@ -36,10 +16,10 @@
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="import" href="login-box.html">
-<link rel="import" href="collapse-button.html">
 <link rel="import" href="homepage-app.html">
 <link rel="import" href="progress-host.html">
 <link rel="import" href="host-info.html">
+<link rel="import" href="db-classteacher.html">
 <link rel="import" href="./school-app/teacher-app.html">
 <link rel="import" href="./school-app/school-structure.html">
 
@@ -48,85 +28,20 @@
 <dom-module id="main-app">
   <template>
    <style is="custom-style">
-      
-      /*app-toolbar {
-        background-color: #f44336;
-        color: #fff;
-      }
-      
-      paper-icon-button {
-        --paper-icon-button-ink-color: white;
-      }
-
-      paper-icon-button + [main-title] {
-        margin-left: 24px;
-      }
-      paper-progress {
-        display: block;
-        width: 100%;
-        --paper-progress-active-color: rgba(255, 255, 255, 0.5);
-        --paper-progress-container-color: transparent;
-      }
-      
-      app-header {
-        @apply(--layout-fixed-top);
-        color: #fff;
-        --app-header-background-rear-layer: {
-          background-color: #ef6c00;
-        };
-      }
-
-     app-drawer {
-        --app-drawer-layout-content-transition;
-        --app-drawer-content-container: {
-          background-color: #fff;
-        }
-      }
-
-      .sublist paper-item {
-        padding-left: 30px;
-      }
-      
-      paper-dialog {
-        margin:0px;
-      }
-      .user-info {
-        @apply(--paper-font-title);
-      }
-      @media (min-width: 400px) {
-    
-      }
-      .paper-item-link {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      studentcare-app {
-        padding:10px;
-      }
-      .font-face-normal {
-        font-family: 'Itim', cursive;
-      }
-      .font-face-menu {
-        font-family: 'Itim', cursive;
-        font-size:20px; 
-      }
-
-      iron-icon{
-        height: 50px;
-        width: 50px;
-      }
-
-      paper-item{
-        height: 60px;
-      }*/
-
     body {
       margin: 0;
       font-family: 'Itim', cursive;
       background-color: #eee;
     }
 
+    .paper-collapse-styled {
+      --paper-collapse-item-header: {
+        font-family: 'Itim', cursive;
+        font-size: 100%;
+        /*background-color: #2a363b;
+        color: #fff;*/
+      }
+    }
     .blueHeader {
       background-color: #00bbd3;
       color: #fff;
@@ -166,62 +81,54 @@
       height: 40px;
       width: 40px;
     }
+    /*paper-listbox{
+      background-color: #2a363b;
+    }*/
+
+    paper-item{
+      /*margin-left: 30px;*/
+      font-family: 'Itim', cursive;
+      font-size: 100%;
+    }
     </style> 
     <app-drawer-layout>
       <app-drawer swipe-open slot="drawer">
         <app-header-layout class="drawer-content"  has-scrolling-region>
           <app-header class="whiteHeader" waterfall fixed slot="header">
             <app-toolbar class="drawer-content">
-              <div main-title>ระบบดูแลช่วยเหลือนักเรียน {{page}}</div>
+              <div main-title>ระบบดูแลช่วยเหลือนักเรียน<!--{{page}}--></div>
             </app-toolbar>
           </app-header>
           <paper-listbox selected="{{page}}" attr-for-selected="name">
-            <paper-icon-item class="drawer-content" name="homepage">
+            <template is="dom-if" if="{{!signed}}">
+              <paper-icon-item class="drawer-content" name="login">
               <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
               <span name="homepage" id="homepage">หน้าแรก</span>
             </paper-icon-item>
-
+            </template>
+            <template is="dom-if" if="{{signed}}">
+              <paper-icon-item class="drawer-content" name="homepage">
+                <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
+                <span name="homepage" id="homepage">หน้าแรก</span>
+              </paper-icon-item>
+            </template>
             <template is="dom-if" if="{{signed}}">
               <paper-collapse-item icon="icons:favorite" 
                 name="assignment"
-                header="แบบประเมิน">
+                header="แบบประเมิน"
+                class="paper-collapse-styled">
                 <paper-listbox selected="{{_assignment}}">
                 <template is="dom-repeat" items="{{assignments}}">
-                  <paper-item                     
-                    class="font-face-normal">{{item.label}}</paper-item>                  
+                  <paper-item class="font-face-normal">{{item.label}}</paper-item>                  
                 </template>
                 </paper-listbox>
               </paper-collapse-item>
               <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
                 <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
                 <span>ออกจากระบบ</span>
-              </paper-icon-item>     
-            </paper-listbox>
-            </template>
-            
-            <!--<paper-icon-item class="drawer-content" name="homepage11">
-                <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
-                <span name="homepage" id="homepage">หน้าแรก 11</span>
-              </paper-icon-item>
-            <template is="dom-if" if="{{signed}}">
-              <collapse-button name="assignment">
-                <paper-icon-item name="assignment"
-                  slot="sublist-collapse-item"
-                  class="drawer-content"
-                  selected="{{_assignment}}">
-                  <iron-icon src="{{imgAssignment}}" slot="item-icon"></iron-icon>
-                  <span>แบบประเมิน</span>
-                </paper-icon-item>
-                <template is="dom-repeat" items="{{assignments}}">
-                  <paper-item raised  class="font-face-normal">{{item.label}}</paper-item>
-                </template>
-              </collapse-button>   
-            </template>
-            <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
-              <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
-              <span>ออกจากระบบ</span>
-            </paper-icon-item>     
-          </paper-listbox>-->
+              </paper-icon-item> 
+            </template>    
+          </paper-listbox>
         </app-header-layout>
       </app-drawer>
         
@@ -234,24 +141,21 @@
             <div spacer main-title>&nbsp;</div>
           </app-toolbar>
             <iron-pages selected="{{page}}" attr-for-selected="name">
-              <div name="school">
+              <!--<div name="school">
                 <template is="dom-if" if="[[_equal(page, 'school')]]">
                   <school-app host="{{role.profile.hostid}}"> 
                   </school-app>
                 </template>
-              </div>
+              </div>-->
               <div name="homepage">          
-
+                <!--<homepage-app></homepage-app>-->
+                <db-classteacher></db-classteacher>
+              </div>
+              <div name="login">          
                 <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
-                <homepage-app></homepage-app>
               </div>
               <div name="assignment">                
-                <template is="dom-if" if="[[_equal(page, 'assignment')]]">
-                  <!--
-                  <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
-                  </host-info>
-                  -->                  
-
+                <template is="dom-if" if="[[_equal(page, 'assignment')]]">              
                   <studentcare-app 
                     host="{{role.profile.hostid}}"
                     level="{{selectedAssignment.level}}"
@@ -260,7 +164,7 @@
                   </studentcare-app>
                 </template>
               </div>
-              <div name="teacher">
+              <!--<div name="teacher">
                 <template is="dom-if" if="[[_equal(page, 'teacher')]]">
                   <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
                 </template>
@@ -270,81 +174,11 @@
                   <progress-host host="{{role.profile.hostid}}">
                   </progress-host>
                 </template>
-              </div>
+              </div>-->
             </iron-pages>
         </app-header>
       </app-header-layout>
     </app-drawer-layout>
-
-   <!--<app-drawer-layout class="font-face-normal">-->
-     <!-- force-narrow-->
-      <!--<app-drawer>        
-        <app-toolbar></app-toolbar>
-        <paper-menu selected="{{page}}"
-          attr-for-selected="name">
-          <paper-item name="homepage" class="font-face-menu">หน้าแรก</paper-item>
-          <template is="dom-if" if="{{signed}}">
-            <paper-submenu name="assignment">
-              <paper-item class="menu-trigger font-face-menu">แบบประเมิน</paper-item>
-              <paper-menu class="menu-content sublist" selected="{{_assignment}}">
-                <template is="dom-repeat" items="{{assignments}}">
-                  <paper-item raised  class="font-face-normal">{{item.label}}</paper-item>
-                </template>
-              </paper-menu>
-            </paper-submenu>
-            <paper-item name="homepage" on-tap="_signOut" class="font-face-menu">ออกจากระบบ</paper-item>
-          </template>
-        </paper-menu>
-      </app-drawer>-->
-
-      <!-- content -->
-      <!--<app-header-layout fullbleed>
-        <app-header fixed>
-          <app-toolbar name="default">
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>ระบบดูแลช่วยเหลือนักเรียน</div>   
-          </app-toolbar>
-        </app-header>
-      <div>
-      <iron-pages selected="[[page]]" attr-for-selected="name">
-        <div name="school">
-          <template is="dom-if" if="[[_equal(page, 'school')]]">
-            <school-app host="{{role.profile.hostid}}"> 
-            </school-app>
-          </template>
-        </div>
-        <div name="homepage">          
-          <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
-          <homepage-app></homepage-app>
-        </div>
-        <div name="assignment">
-          <template is="dom-if" if="[[_equal(page, 'assignment')]]">
-           <host-info host="{{role.profile.hostid}}" document="{{hostInfo}}">
-           </host-info>
-           <studentcare-app 
-              host="{{role.profile.hostid}}"
-              level="{{selectedAssignment.level}}"
-              room="{{selectedAssignment.room}}"
-              year="2016">
-           </studentcare-app>
-          </template>
-        </div>
-        <div name="teacher">
-          <template is="dom-if" if="[[_equal(page, 'teacher')]]">
-           <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
-          </template>
-        </div>
-        <div name="progress">
-          <template is="dom-if" if="[[_equal(page, 'progress')]]">
-           <progress-host host="{{role.profile.hostid}}">
-           </progress-host>
-         </template>
-        </div>
-      </iron-pages>
-      </div>
-      </app-header-layout>
-    </app-drawer-layout>-->
-    
  </template>
  
  <script>
@@ -408,22 +242,21 @@
       }
     },
     _setActiveAssignment:function(event) {            
-      console.log('active');
+      //console.log('active');
       this.set('page','assignment');
-      
     },
     _imgHome:function(){
-      return this.resolveUrl("/images/home.png");
+      return this.resolveUrl("/components/images/home.png");
     },
     _imgAssignment:function(){
-      return this.resolveUrl("/images/classroom.png");
+      return this.resolveUrl("/components/images/classroom.png");
     },
     _imgLogout:function(){
-      return this.resolveUrl("/images/logout.png");
+      return this.resolveUrl("/components/images/logout.png");
     },
     _getSelectedAssignment:function(assignments,_assignment) {
-      console.log(assignments);
-      console.log(_assignment);      
+      //console.log(assignments);
+      //console.log(_assignment);      
       if(!assignments) return;
       return assignments[_assignment];
     },

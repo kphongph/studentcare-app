@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html"> 
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="db-classteacher">
+ <template>
+  <style>
+  </style>
+  {{token.token}}
+  <app-localstorage-document 
+    id="storage"
+    key="jwtToken" 
+    data="{{token}}">
+  </app-localstorage-document>
+ </template>
+ <script>
+  Polymer({
+    is:"db-classteacher",
+    properties:{
+     token: {
+       type:Object,
+       value:{}
+      }
+    },
+    observers:[
+     '__executeQuery(token)'
+    ],
+    __executeQuery:function(token) {        
+      console.log(token);
+      /*var ele = document.createElement('iron-request'); 
+      var self = this;
+      ele.send({
+        url:dbUrl,
+        body:query,
+        method:"POST",
+        handleAs:"json",
+        headers:{
+          "Authorization":"JWT "+token,
+          "Content-Type":"application/json"
+        }
+      }).then(function(res) {          
+        var list = [];
+        initialSet.forEach(function(item) {
+          list.push({'text':item,'value':item});
+        });          
+        res.response.forEach(function(item) {
+          if(initialSet.indexOf(item)==-1) {
+            list.push({'text':item,'value':item});
+          }
+        })
+        self.set('list',list);
+      });*/
+    }
+  });
+ </script>
+</dom-module>

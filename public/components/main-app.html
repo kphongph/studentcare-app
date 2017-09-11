@@ -127,7 +127,7 @@
     }
 
     .blueHeader {
-      background-color: #e84a5f;
+      background-color: #00bbd3;
       color: #fff;
     }
 
@@ -210,9 +210,6 @@
             <div spacer main-title>&nbsp;</div>
           </app-toolbar>
             <iron-pages selected="{{page}}" attr-for-selected="name">
-              <!--<div name="login"><login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box></div>
-              <div name="assignment">2</div>
-              <div name="homepage">3</div>-->
               <div name="school">
                   <template is="dom-if" if="[[_equal(page, 'school')]]">
                     <school-app host="{{role.profile.hostid}}"> 

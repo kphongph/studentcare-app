@@ -17,11 +17,11 @@
 
 <link rel="import" href="login-box.html">
 <link rel="import" href="homepage-app.html">
-<link rel="import" href="progress-host.html">
+<!--<link rel="import" href="progress-host.html">
 <link rel="import" href="host-info.html">
-<link rel="import" href="db-classteacher.html">
 <link rel="import" href="./school-app/teacher-app.html">
-<link rel="import" href="./school-app/school-structure.html">
+<link rel="import" href="./school-app/school-structure.html">-->
+<link rel="import" href="db-classteacher.html">
 
 <link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
 
@@ -90,6 +90,16 @@
       font-family: 'Itim', cursive;
       font-size: 100%;
     }
+
+    studentcare-app{
+      /*margin-left: 20px;*/
+      width: 96%;
+    }
+
+    .align-center{
+      @apply --layout-horizontal;
+      @apply --layout-center-justified;
+    }
     </style> 
     <app-drawer-layout>
       <app-drawer swipe-open slot="drawer">
@@ -150,14 +160,14 @@
               <div name="login">          
                 <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
               </div>
-              <div name="assignment">                
+              <div name="assignment" class="align-center">                
                 <template is="dom-if" if="[[_equal(page, 'assignment')]]">              
                   <!--<studentcare-app 
                     host="{{role.profile.hostid}}"
                     level="{{selectedAssignment.level}}"
                     room="{{selectedAssignment.room}}"
                     year="2016">-->
-                  <studentcare-app 
+                  <studentcare-app
                     host="{{selectedAssignment.host}}"
                     level="{{selectedAssignment.level}}"
                     room="{{selectedAssignment.room}}"
@@ -257,7 +267,7 @@
       return list && list.indexOf("schooladmin") > -1;
     },
     _loadClassInfo:function(classteacher) {
-      console.log(classteacher);
+      //console.log(classteacher);
       if(!classteacher.classname) return;
       this.set('assignments',[]);
       var dict = {};

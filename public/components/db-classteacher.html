@@ -6,11 +6,20 @@
 <dom-module id="db-classteacher">
  <template>
   <style>
-  </style>
+  </style>  
   <app-localstorage-document 
     key="jwtToken" 
     data="{{token}}">
   </app-localstorage-document>
+
+  <iron-ajax 
+    id="getTeacherId"
+    url="https://maas.nuqlis.com:8000/v2/obec/classteacher/query"
+    method="POST"
+    on-response="_onTeacherIdResponse"
+    content-type="application/json"
+    body$='{"query":{"teacher_id":"{{tid}}"}}'>
+  </iron-ajax>
  </template>
  <script>
   Polymer({
@@ -21,27 +30,18 @@
        value:{}
       }
     },
+    _onTeacherIdResponse:function(e) {
+      console.log('test',e.detail.response);
+    },
     observers:[
-     '__executeQuery(token,tid)'
+     '__executeQuery(token.token,tid)'
     ],
-    __executeQuery:function(token,tid) {        
-      //console.log(token.token); 
-      console.log(tid.profile._teacher);
-      var _teacher_id= tid.profile._teacher;
-      var ele = document.createElement('iron-request'); 
-      var self = this;
-      ele.send({
-        url:'https://maas.nuqlis.com:8000/v2/obec/classteacher/query',
-        body:'{"query":{"teacher_id":"8ef813cbdd9f11e6bc01774977b2f887"}}',
-        method:"POST",
-        handleAs:"json",
-        headers:{
-          "Authorization":"JWT "+token.token,
-          "Content-Type":"application/json"
-        }
-      }).then(function(res) {    
-        console.log(res.response);      
-      });
+    __executeQuery:function(token,tid) {       
+      if(tid==null || token == null) return;
+      this.$.getTeacherId.headers = {
+        'Authorization':'JWT '+token
+      };      
+      this.$.getTeacherId.generateRequest();
     }
   });
  </script>

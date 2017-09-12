@@ -141,16 +141,10 @@
             <div spacer main-title>&nbsp;</div>
           </app-toolbar>
             <iron-pages selected="{{page}}" attr-for-selected="name">
-              <!--<div name="school">
-                <template is="dom-if" if="[[_equal(page, 'school')]]">
-                  <school-app host="{{role.profile.hostid}}"> 
-                  </school-app>
-                </template>
-              </div>-->
               <div name="homepage">          
                 <homepage-app></homepage-app>
                 <template is="dom-if" if="{{signed}}">
-                  <db-classteacher tid="{{role.profile._teacher}}"></db-classteacher>
+                  <db-classteacher tid="{{role.profile._teacher}}" classteacher="{{classteacher}}"></db-classteacher>
                 </template>
               </div>
               <div name="login">          
@@ -158,25 +152,19 @@
               </div>
               <div name="assignment">                
                 <template is="dom-if" if="[[_equal(page, 'assignment')]]">              
-                  <studentcare-app 
+                  <!--<studentcare-app 
                     host="{{role.profile.hostid}}"
                     level="{{selectedAssignment.level}}"
                     room="{{selectedAssignment.room}}"
-                    year="2016">
+                    year="2016">-->
+                  <studentcare-app 
+                    host="{{selectedAssignment.host}}"
+                    level="{{selectedAssignment.level}}"
+                    room="{{selectedAssignment.room}}"
+                    year="{{selectedAssignment.year}}">
                   </studentcare-app>
                 </template>
               </div>
-              <!--<div name="teacher">
-                <template is="dom-if" if="[[_equal(page, 'teacher')]]">
-                  <teacher-app host="{{role.profile.hostid}}"></teacher-app> 
-                </template>
-              </div>
-              <div name="progress">
-                <template is="dom-if" if="[[_equal(page, 'progress')]]">
-                  <progress-host host="{{role.profile.hostid}}">
-                  </progress-host>
-                </template>
-              </div>-->
             </iron-pages>
         </app-header>
       </app-header-layout>
@@ -206,7 +194,7 @@
       },
       _loadClass:{
         type:Boolean,
-        computed:'_loadClassInfo(role)'
+        computed:'_loadClassInfo(classteacher)'
       },
       imgHome:{
         type:String,
@@ -268,85 +256,17 @@
     _isAdmin: function(list) {
       return list && list.indexOf("schooladmin") > -1;
     },
-    _loadClassInfo:function(role) {
-      if(!role.profile) return;
-      var key = role.profile._teacher;
-      //console.log(key);
+    _loadClassInfo:function(classteacher) {
+      console.log(classteacher);
+      if(!classteacher.classname) return;
       this.set('assignments',[]);
-
       var dict = {};
-      /*
-      if(hostInfo.value.classteachers) {
-        for(var i=0;i<hostInfo.value.classteachers.length;i++) {
-          var ct = hostInfo.value.classteachers[i];
-          if(ct.teachers && ct.teachers.indexOf(key) != -1) {
-            var _key = ct.level+'-'+ct.room;
-            if(!dict[_key]) {
-              dict[_key]={
-                'level':ct.level,
-                'room':ct.room
-              };
-            }
-          }
-        }
-      }
-      if(hostInfo.value.teachteachers) {
-        for(var i=0;i<hostInfo.value.teachteachers.length;i++) {
-          var ct = hostInfo.value.teachteachers[i];
-          if(ct.teachers && ct.teachers.indexOf(key) != -1) {
-            var _key = ct.level+'-'+ct.room;
-            if(!dict[_key]) {
-              dict[_key]={
-                'level':ct.level,
-                'room':ct.room
-              };
-            }
-          }
-        }
-      }
-      */
-      for(var key in dict) {
-        var classroom = "";
-        var room = "";
-        if(dict[key].level=="04"){
-          classroom = "ประถมศึกษาปีที่ 1";
-        }else if(dict[key].level=="05"){
-          classroom = "ประถมศึกษาปีที่ 2";
-        }else if(dict[key].level=="06"){
-          classroom = "ประถมศึกษาปีที่ 3";
-        }else if(dict[key].level=="07"){
-          classroom = "ประถมศึกษาปีที่ 4";
-        }else if(dict[key].level=="08"){
-          classroom = "ประถมศึกษาปีที่ 5";
-        }else if(dict[key].level=="09"){
-          classroom = "ประถมศึกษาปีที่ 6";
-        }else if(dict[key].level=="10"){
-          classroom = "มัธยมศึกษาปีที่ 1";
-        }else if(dict[key].level=="11"){
-          classroom = "มัธยมศึกษาปีที่ 2";
-        }else if(dict[key].level=="12"){
-          classroom = "มัธยมศึกษาปีที่ 3";
-        }else if(dict[key].level=="13"){
-          classroom = "มัธยมศึกษาปีที่ 4";
-        }else if(dict[key].level=="14"){
-          classroom = "มัธยมศึกษาปีที่ 5";
-        }else if(dict[key].level=="15"){
-          classroom = "มัธยมศึกษาปีที่ 6";
-        }
-        /*
-        this.push('assignments',{
-          'label':classroom+'/'+dict[key].room,
-          'level':dict[key].level,
-          'room':dict[key].room
-        });
-        */
-       
-      }
-
       this.push('assignments',{
-          'label':'ประถมศึกษาปีที่ 1/1',
-          'level':'04',
-          'room':'1'
+          'label':classteacher.classname+'/'+classteacher.room,
+          'level':classteacher.classname,
+          'room':classteacher.room,
+          'host':classteacher.host,
+          'year':classteacher.year
         });
     },
     _teacherListRefresh:function(e) {

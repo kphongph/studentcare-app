@@ -28,10 +28,22 @@
      token: {
        type:Object,
        value:{}
+      },
+      classteacher: {
+       type:Object,
+       notify:true,
+       value:function() {
+         return {};
+       }
       }
     },
     _onTeacherIdResponse:function(e) {
-      console.log('test',e.detail.response);
+      //console.log('test',e.detail.response);
+      var response = e.detail.response;
+      if(response.length == 1) {
+        var doc = response[0];
+        this.set('classteacher',doc);
+      }
     },
     observers:[
      '__executeQuery(token.token,tid)'

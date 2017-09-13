@@ -22,10 +22,10 @@
       @apply(--layout-vertical);
       color:#000;
       --paper-input-container-label: {
-        font-family: 'Itim', cursive;  
+        font-family: 'Itim', cursive;
       };
       --paper-input-container-input: {
-        font-family: 'Itim', cursive;  
+        font-family: 'Itim', cursive;
       }
     }
 
@@ -47,7 +47,7 @@
     }
 
     paper-input{
-      font-family: 'Itim', cursive;    
+      font-family: 'Itim', cursive;
     }
 
     paper-button{
@@ -58,13 +58,13 @@
   </style>
 
   <div class="layout horizontal layout-center">
-    <div class="layout vertical sign-bar" hidden$="{{signed}}"> 
+    <div class="layout vertical sign-bar" hidden$="{{signed}}">
       <div class="layout horizontal head-ber">&nbsp;</div>
       <div class="layout horizontal layout-center">
-        <paper-input label="Login ID" value="{{user}}"></paper-input> 
+        <paper-input label="User ID" value="{{user}}"></paper-input>
       </div>
       <div class="layout horizontal layout-center">
-        <paper-input label="Password" type="password" value="{{pass}}"></paper-input> 
+        <paper-input label="Password" type="password" value="{{pass}}"></paper-input>
       </div>
       <div class="layout horizontal layout-center">
         <span>{{_message}}</span>
@@ -74,8 +74,8 @@
       </div>
     </div>
   </div>
-  
-  <iron-ajax 
+
+  <iron-ajax
     id="loginAjax"
     url="/login"
     method="POST"
@@ -85,7 +85,7 @@
   </iron-ajax>
 
 
-  <iron-ajax 
+  <iron-ajax
     id="getRoleAjax"
     url="https://maas.nuqlis.com:8000/v2/cores/role_db/query"
     method="POST"
@@ -93,20 +93,20 @@
     content-type="application/json"
     body$='{"query":{"user":"{{user}}","application":"student-care"}}'>
   </iron-ajax>
-   
-  <app-localstorage-document 
+
+  <app-localstorage-document
     id="storage"
-    key="jwtToken" 
+    key="jwtToken"
     data="{{token}}">
   </app-localstorage-document>
 
-  <app-localstorage-document 
-    key="role" 
+  <app-localstorage-document
+    key="role"
     data="{{role}}">
   </app-localstorage-document>
 
  </template>
- 
+
  <script>
   Polymer({
     is:'login-box',
@@ -156,7 +156,7 @@
     },
     */
     _onResponse:function(e) {
-      var res = e.detail.response;      
+      var res = e.detail.response;
       if(res.success) {
         this.set('token',{'token':res.token});
         this.set('_message','');
@@ -164,8 +164,8 @@
         this.$.getRoleAjax.headers = {
           'Authorization':'JWT '+res.token
         };
-                
-        this.$.getRoleAjax.generateRequest();        
+
+        this.$.getRoleAjax.generateRequest();
       } else {
         this.set('_message','Invalid User/Password');
       }

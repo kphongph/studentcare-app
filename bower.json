@@ -36,7 +36,11 @@
     "paper-fab": "PolymerElements/paper-fab#^2.0.0",
     "app-layout": "PolymerElements/app-layout#^2.0.1",
     "iron-behaviors": "PolymerElements/iron-behaviors#^2.0.0",
-    "iron-collapse": "PolymerElements/iron-collapse#^2.0.0"
+    "iron-collapse": "PolymerElements/iron-collapse#^2.0.0",
+    "iron-input": "PolymerElements/iron-input#^2.0.1",
+    "paper-behaviors": "PolymerElements/paper-behaviors#^2.0.0",
+    "paper-dialog-behavior": "PolymerElements/paper-dialog-behavior#^2.0.1",
+    "iron-range-behavior": "PolymerElements/iron-range-behavior#^2.0.0"
   },
   "resolutions": {
     "webcomponentsjs": "^1.0.0",
@@ -72,10 +76,22 @@
     "iron-media-query": "^2.0.0",
     "paper-radio-button": "^2.0.0",
     "paper-dropdown-menu": "^2.0.0",
-    "neon-animation": "1 - 2",
+    "neon-animation": "^2.0.1",
     "paper-menu-button": "1 - 2",
     "app-layout": "^2.0.1",
     "iron-behaviors": "^2.0.0",
-    "iron-collapse":"^2.0.0"
+    "iron-collapse": "^2.0.0",
+    "iron-fit-behavior": "^2.0.1",
+    "iron-validatable-behavior": "^2.0.0",
+    "iron-scroll-target-behavior": "^2.0.0",
+    "iron-selector": "^2.0.0",
+    "iron-menu-behavior": "^2.0.1",
+    "app-localize-behavior": "^2.0.0",
+    "app-storage": "^2.0.2",
+    "iron-scroll-threshold": "^2.0.0",
+    "iron-jsonp-library": "^2.0.0",
+    "paper-badge": "^2.0.0",
+    "paper-toast": "^2.0.0",
+    "iron-range-behavior": "^2.0.0"
   }
 }

@@ -92,6 +92,9 @@
     "iron-jsonp-library": "^2.0.0",
     "paper-badge": "^2.0.0",
     "paper-toast": "^2.0.0",
-    "iron-range-behavior": "^2.0.0"
+    "iron-range-behavior": "^2.0.0",
+    "paper-behaviors": "^2.0.0",
+    "iron-input": "^2.0.1",
+    "paper-dialog-behavior": "^2.0.1"
   }
 }

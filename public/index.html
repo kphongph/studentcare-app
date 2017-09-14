@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
     <title>ระบบการดูแลช่วยเหลือนักเรียน StudentCare-App</title>        
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>                        
+    <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>                        
      
     <link rel="import" href="/components/main-route.html">    
+    <link rel="import" href="/components/main-app.html">    
     
     <style>
       body {
@@ -14,18 +16,9 @@
         font-family: 'Itim', cursive;
         background-color: #00bbd3;
       }
-
-      iron-icon {
-        transition: all 0.2s;
-        -webkit-transition: all 0.2s;
-      }
-      iron-icon:hover {
-        fill: var(--google-yellow-700);
-      }
-      
     </style>
   </head>
   <body unresolved>
-    <main-route></main-route>  
+    <main-app></main-app>  
   </body>
 </html>

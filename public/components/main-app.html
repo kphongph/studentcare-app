@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -7,6 +8,7 @@
 <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
@@ -17,10 +19,6 @@
 
 <link rel="import" href="login-box.html">
 <link rel="import" href="homepage-app.html">
-<!--<link rel="import" href="progress-host.html">
-<link rel="import" href="host-info.html">
-<link rel="import" href="./school-app/teacher-app.html">
-<link rel="import" href="./school-app/school-structure.html">-->
 <link rel="import" href="db-classteacher.html">
 
 <link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
@@ -28,12 +26,9 @@
 <dom-module id="main-app">
   <template>
    <style is="custom-style">
-    body {
-      margin: 0;
-      font-family: 'Itim', cursive;
-      background-color: #eee;
+    :host {
+      display:block;
     }
-
     .paper-collapse-styled {
       --paper-collapse-item-header: {
         font-family: 'Itim', cursive;
@@ -91,7 +86,7 @@
       font-size: 100%;
     }
 
-    studentcare-app{
+    studentcare-app {
       /*margin-left: 20px;*/
       width: 96%;
     }
@@ -101,28 +96,24 @@
       @apply --layout-center-justified;
     }
     </style> 
+
     <app-drawer-layout>
       <app-drawer swipe-open slot="drawer">
-        <app-header-layout class="drawer-content"  has-scrolling-region>
-          <app-header class="whiteHeader" waterfall fixed slot="header">
-            <app-toolbar class="drawer-content">
-              <div main-title>ระบบดูแลช่วยเหลือนักเรียน<!--{{page}}--></div>
-            </app-toolbar>
-          </app-header>
+         <app-toolbar class="drawer-content">
+            <div main-title>ระบบดูแลช่วยเหลือนักเรียน<!--{{page}}--></div>
+          </app-toolbar>
           <paper-listbox selected="{{page}}" attr-for-selected="name">
             <template is="dom-if" if="{{!signed}}">
               <paper-icon-item class="drawer-content" name="login">
-              <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
-              <span name="homepage" id="homepage">หน้าแรก </span>
-            </paper-icon-item>
+                <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
+                หน้าแรก
+              </paper-icon-item>
             </template>
             <template is="dom-if" if="{{signed}}">
               <paper-icon-item class="drawer-content" name="homepage">
                 <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
-                <span name="homepage" id="homepage">หน้าแรก</span>
+                หน้าแรก
               </paper-icon-item>
-            </template>
-            <template is="dom-if" if="{{signed}}">
               <paper-collapse-item src="{{imgAssignment}}"
                 name="assignment"
                 header="แบบประเมิน"
@@ -135,22 +126,30 @@
               </paper-collapse-item>
               <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
                 <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
-                <span>ออกจากระบบ</span>
+                ออกจากระบบ
               </paper-icon-item> 
             </template>    
           </paper-listbox>
-        </app-header-layout>
       </app-drawer>
         
       <app-header-layout>
-        <app-header class="blueHeader" condenses reveals effects="waterfall" slot="header">
+        <!--
+        <app-header class="blueHeader" slot="header">
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
           </app-toolbar>
           <app-toolbar>
             <div spacer main-title>&nbsp;</div>
           </app-toolbar>
-            <iron-pages selected="{{page}}" attr-for-selected="name">
+        </app-header>
+        -->
+                  <studentcare-app  id="studentcare"
+                    host="{{selectedAssignment.host}}" 
+                    level="{{selectedAssignment.level}}" 
+                    room="{{selectedAssignment.room}}" 
+                    year="{{selectedAssignment.year}}">
+                  </studentcare-app>
+         <iron-pages selected="{{page}}" attr-for-selected="name">
               <div name="homepage">          
                 <homepage-app></homepage-app>
                 <template is="dom-if" if="{{signed}}">
@@ -161,22 +160,16 @@
                 <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
               </div>
               <div name="assignment" class="align-center">                
-                <template is="dom-if" if="[[_equal(page, 'assignment')]]">              
-                  <!--<studentcare-app 
-                    host="{{role.profile.hostid}}"
-                    level="{{selectedAssignment.level}}"
-                    room="{{selectedAssignment.room}}"
-                    year="2016">-->
-                  <studentcare-app
-                    host="{{selectedAssignment.host}}"
-                    level="{{selectedAssignment.level}}"
-                    room="{{selectedAssignment.room}}"
+                <template is="dom-if" if="[[_equal(page, 'assignment')]]">
+                  <studentcare-app  id="studentcare"
+                    host="{{selectedAssignment.host}}" 
+                    level="{{selectedAssignment.level}}" 
+                    room="{{selectedAssignment.room}}" 
                     year="{{selectedAssignment.year}}">
                   </studentcare-app>
-                </template>
+                </template> 
               </div>
             </iron-pages>
-        </app-header>
       </app-header-layout>
     </app-drawer-layout>
  </template>
@@ -200,6 +193,7 @@
       },
       selectedAssignment: {
         type:Object,
+        notify:true,
         computed:'_getSelectedAssignment(assignments,_assignment)'
       },
       _loadClass:{
@@ -255,9 +249,11 @@
       return this.resolveUrl("./images/logout.png");
     },
     _getSelectedAssignment:function(assignments,_assignment) {
-      //console.log(assignments);
-      //console.log(_assignment);      
-      if(!assignments) return;
+      if(!assignments || assignments.length == 0) return;
+      console.log(assignments);
+      console.log(_assignment);      
+      console.log(assignments[_assignment]);
+      // this.$.studentcare.host = assignments[_assignment].host;
       return assignments[_assignment];
     },
     _equal: function(value1, value2) {

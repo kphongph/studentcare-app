@@ -149,9 +149,12 @@
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
           </app-toolbar>
+        </app-header>
+          <!--
           <app-toolbar>
             <div spacer main-title>&nbsp;</div>
           </app-toolbar>
+          -->
             <iron-pages selected="{{page}}" attr-for-selected="name">
               <div name="homepage">          
                 <homepage-app></homepage-app>
@@ -178,7 +181,7 @@
                 </template>
               </div>
             </iron-pages>
-        </app-header>
+        
       </app-header-layout>
     </app-drawer-layout>
  </template>

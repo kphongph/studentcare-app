@@ -40,7 +40,9 @@
     "iron-input": "PolymerElements/iron-input#^2.0.1",
     "paper-behaviors": "PolymerElements/paper-behaviors#^2.0.0",
     "paper-dialog-behavior": "PolymerElements/paper-dialog-behavior#^2.0.1",
-    "iron-range-behavior": "PolymerElements/iron-range-behavior#^2.0.0"
+    "iron-range-behavior": "PolymerElements/iron-range-behavior#^2.0.0",
+    "iron-selector": "PolymerElements/iron-selector#^2.0.0",
+    "paper-collapse-item": "Collaborne/paper-collapse-item#^2.0.3"
   },
   "resolutions": {
     "webcomponentsjs": "^1.0.0",
@@ -92,6 +94,8 @@
     "iron-jsonp-library": "^2.0.0",
     "paper-badge": "^2.0.0",
     "paper-toast": "^2.0.0",
-    "iron-range-behavior": "^2.0.0"
+    "iron-range-behavior": "^2.0.0",
+    "paper-dialog-behavior": "^2.0.1",
+    "paper-behaviors": "^2.0.0"
   }
 }

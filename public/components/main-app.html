@@ -23,27 +23,27 @@
 <link rel="import" href="./school-app/school-structure.html">-->
 <link rel="import" href="db-classteacher.html">
 
-<link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
 <dom-module id="main-app">
   <template>
    <style is="custom-style">
     body {
       margin: 0;
-      font-family: 'Itim', cursive;
+      font-family: 'Athiti', sans-serif;
       background-color: #eee;
     }
 
     .paper-collapse-styled {
       --paper-collapse-item-header: {
-        font-family: 'Itim', cursive;
+        font-family: 'Athiti', sans-serif;
         font-size: 100%;
         /*background-color: #2a363b;
         color: #fff;*/
       }
     }
     .blueHeader {
-      background-color: #00bbd3;
+      background-color: #d7dcdf;
       color: #fff;
     }
 
@@ -52,7 +52,8 @@
     }
 
     .whiteHeader {
-      font-family: 'Itim', cursive;
+      font-family: 'Athiti', sans-serif;
+      font-weight: bold;
       font-size: 115%;
       background-color: white;
     }
@@ -62,16 +63,17 @@
     }
 
     .drawer-content {
-      font-family: 'Itim', cursive;
+      font-family: 'Athiti', sans-serif;
       font-size: 100%;
-      background-color: #2a363b;
+      background-color: #e65540;
       color: #fff;
     }
 
-    .font-face-big-bold{
-      font-family: 'Itim', cursive;
-      font-size: 130%;
-      color: #fff;
+    .font-face-normal{
+      margin-left: 40px;
+      font-family: 'Athiti', sans-serif;
+      font-size: 110%;
+      color: #000;
     }
     app-drawer-layout:not([narrow]) [drawer-toggle] {
       display: none;
@@ -81,13 +83,13 @@
       height: 40px;
       width: 40px;
     }
-    /*paper-listbox{
-      background-color: #2a363b;
-    }*/
+
+    paper-item:hover{
+      color: #e65540;
+    }
 
     paper-item{
-      /*margin-left: 30px;*/
-      font-family: 'Itim', cursive;
+      font-family: 'Athiti', sans-serif;
       font-size: 100%;
     }
 

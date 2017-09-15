@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
-    "studentcare-components": "git://github.com/kphongph/studentcare-components.git#pk",
+    "studentcare-components": "git://github.com/kphongph/studentcare-components.git#aprofile",
     "kjur-jsrsasign": "jsrsasign#^7.1.3",
     "web-animations-js": "^2.2.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
@@ -96,6 +96,7 @@
     "iron-range-behavior": "^2.0.0",
     "paper-dialog-behavior": "^2.0.1",
     "paper-behaviors": "^2.0.0",
-    "iron-input": "^2.0.1"
+    "iron-input": "^2.0.1",
+    "google-chart": "^2.0.0"
   }
 }

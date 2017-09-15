@@ -10,8 +10,6 @@
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
 
-<!--<link rel="import" href="document-loader.html">-->
-
 <link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
 <script src="../bower_components/kjur-jsrsasign/jsrsasign-all-min.js"></script>
 
@@ -94,6 +92,13 @@
     body$='{"query":{"user":"{{user}}","application":"student-care"}}'>
   </iron-ajax>
 
+  <iron-ajax
+    id="insertRoleAjax"
+    url="https://maas.nuqlis.com:8000/v2/cores/role_db/data"
+    method="POST"
+    content-type="application/json">
+  </iron-ajax>
+
   <app-localstorage-document
     id="storage"
     key="jwtToken"
@@ -144,6 +149,12 @@
       if(response.length == 1) {
         var doc = response[0];
         this.set('role',doc);
+      } else {
+        // create role_db
+        this.$.insertRoleAjax.headers = {
+          'Authorization':'JWT '+this.token.token
+        };
+        this.$.insertRoleAjax.body = {};
       }
     },
     /*

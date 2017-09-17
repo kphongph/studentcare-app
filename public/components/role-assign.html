@@ -1,0 +1,162 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<script src="../bower_components/kjur-jsrsasign/jsrsasign-all-min.js"></script>
+
+<dom-module id="role-assign">
+  <template>
+  <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      @apply --layout-vertical;
+      color:#000;
+      --paper-input-container-label: {
+        font-family: 'Athiti', sans-serif;
+      };
+      --paper-input-container-input: {
+        font-family: 'Athiti', sans-serif;
+      }
+    }
+
+    paper-dialog {
+      padding:5px;
+    }
+    paper-input{
+      font-family: 'Athiti', sans-serif;
+    }
+
+    paper-button{
+      font-family: 'Athiti', sans-serif;
+      background-color: #e65540;
+      color: #fff;
+    }
+  </style>
+
+  <iron-ajax
+    id="getRoleAjax"
+    url="https://maas.nuqlis.com:8000/v2/cores/role_db/query"
+    method="POST"
+    headers$='{"Authorization":"JWT {{token.token}}"}'
+    on-response="_onRoleResponse"
+    content-type="application/json"
+    body$='{"query":{"user":"{{user}}","application":"student-care"}}'>
+  </iron-ajax>
+
+  <iron-ajax
+    id="queryTeacher"
+    url="https://maas.nuqlis.com:8000/v2/obec/teacher_db/query"
+    method="POST"
+    headers$='{"Authorization":"JWT {{token.token}}"}'
+    on-response="_onQueryResponse"
+    content-type="application/json"
+    body$='{"query":{"email":"{{email}}","tel":"{{tel}}"}}'>
+  </iron-ajax>
+
+  <iron-ajax
+    id="insertRoleAjax"
+    url="https://maas.nuqlis.com:8000/v2/cores/role_db/data"
+    method="POST"
+    headers$='{"Authorization":"JWT {{token.token}}"}'
+    on-response="_onInsertResponse"
+    handle-as="json"
+    content-type="application/json">
+  </iron-ajax>
+
+  <paper-dialog id="teacherInfoDialog">
+    <h2>Teacher Information</h2>
+    <paper-dialog-scrollable>
+      <paper-input label="Email" value="{{email}}"></paper-input>
+      <paper-input label="Mobile No." value="{{tel}}"></paper-input>
+    </paper-dialog-scrollable>
+    <div class="buttons">
+      <paper-button dialog-dismiss>ยกเลิก</paper-button>
+      <paper-button dialog-confirm on-tap="_queryTeacher">ค้นหา</paper-button>
+    </div>
+  </paper-dialog>
+
+  <app-localstorage-document
+    id="storage"
+    key="jwtToken"
+    data="{{token}}">
+  </app-localstorage-document>
+
+  <app-localstorage-document
+    key="role"
+    data="{{role}}">
+  </app-localstorage-document>
+
+ </template>
+
+ <script>
+  Polymer({
+    is:'role-assign',
+    properties:{
+     token: {
+       type:Object,
+       value:{}
+     },
+     user:{
+       type:String,
+       notify:true,
+       reflectToAttribute:true
+     },
+     role: {
+       type:Object,
+       notify:true,
+       reflectToAttribute:true,
+       value:function() {
+         return {};
+       }
+     }
+    },
+    observers:[
+      '_getRole(token.token,user)'
+    ],
+    _onQueryResponse:function(e) {
+      var response = e.detail.response;
+      if(response.length >= 1) {
+        var doc = response[0];
+        this.$.insertRoleAjax.body = {
+          'user':this.user,
+          'application':'student-care',
+          'profile':{
+            '_teacher':doc._id,
+            'hostid':doc.hostid
+          },
+          'roles':['classteacher']
+        };
+        this.$.insertRoleAjax.generateRequest();
+      }
+    },
+    _queryTeacher:function(e) {
+      this.$.queryTeacher.generateRequest();
+    },
+    _onInsertResponse:function(e) {
+      this.$.getRoleAjax.generateRequest();
+    },
+    _onRoleResponse:function(e) {
+      var response = e.detail.response;
+      if(response.length == 1) {
+        var doc = response[0];
+        this.set('role',doc);
+      } else {
+        this.$.teacherInfoDialog.open();
+      }
+    },
+    _getRole:function(token,user) {
+      if(token && user) {
+        this.$.getRoleAjax.generateRequest();
+      }
+    }
+  });
+  </script>
+</dom-module>

@@ -16,6 +16,7 @@
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="import" href="login-box.html">
+<link rel="import" href="role-assign.html">
 <link rel="import" href="homepage-app.html">
 <!--<link rel="import" href="progress-host.html">
 <link rel="import" href="host-info.html">
@@ -150,20 +151,18 @@
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
           </app-toolbar>
         </app-header>
-          <!--
-          <app-toolbar>
-            <div spacer main-title>&nbsp;</div>
-          </app-toolbar>
-          -->
             <iron-pages selected="{{page}}" attr-for-selected="name">
               <div name="homepage">          
                 <homepage-app></homepage-app>
                 <template is="dom-if" if="{{signed}}">
-                  <db-classteacher tid="{{role.profile._teacher}}" classteacher="{{classteacher}}"></db-classteacher>
+                  <db-classteacher tid="{{role.profile._teacher}}" 
+                     classteacher="{{classteacher}}">
+                  </db-classteacher>
                 </template>
+                <role-assign user="{{user}}" role="{{role}}"></role-assign>
               </div>
               <div name="login">          
-                <login-box signed="{{signed}}" id="loginBox" role="{{role}}"></login-box>
+                <login-box signed="{{signed}}" user="{{user}}" id="loginBox"></login-box>
               </div>
               <div name="assignment" class="align-center">                
                 <template is="dom-if" if="[[_equal(page, 'assignment')]]">              

@@ -132,6 +132,16 @@
                     </template>
                     </paper-listbox>
                   </paper-collapse-item>
+                  <paper-collapse-item src="{{imgAssignment}}"
+                    name="assignment"
+                    header="แบบประเมิน"
+                    class="paper-collapse-styled">
+                    <paper-listbox selected="{{_assignment}}">
+                    <template is="dom-repeat" items="{{assignments}}">
+                      <paper-item class="font-face-normal">{{item.label}}</paper-item>                  
+                    </template>
+                    </paper-listbox>
+                  </paper-collapse-item>
                   <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
                     <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
                     ออกจากระบบ
@@ -162,6 +172,7 @@
               </div>
               <div name="assignment" class="align-center">                
                 <template is="dom-if" if="[[_equal(page, 'assignment')]]">
+                 
                   <studentcare-app  id="studentcare"
                     host="{{selectedAssignment.host}}" 
                     level="{{selectedAssignment.level}}" 

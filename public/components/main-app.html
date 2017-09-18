@@ -111,6 +111,7 @@
       @apply --layout-horizontal;
       @apply --layout-center-justified;
     }
+
     </style> 
 
       <app-drawer-layout>
@@ -137,16 +138,18 @@
                     name="assignment"
                     header="แบบประเมิน"
                     class="paper-collapse-styled">
+                    <!--opened="{{_opened}}"-->
                     <paper-listbox selected="{{_assignment}}">
                     <template is="dom-repeat" items="{{assignments}}">
                       <paper-item class="font-face-normal">{{item.label}}</paper-item>                  
                     </template>
                     </paper-listbox>
                   </paper-collapse-item>
-                  <paper-collapse-item src="{{imgAssignment}}"
+                  <paper-collapse-item src="{{imgReport}}"
                     name="report"
                     header="รายงาน"
                     class="paper-collapse-styled">
+                   <!-- opened="{{!_opened}}"-->
                     <paper-listbox selected="{{_report}}" attr-for-selected="name">
                      <template is="dom-repeat" items="{{assignments}}">
                        <template is="dom-if" if="{{index == 0}}">
@@ -255,11 +258,21 @@
         notify:true,
         computed:'_imgAssignment()'
       },
+      imgReport:{
+        type:String,
+        notify:true,
+        computed:'_imgReport()'
+      },
       imgLogout:{
         type:String,
         notify:true,
         computed:'_imgLogout()'
       },
+      /*_opened:{
+        type:String,
+        notify:true,
+        value:'opened'
+      }*/
     },
     observers:[
      '_signedChanged(signed)'
@@ -287,7 +300,10 @@
       return this.resolveUrl("./images/home.png");
     },
     _imgAssignment:function(){
-      return this.resolveUrl("./images/classroom.png");
+      return this.resolveUrl("./images/assignment.png");
+    },
+    _imgReport:function(){
+      return this.resolveUrl("./images/report.png");
     },
     _imgLogout:function(){
       return this.resolveUrl("./images/logout.png");

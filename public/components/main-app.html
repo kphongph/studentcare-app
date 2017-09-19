@@ -139,7 +139,7 @@
                     header="แบบประเมิน"
                     class="paper-collapse-styled">
                     <!--opened="{{_opened}}"-->
-                    <paper-listbox selected="{{_assignment}}">
+                    <paper-listbox selected="{{_assignment}}" on-iron-select="_changePageToAssignment">
                     <template is="dom-repeat" items="{{assignments}}">
                       <paper-item class="font-face-normal">{{item.label}}</paper-item>                  
                     </template>
@@ -150,7 +150,7 @@
                     header="รายงาน"
                     class="paper-collapse-styled">
                    <!-- opened="{{!_opened}}"-->
-                    <paper-listbox selected="{{_report}}" attr-for-selected="name">
+                    <paper-listbox selected="{{_report}}" attr-for-selected="name" on-iron-select="_changePageToReport">
                      <template is="dom-repeat" items="{{assignments}}">
                        <template is="dom-if" if="{{index == 0}}">
                        <paper-item class="font-face-normal" name$="{{item.host}}">
@@ -342,6 +342,12 @@
     },
     _teacherListRefresh:function(e) {
       this.$$('teacher-app').refresh();
+    },
+    _changePageToAssignment:function(e) {
+      this.set('page','assignment');
+    },
+    _changePageToReport:function(e) {
+      this.set('page','report');
     }
   });
 

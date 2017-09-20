@@ -98,6 +98,11 @@
       width: 96%;
     }
 
+    studentcare-report {
+      width: 96%;
+      background-color:white;
+    }
+
     report-class {
       width: 96%;
     }
@@ -188,7 +193,7 @@
               </div>
               <div name="report" class="align-center">                
                 <template is="dom-if" if="[[_equal(page, 'report')]]">
-                  <studentcare-report hostid="{{role.profile.hostid}}" year="2017">
+                  <studentcare-report host-id="{{role.profile.hostid}}" year="2017">
                   </studentcare-report>
                 </template>
               </div>

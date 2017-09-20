@@ -15,8 +15,7 @@
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
-<link rel="import" href="../bower_components/studentcare-components/report-class.html">
-<link rel="import" href="../bower_components/studentcare-components/report-host.html">
+<link rel="import" href="../bower_components/studentcare-components/studentcare-report.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="import" href="login-box.html">
@@ -145,24 +144,10 @@
                     </template>
                     </paper-listbox>
                   </paper-collapse-item>
-                  <paper-collapse-item src="{{imgReport}}"
-                    name="report"
-                    header="รายงาน"
-                    class="paper-collapse-styled">
-                   <!-- opened="{{!_opened}}"-->
-                    <paper-listbox selected="{{_report}}" attr-for-selected="name" on-iron-select="_changePageToReport">
-                     <template is="dom-repeat" items="{{assignments}}">
-                       <template is="dom-if" if="{{index == 0}}">
-                       <paper-item class="font-face-normal" name$="{{item.host}}">
-                         ระดับโรงเรียน
-                       </paper-item>                  
-                       </template>
-                       <paper-item class="font-face-normal" name$="{{item.host}}_{{item.level}}">
-                         {{item.level}}
-                       </paper-item>                  
-                     </template>
-                    </paper-listbox>
-                  </paper-collapse-item>
+                  <paper-icon-item class="drawer-content" name="report">
+                    <iron-icon src="{{imgReport}}" slot="item-icon"></iron-icon>
+                    รายงาน
+                  </paper-icon-item>
                   <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
                     <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
                     ออกจากระบบ 
@@ -202,14 +187,9 @@
                 </template> 
               </div>
               <div name="report" class="align-center">                
-                <template is="dom-if" if="{{selectedReport.level}}">
-                  <report-class hostid="{{selectedReport.host}}"
-                     level="{{selectedReport.level}}">
-                  </report-class>
-                </template>
-                <template is="dom-if" if="{{!selectedReport.level}}">
-                  <report-host hostid="{{selectedReport.host}}">
-                  </report-host>
+                <template is="dom-if" if="[[_equal(page, 'report')]]">
+                  <studentcare-report hostid="{{role.profile.hostid}}" year="2017">
+                  </studentcare-report>
                 </template>
               </div>
             </iron-pages>

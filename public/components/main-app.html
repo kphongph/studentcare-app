@@ -185,8 +185,8 @@
           </app-header>
             <iron-pages selected="{{page}}" attr-for-selected="name">
               <div name="homepage">
-                <homepage-app></homepage-app>
                 <template is="dom-if" if="{{signed}}">
+                <homepage-app></homepage-app>
                   <db-classteacher tid="{{role.profile._teacher}}"
                       classteacher="{{classteacher}}">
                   </db-classteacher>

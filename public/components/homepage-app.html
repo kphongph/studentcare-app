@@ -1,21 +1,21 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<!--<link rel="import" href="/bower_components/teacher-profile/test-profile.html">-->
+<link rel="import" href="../bower_components/studentcare-components/user-profile.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="homepage-app">
  <template>
-  <style>
+  <style is="customer-style" include="iron-flex iron-flex-alignment iron-flex-factors">
     #content {
+      margin-top: 20px;
       margin-left: 30px;
-      width: 98%;
-      /*background-color: #00bbd3;
-      color:#fff;*/
+      width: 95%;
     }
   </style>
 
   <div id="content">
-    <h1>homepage-app</h1>
-    <!--<test-profile></test-profile>-->
+    <div class="flex-6"><user-profile></user-profile>
+    </div>
   </div>
  </template>
  <script>

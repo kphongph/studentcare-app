@@ -90,11 +90,11 @@
 					</div>
 					<div class="flex-4 font-face horizontal end-justified layout">
 						<div class="datepicker-dialog">
-							<paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
-							<app-datepicker-dialog id="datepicker" 
-								with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" 
-								show-long-date="true" locale="th">
+							<paper-button  raised on-tap ="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
+							<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical"
+								 date="{{dynamicDate}}" show-long-date="true" locale="th">
 							</app-datepicker-dialog>
+
 						</div>
 					</div>
 				</div>
@@ -127,8 +127,9 @@
 			observers: [
 				'executeQuery(host,cid,jwtToken.token)'
 			],
-			_openDialog : function (e) {
-			this.$.datepicker.open();
+			_openDialog : function () {		
+				console.log('xxx')	
+				this.$.datepicker.show();
 			},
 			executeQuery: function (host, cid, token) {
 				if (token == null) return;

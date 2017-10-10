@@ -86,7 +86,7 @@
 				<div class="layout horizontal flex">
 					<div class="flex-4 font-face">{{item.problem}}</div>
 					<div class="flex-6 ">
-						<paper-checkbox class="font-face">{{item.service}}</paper-checkbox>
+						<paper-checkbox class="font-face" checked="{{item.selected}}">{{item.service}}</paper-checkbox>
 					</div>
 					<div class="flex-4 horizontal end-justified layout">
 						<div class="datepicker-dialog">
@@ -141,18 +141,18 @@
 				var nowD = now.getDate();
 				this.dynamicDate = nowFy + '/' + ('0' + nowM).slice(-2) + '/' + ('0' + nowD).slice(-2);
 				this.employees = [
-					{ problem: 'ไม่อยากเรียน/เบื่อเรียน/เบื่อครู', service: 'รับการศึกษาต่อ' },
-					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' },
-					{ problem: 'เรียนไม่ไหว/เรียนไม่ทันเพื่อน/เรียนไม่รู้เรื่อง', service: 'รับการศึกษาต่อ' },
-					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' },
-					{ problem: '', service: 'เรียนเสริมให้ทันเพื่อน' },
-					{ problem: '', service: 'ความเข้าใจ/ใส่ใจของครู' },
-					{ problem: 'เคยต้องโทษและประสบปัญหาการใช้ชีวิตในสังคม', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)' },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)' },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)' },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)' },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)' },
-					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' }
+					{ problem: 'ไม่อยากเรียน/เบื่อเรียน/เบื่อครู', service: 'รับการศึกษาต่อ',selected:false },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)',selected:true },
+					{ problem: 'เรียนไม่ไหว/เรียนไม่ทันเพื่อน/เรียนไม่รู้เรื่อง', service: 'รับการศึกษาต่อ',selected:false },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)',selected:true },
+					{ problem: '', service: 'เรียนเสริมให้ทันเพื่อน',selected:true},
+					{ problem: '', service: 'ความเข้าใจ/ใส่ใจของครู',selected:true },
+					{ problem: 'เคยต้องโทษและประสบปัญหาการใช้ชีวิตในสังคม', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)',selected:false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)',selected:false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)',selected:false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)',selected:false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)',selected:false },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)',selected:true }
 				];
 			}
 

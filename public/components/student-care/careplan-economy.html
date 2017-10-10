@@ -5,6 +5,8 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
@@ -41,7 +43,7 @@
         .font-face {
             @apply --paper-font-subhead;
             font-family: 'Athiti', sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             margin:5px;
         }
         paper-item.iron-selected {
@@ -61,81 +63,36 @@
             background-color: #e65540;
             color: white; 
         }
+        paper-button.green {
+             background-color: var(--paper-green-500);
+             color: white;
+        }
     </style>
 
-    <div> 
-        <div class="layout horizontal header">
-            <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
-            <div class="flex-6 font-face layout horizontal center-justified">บริการ</div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face">ครอบครัวยากจน ส่งเสียไม่ไหว/ไม่มีทุนการศึกษา</div>
-            <div class="flex-8 font-face"><paper-checkbox>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox checked noink>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox checked noink>การศึกษาทางเลือก (กศน./ภาคค่ำ))</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (โรงเรียนปกติ)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยครอบครัว)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยสถานประกอบการ)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนประจำ)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนไป-กลับ)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>ทุนการศึกษา</paper-checkbox></div>
-        </div>
-
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face">โรงเรียนอยู่ไกลเดินทางไม่ไหว</div>
-            <div class="flex-8 font-face"><paper-checkbox>บริการรถรับส่ง</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox checked noink>ค่าเดินทาง เพราะโรงเรียนอยู่ไกล</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox checked noink>หอพัก/โรงเรียนประจำ</paper-checkbox></div>
-        </div>>
-
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"ต้องย้ายที่อยู่ตามครอบครัวเป็นประจำ (ก่อสร้าง/ทำไร่ต่างถิ่น)</div>
-            <div class="flex-8 font-face"><paper-checkbox checked noink>การศึกษาทางเลือก (กศน./ภาคค่ำ)</paper-checkbox></div>
-        </div>
-        
+<div>
+    <div class="layout horizontal header">
+        <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
+        <div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
     </div>
+    <template is="dom-repeat" items="{{employees}}">
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face">{{item.problem}}</div>
+            <div class="flex-4 font-face">
+                <paper-checkbox class="font-face">{{item.service}}</paper-checkbox>
+            </div>
+            <div class="flex-4 font-face horizontal end-justified layout">
+                <div class="datepicker-dialog">
+                    <paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
+                    <app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" 
+                        view="vertical" date="{{dynamicDate}}" show-long-date="true" locale="th">
+                    </app-datepicker-dialog>
+                </div>
+            </div>
+    </div>
+    </template>
+
+    </div>
+    
   </template>
 
 <script>
@@ -144,6 +101,31 @@
         properties: {
             
         },
+        ready: function () {
+				var now = new Date();
+				var nowFy = now.getFullYear();
+				var nowM = now.getMonth() + 1;
+				var nowD = now.getDate();
+				this.dynamicDate = nowFy + '/' + ('0' + nowM).slice(-2) + '/' + ('0' + nowD).slice(-2);
+				this.employees = [
+					{ problem: 'ครอบครัวยากจน ส่งเสียไม่ไหว/ไม่มีทุนการศึกษา', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)' },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)' },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)' },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)' },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)' },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' },
+					{ problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (โรงเรียนปกติ)' },
+					{ problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยครอบครัว)' },
+                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยสถานประกอบการ)' },
+                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนประจำ)' },
+                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนไป-กลับ)' },
+                    { problem: '', service: 'ทุนการศึกษา' },
+                    { problem: 'โรงเรียนอยู่ไกลเดินทางไม่ไหว', service: 'บริการรถรับส่ง' },
+                    { problem: '', service: 'ค่าเดินทาง เพราะโรงเรียนอยู่ไกล' },
+                    { problem: '', service: 'หอพัก/โรงเรียนประจำ' },
+                    { problem: 'ต้องย้ายที่อยู่ตามครอบครัวเป็นประจำ (ก่อสร้าง/ทำไร่ต่างถิ่น)', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' },
+				];
+			}
     });
 </script>
 </dom-module>

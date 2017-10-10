@@ -5,6 +5,8 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
@@ -41,7 +43,7 @@
         .font-face {
             @apply --paper-font-subhead;
             font-family: 'Athiti', sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             margin:5px;
         }
         paper-item.iron-selected {
@@ -61,69 +63,35 @@
             background-color: #e65540;
             color: white; 
         }
+        paper-button.green {
+             background-color: var(--paper-green-500);
+             color: white;
+        }
     </style>
-
-    <div> 
-        <div class="layout horizontal header">
-            <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
-            <div class="flex-6 font-face layout horizontal center-justified">บริการ</div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face">ผู้ปกครองหรือผู้ดูแลไม่สามารถอุปการะเลี้ยงดูได้</div>
-            <div class="flex-8 font-face"><paper-checkbox>จดทะเบียนบุตรบุญธรรม</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>ครอบครัวอุปถัมภ์</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>จัดบริการที่พักชั่วคราว</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>เครื่องอุปโภค-บริโภค</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox checked noink>เงินสงเคราะห์</paper-checkbox></div>
-        </div>
-        
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face">ครอบครัวแตกแยก พ่อแม่หย่าร้าง/เสียชีวิต</div>
-            <div class="flex-8 font-face"><paper-checkbox>จดทะเบียนบุตรบุญธรรม</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>ครอบครัวอุปถัมภ์</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>จัดบริการที่พักชั่วคราว</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox  checked noink>เครื่องอุปโภค-บริโภค</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>เงินสงเคราะห์</paper-checkbox></div>
-        </div>
-
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face">ต้องรับภาระดูแลเด็กเล็ก/คนพิการ/คนป่วยในบ้าน</div>
-            <div class="flex-8 font-face"><paper-checkbox checked noink>การรักษาพยาบาล(กรณีเจ็บป่วยทั่วไป)</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox>การรักษาพยาบาล : กรณีเจ็บป่วยฉุกเฉิน</paper-checkbox></div>
-        </div>
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face"></div>
-            <div class="flex-8 font-face"><paper-checkbox checked noink>ผู้ดูแลคนป่วย/พิการในบ้าน</paper-checkbox></div>
-        </div>
-        
+    <div>
+    <div class="layout horizontal header">
+        <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
+        <div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
     </div>
+    <template is="dom-repeat" items="{{employees}}">
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face">{{item.problem}}</div>
+            <div class="flex-4 font-face">
+                <paper-checkbox class="font-face">{{item.service}}</paper-checkbox>
+            </div>
+            <div class="flex-4 font-face horizontal end-justified layout">
+                <div class="datepicker-dialog">
+                    <paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
+                    <app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" 
+                        view="vertical" date="{{dynamicDate}}" show-long-date="true" locale="th">
+                    </app-datepicker-dialog>
+                </div>
+            </div>
+    </div>
+    </template>
+
+    </div>
+    
   </template>
 
 <script>
@@ -132,6 +100,28 @@
         properties: {
             
         },
+        ready: function () {
+				var now = new Date();
+				var nowFy = now.getFullYear();
+				var nowM = now.getMonth() + 1;
+				var nowD = now.getDate();
+				this.dynamicDate = nowFy + '/' + ('0' + nowM).slice(-2) + '/' + ('0' + nowD).slice(-2);
+				this.employees = [
+					{ problem: 'ผู้ปกครองหรือผู้ดูแลไม่สามารถอุปการะเลี้ยงดูได้', service: 'จดทะเบียนบุตรบุญธรรม' },
+					{ problem: '', service: 'ครอบครัวอุปถัมภ์' },
+					{ problem: '', service: 'จัดบริการที่พักชั่วคราว' },
+					{ problem: '', service: 'เครื่องอุปโภค-บริโภค' },
+					{ problem: '', service: 'เงินสงเคราะห์' },
+					{ problem: 'ครอบครัวแตกแยก พ่อแม่หย่าร้าง/เสียชีวิต', service: 'จดทะเบียนบุตรบุญธรรม ' },
+					{ problem: '', service: 'ครอบครัวอุปถัมภ์' },
+					{ problem: '', service: 'จัดบริการที่พักชั่วคราว' },
+					{ problem: '', service: 'เครื่องอุปโภค-บริโภค' },
+					{ problem: '', service: 'เงินสงเคราะห์' },
+					{ problem: 'ต้องรับภาระดูแลเด็กเล็ก/คนพิการ/คนป่วยในบ้าน', service: 'การรักษาพยาบาล(กรณีเจ็บป่วยทั่วไป)' },
+                    { problem: '', service: 'การรักษาพยาบาล : กรณีเจ็บป่วยฉุกเฉิน' },
+                    { problem: '', service: 'ผู้ดูแลคนป่วย/พิการในบ้าน' },
+				];
+			}
     });
 </script>
 </dom-module>

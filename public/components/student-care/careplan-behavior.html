@@ -85,12 +85,12 @@
 			<template is="dom-repeat" items="{{employees}}">
 				<div class="layout horizontal flex">
 					<div class="flex-4 font-face">{{item.problem}}</div>
-					<div class="flex-6 font-face">
+					<div class="flex-6 ">
 						<paper-checkbox class="font-face">{{item.service}}</paper-checkbox>
 					</div>
-					<div class="flex-4 font-face horizontal end-justified layout">
+					<div class="flex-4 horizontal end-justified layout">
 						<div class="datepicker-dialog">
-							<paper-button  raised class="green font-face">วันที่ได้รับบริการ [[dynamicDate]]</paper-button>
+							<paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
 							<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
 							 locale="th">
 							</app-datepicker-dialog>

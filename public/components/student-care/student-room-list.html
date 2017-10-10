@@ -5,11 +5,9 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-
-<!--<link rel="import" href="../../bower_components/studentcare-components/student-profile.html">-->
-<link rel="import" href="../../bower_components/studentcare-components/user-profile.html">
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -78,14 +76,7 @@
 
     <paper-material elevation="0">
       <div class="flex layout horizontal">
-        <!--<template is="dom-if" if="{{!_isEqual(page,0)}}">
-          <div class="flex-6">
-            <student-profile students="{{student}}" hostid="{{student.hostid}}"></student-profile>
-          </div>
-        </template>
-        <template is="dom-if" if="{{_isEqual(page,0)}}">-->
           <div class="flex-6">&nbsp;</div>
-        <!--</template>-->
         <div class="flex-6">
           <user-profile></user-profile>
         </div>
@@ -135,15 +126,16 @@
         '__execute(jwtToken,host,level,room,year)',
       ],
       __execute: function (jwtToken, host, level, room,year) {
-	if(!jwtToken || !jwtToken.token || host == null || level == null
-           || year == null || level.length == 0 || room.length == 0
-	   || room == null) return;
+      	if(!jwtToken || !jwtToken.token || host == null || level == null
+                 || year == null || level.length == 0 || room.length == 0
+      	   || room == null) return;
         this.$.listAjax.generateRequest();
       },
       _firstLetter: function (str) {
         return str[0];
       },
       _selected: function (e) {
+        //console.log(e.detail.item.name);
         this.fire('student-selected', { '_id': e.detail.item.name});
         this.$.listbox.selected=null;
       }

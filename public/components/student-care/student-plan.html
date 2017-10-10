@@ -1,0 +1,40 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="student-plan">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply --layout-vertial;
+        font-family: 'Athiti', sans-serif;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+      }
+    </style>
+
+    plan
+  </template>
+
+  <script>
+    Polymer({
+      is: 'student-plan',
+      properties: {
+        cid: {
+          type:String,
+          reflectToAttribute:true
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -9,6 +9,8 @@
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <link rel="import" href="careplan-health.html">
+<link rel="import" href="careplan-family.html">
+<link rel="import" href="careplan-economy.html">
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -79,10 +81,10 @@
           <paper-tab>ตัวเด็ก(พฤติกรรม)</paper-tab>
         </paper-tabs>
         <iron-pages selected="{{page}}">
-          <div>ครอบคร้ว/สังคม</div>
-          <div>เศรษฐกิจ</div>
+          <div><careplan-family></careplan-family></div>
+          <div><careplan-economy></careplan-economy></div>
+          <div><careplan-health></careplan-health></div>
           <div>สุขภาพ</div>
-          <div><careplane-health></careplane-health></div>
         </iron-pages>
     </paper-material>
   </template>

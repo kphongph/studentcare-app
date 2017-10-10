@@ -52,6 +52,7 @@
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^2.0.1",
     "paper-progress": "PolymerElements/paper-progress#^2.0.1",
     "paper-toast": "PolymerElements/paper-toast#^2.0.0",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1",
     "app-datepicker": "motss/app-datepicker#^2.11.2"
   },
   "resolutions": {

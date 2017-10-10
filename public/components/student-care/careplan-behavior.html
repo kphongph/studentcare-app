@@ -37,7 +37,7 @@
 			.font-face {
 				@apply --paper-font-subhead;
 				font-family: 'Athiti', sans-serif;
-				font-size: 18px;
+				font-size: 16px;
 				margin: 5px;
 			}
 
@@ -63,6 +63,10 @@
 				background-color: #e65540;
 				color: white;
 			}
+			paper-button.green {
+           	 	 background-color: var(--paper-green-500);
+        	     color: white;
+     	   }
 		</style>
 
 		<!-- <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
@@ -81,12 +85,12 @@
 			<template is="dom-repeat" items="{{employees}}">
 				<div class="layout horizontal flex">
 					<div class="flex-4 font-face">{{item.problem}}</div>
-					<div class="flex-4 font-face">
-						<paper-checkbox>{{item.service}}</paper-checkbox>
+					<div class="flex-6 font-face">
+						<paper-checkbox class="font-face">{{item.service}}</paper-checkbox>
 					</div>
 					<div class="flex-4 font-face horizontal end-justified layout">
 						<div class="datepicker-dialog">
-							<paper-button raised on-tap="_openDialog">วันที่ได้รับบริการ [[dynamicDate]]</paper-button>
+							<paper-button  raised class="green font-face">วันที่ได้รับบริการ [[dynamicDate]]</paper-button>
 							<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
 							 locale="th">
 							</app-datepicker-dialog>
@@ -129,52 +133,7 @@
 				if (token == null) return;
 				this.$.query.generateRequest();
 			},
-			handleResponse: function (e) {
-				var res = e.detail.response;
-				//console.log(res);
-				if (res.length == 0) return;
-				var form = res[0];
-				var _document = [];
-				var handle = function (group, question) {
-					/*if(group.id == "0002" &&
-						 (question.id == "0001" ||
-							question.id == "0002" ||
-							question.id == "0009" ||
-							question.id == "0011" ||
-							question.id == "0012" ||
-							question.id == "0010" )) {*/
-					if (group.id == "0001" && question.id == "0010") {
-						var _doc = { 'text': 'เศรษฐกิจของครอบครัว' };
-						_doc['values'] = [];
-						var salary;
-						if (!question.value) {
-							salary = 'ไม่มีข้อมูล';
-						} else {
-							salary = question.value + ' บาท';
-						}
-						var checked = Number(question.value) <= 3000 ? true : false;
-						_doc['values'].push({ 'text': 'รายได้น้อย (' + salary + ')', 'type': 'checkbox', 'checked': checked });
-						_document.push(_doc);
-					}
-					if (group.id == "0002" &&
-						(question.id == "0002" ||
-							question.id == "0009")) {
-						var _doc = { 'text': question.text };
-						_doc['values'] = [];
-						question.answers.forEach(function (answer) {
-							_doc['values'].push({ 'text': answer.text, 'type': answer.type, 'checked': answer.checked ? answer.checked : false });
-						});
-						_document.push(_doc);
-					}
-				};
-				form.group.forEach(function (group) {
-					group.questions.forEach(function (question) {
-						handle(group, question);
-					});
-				});
-				this.set('document', _document);
-				console.log(_document);
-			},
+	
 			ready: function () {
 				var now = new Date();
 				var nowFy = now.getFullYear();

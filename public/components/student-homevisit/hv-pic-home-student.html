@@ -1,0 +1,112 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="hv-pic-home-student">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+        :host {
+          @apply --layout-vertical;
+          background-color:white;
+          padding:5px;
+        }
+        
+        .font-face {
+          @apply --paper-font-subhead;
+          font-family: 'Athiti', sans-serif;
+        }
+
+        .header {
+          font-family: 'Athiti', sans-serif;
+          font-size: 16px;
+          padding-left:16px;
+          padding-right:16px;
+          background: var(--paper-grey-400);
+        }
+        
+        iron-icon{
+          width: 400px;
+          height: 250px;
+        }
+
+        .img-layout{
+          @apply --layout-horizontal;
+          @apply --layout-center-justified;
+        }
+
+        paper-radio-group{
+          @apply --layout-vertical;
+        }
+        paper-radio-button{
+          font-family: 'Athiti', sans-serif;
+        }
+
+        paper-button.green {
+          background-color: var(--paper-green-500);
+          color: white;
+        }
+
+        paper-button.red  {
+          background-color: red;
+          color: white;
+        }
+    </style>
+
+      <div class="header">5. ภาพถ่ายแนบ นักเรียนที่ได้รับการเยี่ยมบ้าน</div>
+      <div class="layout horizontal">
+        <div class="flex-6 img-layout"><iron-icon src="{{imgHome1}}" slot="item-icon"></iron-icon></div>
+        <div class="flex-6 img-layout"><iron-icon src="{{imgHome1}}" slot="item-icon"></iron-icon></div>
+      </div>
+      <div class="layout horizontal img-layout">
+        <div class="flex-6 img-layout">รูปที่ 1 ภาพถ่ายสภาพบ้านนักเรียน(มีหลังคาและฝาบ้านด้วย)</div>
+        <div class="flex-6 img-layout">รูปที่ 2 ภาพถ่ายภายในบ้านนักเรียน</div>
+      </div>
+      <div class="layout horizontal">กรุณาระบุว่า รูปถ่ายด้านบนคือ</div>
+      <div class="layout horizontal">
+        <paper-radio-group aria-labelledby="label1">
+          <paper-radio-button name="a" class ="font-face-normal">บ้านที่อาศัยอยู่กับพ่อแม่ (เป็นเจ้าของ/เช่า) </paper-radio-button>
+          <paper-radio-button name="b" class ="font-face-normal">บ้านของญาติ/ผู้ปกครองที่ไม่ใช่ญาติ</paper-radio-button>
+          <paper-radio-button name="c" class ="font-face-normal">บ้านหรือที่พักประเภท วัด มูลนิธิ หอพัก โรงงาน อยู่กับนายจ้าง</paper-radio-button>
+          <paper-radio-button name="d" class ="font-face-normal">
+            ภาพนักเรียนและป้ายชื่อโรงเรียนเนื่องจากถ่ายภาพบ้านไม่ได้ เพราะบ้านอยู่ต่างอำเภอ/ต่างจังหวัด/ต่างประเทศ หรือไม่ได้รับอนุญาตให้ถ่ายภาพ 
+            (หมายเหตุ ตัวเลือกข้อสุดท้ายสำหรับนักเรียนรหัส G เท่านั้น)
+          </paper-radio-button>
+        </paper-radio-group>
+      </div>
+      <div class="header">6. ที่ตั้งบ้านนักเรียน (กรณีที่ไม่ทราบที่ตั้งบ้าน สามารถข้ามไปทำส่วนรับรองว่าข้อมูลได้)</div>
+      <div class="layout horizontal img-layout">
+        <div class="flex-6 img-layout"><paper-button raised class="green">บันทึก/แก้ไขข้อมูลที่ตั้งบ้านนักเรียน</paper-button></div>
+        <div class="flex-6 img-layout"><paper-button raised class="red">ข้ามขั้นตอนการลงข้อมูลพิกัด</paper-button></div>
+      </div>
+  </template>
+<script>
+    Polymer({
+      is: 'hv-pic-home-student',
+      properties: {
+        imgHome1:{
+          type:String,
+          notify:true,
+          computed:'_imgHome1()'
+        },
+        imgHome2:{
+          type:String,
+          notify:true,
+          computed:'_imgHome2()'
+        }
+      },
+      _imgHome1:function(){
+        return this.resolveUrl("../images/home1.png");
+      },
+      _imgHome2:function(){
+        return this.resolveUrl("../images/home2.png");
+      }
+    });
+</script>
+</dom-module>

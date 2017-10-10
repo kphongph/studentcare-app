@@ -99,7 +99,7 @@
           <paper-tab><div class="font-face-big">ตัวเด็ก(พฤติกรรม)</div></paper-tab>
         </paper-tabs>
 
-        <iron-pages selected="{{page}}">
+        <iron-pages selected="{{page}}" class="bg">
           <div><careplan-family></careplan-family></div>
           <div><careplan-economy></careplan-economy></div>
           <div><careplan-health></careplan-health></div>
@@ -119,16 +119,6 @@
         page: {
           type: Number,
           value: 0
-        },
-        student:{
-          type: Object,
-          notify:true,
-          computed:'_getStudent(students)'
-        },
-        stdAddress:{
-          type: String,
-          notify:true,
-          computed:'_getStudentAddress(students)'
         }
       },
       observers: [

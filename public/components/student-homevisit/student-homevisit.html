@@ -8,9 +8,10 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
-
+<link rel="import" href="hv-student.html">
 <link rel="import" href="hv-risk.html">
 <link rel="import" href="hv-family-relation.html">
+<link rel="import" href="hv-pic-home-student.html">
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
 <dom-module id="student-homevisit">
@@ -52,18 +53,6 @@
       }
     </style>
 
-    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
-    </app-localstorage-document>
-
-    <iron-ajax id="listAjax"
-      method="POST"
-      url="https://maas.nuqlis.com:8000/v2/obec/student_data_db/query"
-      content-type="application/json"
-      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
-      last-response="{{students}}"
-      body='{"query":{"cid":"1800701290847"}}'>
-    </iron-ajax>
-
     <paper-material elevation="0">
       <div class="flex layout horizontal">
         <div class="flex-6">&nbsp;</div>
@@ -74,23 +63,6 @@
       <app-toolbar>
         <div main-title>เยี่ยมบ้าน</div>
       </app-toolbar>
-        <div class="flex layout horizontal bg">
-          <div class="flex-6 font-face">ชื่อ: {{students.0.title}}{{students.0.name}} {{students.0.lastname}}</div>
-          <div class="flex-6">เลขบัตรประชาชน: {{students.0.cid}}</div>
-        </div>
-        <div class="flex layout horizontal bg">
-          <div class="flex-6 font-face">วันเกิด: ไม่ระบุ</div>
-          <div class="flex-6">ที่อยู่: {{students.0.studenthousenum}} 
-            หมู่ {{students.0.studentmhoo}} 
-            ตำบล{{students.0.studentsubdistrict}} 
-            อำเภอ{{students.0.studentdistrict}} 
-            จังหวัด{{students.0.studentprovince}} {{students.0.studentpostcode}}
-          </div>
-        </div>
-        <div class="flex layout horizontal bg">
-          <div class="flex-6 font-face">ผู้ทำแผน: นางภรณี ทัด</div>
-          <div class="flex-6">ตำแหน่ง: ผู้ดูแลระบบ</div>
-        </div>
         <paper-tabs selected="{{page}}" no-slide>
           <paper-tab><div class="font-face-big">นักเรียน</div></paper-tab>
           <paper-tab><div class="font-face-big">ความสัมพันธ์ในครอบครัว</div></paper-tab>
@@ -98,10 +70,10 @@
           <paper-tab><div class="font-face-big">ภาพถ่ายบ้านนักเรียน</div></paper-tab>
         </paper-tabs>
         <iron-pages selected="{{page}}" class="bg">
-          <div>นักเรียน</div>
+          <div><hv-student cid="{{cid}}"></hv-student></div>
           <div><hv-family-relation></hv-family-relation></div>
           <div><hv-risk></hv-risk></div>
-          <div>ภาพถ่ายบ้านนักเรียน</div>
+          <div><hv-pic-home-student><hv-pic-home-student></div>
         </iron-pages>
     </paper-material>
   </template>
@@ -117,24 +89,7 @@
         page: {
           type: Number,
           value: 0
-        },
-        student:{
-          type: Object,
-          notify:true,
-          computed:'_getStudent(students)'
-        },
-        stdAddress:{
-          type: String,
-          notify:true,
-          computed:'_getStudentAddress(students)'
         }
-      },
-      observers: [
-        '__execute(jwtToken,cid)',
-      ],
-      __execute: function (jwtToken, cid) {
-        if(!jwtToken || !jwtToken.token || cid == null) return;
-        this.$.listAjax.generateRequest();
       }
     });
   </script>

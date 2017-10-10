@@ -1,0 +1,93 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="hv-student">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+        :host {
+          @apply --layout-vertical;
+          background-color:white;
+          padding:5px;
+        }
+        
+        .font-face {
+          @apply --paper-font-subhead;
+          font-family: 'Athiti', sans-serif;
+        }
+
+        .header {
+          font-family: 'Athiti', sans-serif;
+          font-size: 16px;
+          padding-left:16px;
+          padding-right:16px;
+          background: var(--paper-grey-400);
+        }
+        
+        iron-icon{
+          width: 200px;
+          height: 250px;
+        }
+
+        .img-layout{
+          @apply --layout-horizontal;
+          @apply --layout-center-justified;
+        }
+    </style>
+
+      <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+      </app-localstorage-document>
+
+        <iron-ajax id="listAjax"
+          method="POST"
+          url="https://maas.nuqlis.com:8000/v2/obec/student_data_db/query"
+          content-type="application/json"
+          headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+          last-response="{{students}}"
+          body='{"query":{"cid":"1800701290847"}}'>
+        </iron-ajax>
+
+      <div class="header">1. นักเรียน</div>
+      <div class="layout horizontal img-layout">
+        <iron-icon src="{{imgStudent}}" slot="item-icon"></iron-icon>
+      </div>
+      <div class="layout horizontal">
+        ชื่อ-นามสกุล: ชื่อ: {{students.0.title}}{{students.0.name}} {{students.0.lastname}}
+      </div>
+      <div class="layout horizontal">
+        เลขบัตรประชาชน: {{students.0.cid}}
+      </div>
+      <div class="header">2. ผู้ปกครอง</div>
+      <div class="layout horizontal">
+        <paper-checkbox>ไม่มีผู้ปกครอง</paper-checkbox>
+      </div>
+
+  </template>
+<script>
+    Polymer({
+      is: 'hv-student',
+      properties: {
+        imgStudent:{
+          type:String,
+          notify:true,
+          computed:'_imgStudent()'
+        }
+      },
+      _imgStudent:function(){
+        return this.resolveUrl("../images/imgtest.jpg");
+      },
+      observers: [
+        '__execute(jwtToken,cid)',
+      ],
+      __execute: function (jwtToken, cid) {
+        if(!jwtToken || !jwtToken.token || cid == null) return;
+        this.$.listAjax.generateRequest();
+      }
+    });
+</script>
+</dom-module>

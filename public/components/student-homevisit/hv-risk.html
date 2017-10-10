@@ -1,0 +1,122 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="hv-risk">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+        :host {
+          @apply (--layout-vertical);
+          background-color:white;
+          padding:5px;
+        }
+        
+        .font-face {
+          @apply --paper-font-subhead;
+          font-family: 'Athiti', sans-serif;
+        }
+        
+        .header div {
+          @apply --paper-font-subhead;
+          font-family: 'Athiti', sans-serif;
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+    
+        .header {
+            font-family: 'Athiti', sans-serif;
+            font-size: 16px;
+            padding-left:16px;
+            padding-right:16px;
+            background: var(--paper-grey-400);
+        }
+        .font-face {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+            font-size: 18px;
+            margin:5px;
+        }
+        paper-item.iron-selected {
+            background-color:#efefef;
+        }
+        .line-style {
+            border-bottom: 1px solid #ddd;
+        }
+        paper-item {
+            cursor: pointer; cursor: hand; 
+        }
+        paper-item.iron-selected {
+            background-color:#efefef;
+        }
+        app-toolbar {
+            background-color: #e65540;
+            color: white; 
+        }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+    
+    <iron-ajax
+      method="POST"
+      id="query"
+      url="https://maas.nuqlis.com:8000/v2/obec/form_record_homevisit/query"
+      content-type="application/json"
+      handle-as="json"
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+      body='{"query":{"hostid":"1035430078","cid":"1139700059691"}}'
+      on-response="handleResponse">
+    </iron-ajax>
+
+  </template>
+<script>
+    Polymer({
+        is: 'hv-risk',
+        properties: {
+          document:{         
+            type:Object,
+            notify:true
+          }
+        },
+        observers:[
+          '_execute(jwtToken.token)'
+        ],
+        _execute:function(token) {
+          if(token == null) return;
+          this.$.query.generateRequest();
+        },
+        handleResponse:function(e) {
+          var res = e.detail.response;
+          if(res.length == 0) return;
+          var form = res[0];
+
+          console.log(form);
+          var handle = function(group,question) {
+            if
+          }
+
+          form.group.forEach(function(group) {
+            group.questions.forEach(function(question) {
+              handle(group,question);
+            });
+          });
+
+          var _document = [];
+          this.set('document',_document);
+        }
+    });
+</script>
+</dom-module>

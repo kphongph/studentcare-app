@@ -1,0 +1,149 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<!--<link rel="import" href="../../bower_components/studentcare-components/student-profile.html">-->
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="careplan-economy">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+        :host {
+            @apply (--layout-vertical);
+        }
+        
+        .font-face {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+        }
+        
+        .header div {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    
+        .header {
+            font-family: 'Athiti', sans-serif;
+            font-size: 25px;
+            padding-left:16px;
+            padding-right:16px;
+            background: var(--paper-grey-400);
+        }
+        .font-face {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+            font-size: 18px;
+            margin:5px;
+        }
+        paper-item.iron-selected {
+            background-color:#efefef;
+        }
+        .line-style {
+            border-bottom: 1px solid #ddd;
+        }
+        paper-item {
+            cursor: pointer; cursor: hand; 
+        }
+        paper-item.iron-selected {
+            background-color:#efefef;
+        }
+        app-toolbar {
+            /*background-color: var(--paper-red-500);*/
+            background-color: #e65540;
+            color: white; 
+        }
+    </style>
+
+    <div> 
+        <div class="layout horizontal header">
+            <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
+            <div class="flex-6 font-face layout horizontal center-justified">บริการ</div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face">ครอบครัวยากจน ส่งเสียไม่ไหว/ไม่มีทุนการศึกษา</div>
+            <div class="flex-8 font-face"><paper-checkbox>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox checked noink>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox checked noink>การศึกษาทางเลือก (กศน./ภาคค่ำ))</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (โรงเรียนปกติ)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยครอบครัว)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยสถานประกอบการ)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนประจำ)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนไป-กลับ)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>ทุนการศึกษา</paper-checkbox></div>
+        </div>
+
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face">โรงเรียนอยู่ไกลเดินทางไม่ไหว</div>
+            <div class="flex-8 font-face"><paper-checkbox>บริการรถรับส่ง</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox checked noink>ค่าเดินทาง เพราะโรงเรียนอยู่ไกล</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox checked noink>หอพัก/โรงเรียนประจำ</paper-checkbox></div>
+        </div>>
+
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"ต้องย้ายที่อยู่ตามครอบครัวเป็นประจำ (ก่อสร้าง/ทำไร่ต่างถิ่น)</div>
+            <div class="flex-8 font-face"><paper-checkbox checked noink>การศึกษาทางเลือก (กศน./ภาคค่ำ)</paper-checkbox></div>
+        </div>
+        
+    </div>
+  </template>
+
+<script>
+    Polymer({
+        is: 'careplan-economy',
+        properties: {
+            
+        },
+    });
+</script>
+</dom-module>

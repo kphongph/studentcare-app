@@ -8,7 +8,13 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
+<<<<<<< HEAD
 <link rel="import" href="careplane-health.html">
+=======
+<link rel="import" href="careplan-health.html">
+<link rel="import" href="careplan-family.html">
+<link rel="import" href="careplan-economy.html">
+>>>>>>> pk
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -96,10 +102,11 @@
           <paper-tab><div class="font-face-big">สุขภาพ</div></paper-tab>
           <paper-tab><div class="font-face-big">ตัวเด็ก(พฤติกรรม)</div></paper-tab>
         </paper-tabs>
-        <iron-pages selected="{{page}}" class="bg">
-          <div>ครอบคร้ว/สังคม</div>
-          <div>เศรษฐกิจ</div>
-          <div><careplane-health></careplane-health></div>
+
+        <iron-pages selected="{{page}}">
+          <div><careplan-family></careplan-family></div>
+          <div><careplan-economy></careplan-economy></div>
+          <div><careplan-health></careplan-health></div>
           <div>ตัวเด็ก(พฤติกรรม)</div>
         </iron-pages>
     </paper-material>

@@ -1,0 +1,296 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="hv-family-relation">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+        :host {
+          @apply (--layout-vertical);
+          background-color:white;
+          padding:5px;
+        }
+        
+        .font-face {
+          @apply --paper-font-subhead;
+          font-family: 'Athiti', sans-serif;
+        }
+        
+        .header div {
+          @apply --paper-font-subhead;
+          font-family: 'Athiti', sans-serif;
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+    
+        .header {
+            font-family: 'Athiti', sans-serif;
+            font-size: 16px;
+            padding-left:16px;
+            padding-right:16px;
+            background: var(--paper-grey-400);
+        }
+        .font-face {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+            font-size: 18px;
+            margin:5px;
+        }
+        paper-item.iron-selected {
+            background-color:#efefef;
+        }
+        .line-style {
+            border-bottom: 1px solid #ddd;
+        }
+        paper-item {
+            cursor: pointer; cursor: hand; 
+        }
+        paper-item.iron-selected {
+            background-color:#efefef;
+        }
+        app-toolbar {
+            background-color: #e65540;
+            color: white; 
+        }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+    
+    <iron-ajax
+      method="POST"
+      id="query"
+      url="https://maas.nuqlis.com:8000/v2/obec/form_record_homevisit/query"
+      content-type="application/json"
+      handle-as="json"
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+      body='{"query":{"hostid":"1035430078","cid":"1139700059691"}}'
+      on-response="handleResponse">
+    </iron-ajax>
+    <div class="header">การใช้เวลาอยู่ร่วมกัน</div>
+      <paper-dropdown-menu label="มีเวลาอยู่ร่วมกันกี่ชั่วโมงต่อวัน">
+        <paper-listbox slot="dropdown-content" selected="4" class="dropdown-content">
+          <paper-item>0</paper-item>
+          <paper-item>1</paper-item>
+          <paper-item>2</paper-item>
+          <paper-item>3</paper-item>
+          <paper-item>4</paper-item>
+          <paper-item>5</paper-item>
+          <paper-item>6</paper-item>
+          <paper-item>7</paper-item>
+          <paper-item>8</paper-item>
+          <paper-item>9</paper-item>
+          <paper-item>10</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+
+      <div class="header">ความสัมพันธ์ระหว่างนักเรียนกับสมาชิกในครอบครัว</div>
+      <div class="layout horizontal center">
+        <div class="flex-1">บิดา</div>
+        <div class="flex-11 layout horizontal start">
+        <paper-radio-group selected="0">
+          <paper-radio-button name="0">สนิทสนม</paper-radio-button>
+          <paper-radio-button name="1">เฉย ๆ</paper-radio-button>
+          <paper-radio-button name="2">ห่างเหิน</paper-radio-button>
+          <paper-radio-button name="3">ขัดแย้ง</paper-radio-button>
+          <paper-radio-button name="4">ไม่มี</paper-radio-button>
+        </paper-radio-group>
+        </div>
+      </div>
+
+      <div class="layout horizontal center">
+        <div class="flex-1">มารดา</div>
+        <div class="flex-11 layout horizontal start">
+        <paper-radio-group selected="0">
+          <paper-radio-button name="0">สนิทสนม</paper-radio-button>
+          <paper-radio-button name="1">เฉย ๆ</paper-radio-button>
+          <paper-radio-button name="2">ห่างเหิน</paper-radio-button>
+          <paper-radio-button name="3">ขัดแย้ง</paper-radio-button>
+          <paper-radio-button name="4">ไม่มี</paper-radio-button>
+        </paper-radio-group>
+        </div>
+      </div>
+
+      <div class="layout horizontal center">
+        <div class="flex-1">พี่ชาย/น้องชาย</div>
+        <div class="flex-11 layout horizontal start">
+        <paper-radio-group selected="0">
+          <paper-radio-button name="0">สนิทสนม</paper-radio-button>
+          <paper-radio-button name="1">เฉย ๆ</paper-radio-button>
+          <paper-radio-button name="2">ห่างเหิน</paper-radio-button>
+          <paper-radio-button name="3">ขัดแย้ง</paper-radio-button>
+          <paper-radio-button name="4">ไม่มี</paper-radio-button>
+        </paper-radio-group>
+        </div>
+      </div>
+
+      <div class="layout horizontal center">
+        <div class="flex-1">พี่สาว/น้องสาว</div>
+        <div class="flex-11 layout horizontal start">
+        <paper-radio-group selected="0">
+          <paper-radio-button name="0">สนิทสนม</paper-radio-button>
+          <paper-radio-button name="1">เฉย ๆ</paper-radio-button>
+          <paper-radio-button name="2">ห่างเหิน</paper-radio-button>
+          <paper-radio-button name="3">ขัดแย้ง</paper-radio-button>
+          <paper-radio-button name="4">ไม่มี</paper-radio-button>
+        </paper-radio-group>
+        </div>
+      </div>
+
+      <div class="layout horizontal center">
+        <div class="flex-1">ปู่/ย่า/ตา/ยาย</div>
+        <div class="flex-11 layout horizontal start">
+        <paper-radio-group selected="0">
+          <paper-radio-button name="0">สนิทสนม</paper-radio-button>
+          <paper-radio-button name="1">เฉย ๆ</paper-radio-button>
+          <paper-radio-button name="2">ห่างเหิน</paper-radio-button>
+          <paper-radio-button name="3">ขัดแย้ง</paper-radio-button>
+          <paper-radio-button name="4">ไม่มี</paper-radio-button>
+        </paper-radio-group>
+        </div>
+      </div>
+
+      <div class="layout horizontal center">
+        <div class="flex-1">ญาติ</div>
+        <div class="flex-11 layout horizontal start">
+        <paper-radio-group selected="0">
+          <paper-radio-button name="0">สนิทสนม</paper-radio-button>
+          <paper-radio-button name="1">เฉย ๆ</paper-radio-button>
+          <paper-radio-button name="2">ห่างเหิน</paper-radio-button>
+          <paper-radio-button name="3">ขัดแย้ง</paper-radio-button>
+          <paper-radio-button name="4">ไม่มี</paper-radio-button>
+        </paper-radio-group>
+        </div>
+      </div>
+
+      <div class="layout horizontal center">
+        <div class="flex-1">อื่น ๆ</div>
+        <div class="flex-11 layout horizontal start">
+        <paper-radio-group selected="0">
+          <paper-radio-button name="0">สนิทสนม</paper-radio-button>
+          <paper-radio-button name="1">เฉย ๆ</paper-radio-button>
+          <paper-radio-button name="2">ห่างเหิน</paper-radio-button>
+          <paper-radio-button name="3">ขัดแย้ง</paper-radio-button>
+          <paper-radio-button name="4">ไม่มี</paper-radio-button>
+        </paper-radio-group>
+        </div>
+      </div>
+
+      <div class="header">การดูแลเด็กเมื่อผู้ปกครองไม่อยู่บ้าน</div>
+      <paper-dropdown-menu label="กรณีผู้ปกครองไม่อยู่บ้านฝากเด็กนักเรียนอยู่บ้านกับใคร">
+        <paper-listbox slot="dropdown-content" selected="3" class="dropdown-content">
+          <paper-item>ญาติ</paper-item>
+          <paper-item>เพื่อนบ้าน</paper-item>
+          <paper-item>นักเรียนอยู่บ้านด้วยตนเอง</paper-item>
+          <paper-item>อื่น ๆ</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+
+      <div class="header">รายรับรายจ่ายของนักเรียน</div>
+      <paper-dropdown-menu label="นักเรียนได้รับค่าใช้จ่ายจาก">
+        <paper-listbox slot="dropdown-content" selected="3" class="dropdown-content">
+          <paper-item>บิดา</paper-item>
+          <paper-item>มารดา</paper-item>
+          <paper-item>พี่ชาย/น้องชาย</paper-item>
+          <paper-item>พี่สาว/น้องสาว</paper-item>
+          <paper-item>ปู่/ย่า/ตา/ยาย</paper-item>
+          <paper-item>ญาติ</paper-item>
+          <paper-item>อื่น ๆ</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+      <paper-dropdown-menu label="นักเรียนทำงานหารายได้ อาชีพ">
+        <paper-listbox slot="dropdown-content" selected="3" class="dropdown-content">
+          <paper-item>ไม่ได้ประกอบอาชีพ</paper-item>
+          <paper-item>ขายของ</paper-item>
+          <paper-item>เก็บขยะ</paper-item>
+          <paper-item>รับจ้างละแวกบ้าน</paper-item>
+          <paper-item>ทำงานร้านอาหาร</paper-item>
+          <paper-item>ลูกจ้างร้านค้า</paper-item>
+          <paper-item>รับงานมาทำที่บ้าน</paper-item>
+          <paper-item>รับจ้างทำงานในไร่นา</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+      <paper-dropdown-menu label="รายได้วันละ">
+        <paper-listbox slot="dropdown-content" selected="3" class="dropdown-content">
+          <paper-item>0-50</paper-item>
+          <paper-item>51-100</paper-item>
+          <paper-item>101-300</paper-item>
+          <paper-item>มากกว่า 300</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+      <paper-dropdown-menu label="นักเรียนได้เงินมาโรงเรียนวันละ">
+        <paper-listbox slot="dropdown-content" selected="3" class="dropdown-content">
+          <paper-item>0-10</paper-item>
+          <paper-item>11-30</paper-item>
+          <paper-item>31-50</paper-item>
+          <paper-item>51-100</paper-item>
+          <paper-item>มากกว่า 100</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+      <div class="header">สิ่งที่ผู้ปกครองต้องการให้โรงเรียนช่วยเหลือนักเรียน</div>
+      <div class="layout vertical">
+        <paper-checkbox checked>ด้านการเรียน</paper-checkbox>
+        <paper-checkbox>ด้านพฤติกรรม</paper-checkbox>
+        <paper-checkbox>ด้านเศรษฐกิจ(เช่น ขอรับทุน)</paper-checkbox>
+        <paper-checkbox>อื่น ๆ</paper-checkbox>
+      </div>
+      <div class="header">ความช่วยเหลือที่ครอบครัวเคยได้รับจากหน่วยงานหรือต้องการได้รับการช่วยเหลือ</div>
+      <div class="layout vertical">
+        <paper-checkbox>เบี้ยผู้สูงอายุ</paper-checkbox>
+        <paper-checkbox checked>เบี้ยพิการ</paper-checkbox>
+        <paper-checkbox>อื่น ๆ</paper-checkbox>
+      </div>
+      <div class="header">ข้อห่วงใยของผู้ปกครองที่มีต่อนักเรียน</div>
+      <paper-input></paper-input>
+
+  </template>
+<script>
+    Polymer({
+        is: 'hv-family-relation',
+        properties: {
+          document:{         
+            type:Object,
+            notify:true
+          }
+        },
+        observers:[
+          '_execute(jwtToken.token)'
+        ],
+        _execute:function(token) {
+          if(token == null) return;
+          this.$.query.generateRequest();
+        },
+        handleResponse:function(e) {
+          var res = e.detail.response;
+          if(res.length == 0) return;
+          var form = res[0];
+
+          var handle = function(group,question) {
+            
+          }
+
+          form.group.forEach(function(group) {
+            group.questions.forEach(function(question) {
+              handle(group,question);
+            });
+          });
+
+          var _document = [];
+          this.set('document',_document);
+        }
+    });
+</script>
+</dom-module>

@@ -23,6 +23,10 @@
           background-color:white;
           padding:5px;
         }
+
+        paper-checkbox {
+          font-family: 'Athiti', sans-serif;
+        }
         
         .font-face {
           @apply --paper-font-subhead;
@@ -80,14 +84,33 @@
       body='{"query":{"hostid":"1035430078","cid":"1139700059691"}}'
       on-response="handleResponse">
     </iron-ajax>
+    <template is="dom-repeat" as="sub" items="{{questions}}">
+      <template is="dom-if" if="{{isEquals(sub.type,'checkbox')}}">
+       <div>{{sub.text}}</div>
+       <template is="dom-repeat" items="{{sub.answers}}">
+         <paper-checkbox checked="{{item.selected}}">
+          {{item.text}}
+         </paper-checkbox>
+       </template>
+      </template>
+      <template is="dom-if" if="{{isEquals(sub.type,'radio')}}">
+        <paper-dropdown-menu label="{{sub.text}}">
+          <paper-listbox slot="dropdown-content" selected="{{sub.selected}}">
+            <template is="dom-repeat" items="{{sub.answers}}">
+              <paper-item>{{item.text}}</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+      </template>
+    </template>
 
   </template>
 <script>
     Polymer({
         is: 'hv-risk',
         properties: {
-          document:{         
-            type:Object,
+          questions:{         
+            type:Array,
             notify:true
           }
         },
@@ -98,14 +121,31 @@
           if(token == null) return;
           this.$.query.generateRequest();
         },
-        /*handleResponse:function(e) {
+        handleResponse:function(e) {
           var res = e.detail.response;
           if(res.length == 0) return;
           var form = res[0];
+          var _check = [];
 
           console.log(form);
+
           var handle = function(group,question) {
-            if
+            if(group.id == "0002" || group.id == "0003") {
+              if(question.type == "radio") {
+                for(var i=0;i<question.answers.length;i++) {
+                  if(question.answers[i].selected) {
+                    question['selected']=i;
+                    break;
+                  }
+                }
+              }
+              if(group.id == "0003") {
+                question.text = group.text;
+              } else {
+                question['text']=Number(question.id)+'. '+question.text;
+              }
+              _check.push(question);
+            }
           }
 
           form.group.forEach(function(group) {
@@ -114,9 +154,11 @@
             });
           });
 
-          var _document = [];
-          this.set('document',_document);
-        }*/
+          this.set('questions',_check);
+        },
+        isEquals:function(a,b) {
+          return a === b;
+        }
     });
 </script>
 </dom-module>

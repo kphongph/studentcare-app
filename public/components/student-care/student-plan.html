@@ -137,15 +137,6 @@
       __execute: function (jwtToken, cid) {
         if(!jwtToken || !jwtToken.token || cid == null) return;
         this.$.listAjax.generateRequest();
-      },
-      _getStudent: function (students) {
-        //console.log(students);
-      }
-      ,
-      _getStudentAddress: function (students) {
-        if(!students) return;
-        var _address=students[0].studenthousenum +' '+ 'หมู่.' + students[0].studentmhoo;
-        console.log(_address);
       }
     });
   </script>

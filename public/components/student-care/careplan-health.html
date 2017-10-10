@@ -63,10 +63,11 @@
 				background-color: #e65540;
 				color: white;
 			}
+
 			paper-button.green {
-           	 	 background-color: var(--paper-green-500);
-        	     color: white;
-     	   }
+				background-color: var(--paper-green-500);
+				color: white;
+			}
 		</style>
 
 		<!-- <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
@@ -82,7 +83,23 @@
 				<div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
 				<div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
 			</div>
-			<template is="dom-repeat" items="{{employees}}"> 
+
+			<div class="layout horizontal flex">
+				<div class="flex-4 font-face">พิการ/ช่วยเหลือตนเองไม่ได้</div>
+				<div class="flex-6 font-face">
+					<paper-checkbox class="font-face" checked=true>การให้การสงเคราะห์กายอุปกรณ์และเครื่องช่วยความพิการ</paper-checkbox>
+				</div>
+				<div class="flex-4 font-face horizontal end-justified layout">
+					<div class="datepicker-dialog">
+						<paper-button raised on-tap="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
+						<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
+						 locale="th">
+						</app-datepicker-dialog>
+					</div>
+				</div>
+			</div>
+
+			<template is="dom-repeat" items="{{employees}}">
 				<div class="layout horizontal flex">
 					<div class="flex-4 font-face">{{item.problem}}</div>
 					<div class="flex-6 font-face">
@@ -90,10 +107,9 @@
 					</div>
 					<div class="flex-4 font-face horizontal end-justified layout">
 						<div class="datepicker-dialog">
-							<paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
-							<app-datepicker-dialog id="datepicker" 
-								with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" 
-								show-long-date="true" locale="th">
+							<paper-button raised on-tap="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
+							<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
+							 locale="th">
 							</app-datepicker-dialog>
 						</div>
 					</div>
@@ -123,45 +139,46 @@
 					notify: true
 				},
 				checked: {
-          type: Boolean,
-          value: false
-        }
+					type: Boolean,
+					value: false
+				}
 			},
 			observers: [
 				'executeQuery(host,cid,jwtToken.token)'
 			],
-			_openDialog : function (e) {
-			this.$.datepicker.open();
+			_openDialog: function (e) {
+				console.log("this.$.datepicker", this.$.datepicker);
+				this.$.datepicker.open();
 			},
 			executeQuery: function (host, cid, token) {
 				if (token == null) return;
 				this.$.query.generateRequest();
 			},
-			ready: function() {
+			ready: function () {
 				var now = new Date();
 				var nowFy = now.getFullYear();
 				var nowM = now.getMonth() + 1;
 				var nowD = now.getDate();
 				this.dynamicDate = nowFy + '/' + ('0' + nowM).slice(-2) + '/' + ('0' + nowD).slice(-2);
-        this.employees = [
-            {problem: 'พิการ/ช่วยเหลือตนเองไม่ได้', service: 'การให้การสงเคราะห์กายอุปกรณ์และเครื่องช่วยความพิการ',selected:true},
-            {problem: '', service: 'ขึ้นทะเบียนผู้พิการ',selected:false},
-						{problem: '', service: 'การสงเคราะห์ครอบครัวคนพิการ',selected:false},
-						{problem: '', service: 'เงินเบี้ยยังชีพคนพิการ',selected:false},
-						{problem: '', service: 'บริการสิ่งอำนวยความสะดวก',selected:false},
-						{problem: '', service: 'บริการเงินกู้',selected:false},
-						{problem: '', service: 'บริการสวัสดิการสังคม',selected:false},
-						{problem: '', service: 'บริการล่ามภาษามือ',selected:false},
-						{problem: '', service: 'การลดหย่อนภาษีเงินได้',selected:false},
-						{problem: '', service: 'บริการฟื้นฟูสมรรถภาพโดยกระบวนการทางการแพทย์',selected:false},
-						{problem: '', service: 'บริการจ้างงานคนพิการ',selected:false},
-						{problem: '', service: 'ค่าใช้จ่ายสำหรับจัดทำสิ่งอำนวยความสะดวกที่บ้าน หรือสถานที่พัก',selected:false},
-						{problem: '', service: 'สถานที่เลี้ยงดูสำหรับคนพิการไร้ที่พึ่ง',selected:false},
-						{problem: '', service: 'โรงเรียนเฉพาะทาง เพราะเด็กพิการ',selected:true},
-						{problem: '', service: 'ความเข้าใจของเด็กคนอื่นในโรงเรียนเกี่ยวกับเด็กพิการ',selected:true},
-						{problem: '', service: 'สิ่งอำนวยความสะดวกที่ทำให้เด็กพิการไปโรงเรียนได้',selected:true}
-        ];
-      }
+				this.employees = [
+					// { problem: 'พิการ/ช่วยเหลือตนเองไม่ได้', service: 'การให้การสงเคราะห์กายอุปกรณ์และเครื่องช่วยความพิการ', selected: true },
+					{ problem: '', service: 'ขึ้นทะเบียนผู้พิการ', selected: false },
+					{ problem: '', service: 'การสงเคราะห์ครอบครัวคนพิการ', selected: false },
+					{ problem: '', service: 'เงินเบี้ยยังชีพคนพิการ', selected: false },
+					{ problem: '', service: 'บริการสิ่งอำนวยความสะดวก', selected: false },
+					{ problem: '', service: 'บริการเงินกู้', selected: false },
+					{ problem: '', service: 'บริการสวัสดิการสังคม', selected: false },
+					{ problem: '', service: 'บริการล่ามภาษามือ', selected: false },
+					{ problem: '', service: 'การลดหย่อนภาษีเงินได้', selected: false },
+					{ problem: '', service: 'บริการฟื้นฟูสมรรถภาพโดยกระบวนการทางการแพทย์', selected: false },
+					{ problem: '', service: 'บริการจ้างงานคนพิการ', selected: false },
+					{ problem: '', service: 'ค่าใช้จ่ายสำหรับจัดทำสิ่งอำนวยความสะดวกที่บ้าน หรือสถานที่พัก', selected: false },
+					{ problem: '', service: 'สถานที่เลี้ยงดูสำหรับคนพิการไร้ที่พึ่ง', selected: false },
+					{ problem: '', service: 'โรงเรียนเฉพาะทาง เพราะเด็กพิการ', selected: true },
+					{ problem: '', service: 'ความเข้าใจของเด็กคนอื่นในโรงเรียนเกี่ยวกับเด็กพิการ', selected: true },
+					{ problem: '', service: 'สิ่งอำนวยความสะดวกที่ทำให้เด็กพิการไปโรงเรียนได้', selected: true }
+				];
+			}
 		});
 	</script>
 </dom-module>

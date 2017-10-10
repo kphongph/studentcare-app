@@ -63,10 +63,11 @@
 				background-color: #e65540;
 				color: white;
 			}
+
 			paper-button.green {
-           	 	 background-color: var(--paper-green-500);
-        	     color: white;
-     	   }
+				background-color: var(--paper-green-500);
+				color: white;
+			}
 		</style>
 
 		<!-- <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
@@ -82,15 +83,31 @@
 				<div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
 				<div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
 			</div>
+
+			<div class="layout horizontal flex">
+				<div class="flex-4 font-face">ไม่อยากเรียน/เบื่อเรียน/เบื่อครู</div>
+				<div class="flex-6 font-face">
+					<paper-checkbox class="font-face" checked=false>รับการศึกษาต่อ</paper-checkbox>
+				</div>
+				<div class="flex-4 font-face horizontal end-justified layout">
+					<div class="datepicker-dialog">
+						<paper-button raised on-tap="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
+						<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
+						 locale="th">
+						</app-datepicker-dialog>
+					</div>
+				</div>
+			</div>
+
 			<template is="dom-repeat" items="{{employees}}">
 				<div class="layout horizontal flex">
 					<div class="flex-4 font-face">{{item.problem}}</div>
-					<div class="flex-6 ">
+					<div class="flex-6 font-face">
 						<paper-checkbox class="font-face" checked="{{item.selected}}">{{item.service}}</paper-checkbox>
 					</div>
 					<div class="flex-4 horizontal end-justified layout">
 						<div class="datepicker-dialog">
-							<paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
+							<paper-button raised on-tap="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
 							<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
 							 locale="th">
 							</app-datepicker-dialog>
@@ -121,19 +138,24 @@
 				document: {
 					type: Object,
 					notify: true
+				},
+				checked: {
+					type: Boolean,
+					value: false
 				}
 			},
 			observers: [
 				'executeQuery(host,cid,jwtToken.token)'
 			],
 			_openDialog: function (e) {
+				console.log("this.$.datepicker", this.$.datepicker);
 				this.$.datepicker.open();
 			},
 			executeQuery: function (host, cid, token) {
 				if (token == null) return;
 				this.$.query.generateRequest();
 			},
-	
+
 			ready: function () {
 				var now = new Date();
 				var nowFy = now.getFullYear();
@@ -141,22 +163,20 @@
 				var nowD = now.getDate();
 				this.dynamicDate = nowFy + '/' + ('0' + nowM).slice(-2) + '/' + ('0' + nowD).slice(-2);
 				this.employees = [
-					{ problem: 'ไม่อยากเรียน/เบื่อเรียน/เบื่อครู', service: 'รับการศึกษาต่อ',selected:false },
-					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)',selected:true },
-					{ problem: 'เรียนไม่ไหว/เรียนไม่ทันเพื่อน/เรียนไม่รู้เรื่อง', service: 'รับการศึกษาต่อ',selected:false },
-					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)',selected:true },
-					{ problem: '', service: 'เรียนเสริมให้ทันเพื่อน',selected:true},
-					{ problem: '', service: 'ความเข้าใจ/ใส่ใจของครู',selected:true },
-					{ problem: 'เคยต้องโทษและประสบปัญหาการใช้ชีวิตในสังคม', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)',selected:false },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)',selected:false },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)',selected:false },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)',selected:false },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)',selected:false },
-					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)',selected:true }
+					// { problem: 'ไม่อยากเรียน/เบื่อเรียน/เบื่อครู', service: 'รับการศึกษาต่อ', selected: false },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)', selected: true },
+					{ problem: 'เรียนไม่ไหว/เรียนไม่ทันเพื่อน/เรียนไม่รู้เรื่อง', service: 'รับการศึกษาต่อ', selected: false },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)', selected: true },
+					{ problem: '', service: 'เรียนเสริมให้ทันเพื่อน', selected: true },
+					{ problem: '', service: 'ความเข้าใจ/ใส่ใจของครู', selected: true },
+					{ problem: 'เคยต้องโทษและประสบปัญหาการใช้ชีวิตในสังคม', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)', selected: false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)', selected: false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)', selected: false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)', selected: false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)', selected: false },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)', selected: true }
 				];
 			}
-
-
 		});
 	</script>
 </dom-module>

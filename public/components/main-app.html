@@ -24,6 +24,7 @@
 <link rel="import" href="homepage-app.html">
 <link rel="import" href="db-classteacher.html">
 <link rel="import" href="student-care/student-room-list.html">
+<link rel="import" href="student-care/student-plan.html">
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -261,6 +262,11 @@
                   เยี่ยมบ้าน
                 </template>
               </div>
+              <div name="plan" class="align-center">
+                <template is="dom-if" if="[[_equal(page, 'plan')]]">
+                  <student-plan></student-plan>
+                </template>
+              </div>
             </iron-pages>
         </app-header-layout>
       </app-drawer-layout>
@@ -358,6 +364,9 @@
     observers:[
      '_signedChanged(signed)'
     ],
+    listeners: {
+      'student-selected': '_selectStudent',
+    },
     openDrawer: function() {
       this.$.drawer.toggle();
     },
@@ -373,6 +382,11 @@
       } else {
         this.set('page','homepage');
       }
+    },
+    _selectStudent: function (e) {
+      //console.log(e.detail._id);
+      this.set('key', e.detail._id);
+      this.set('page','plan');
     },
     /*_setActiveAssignment:function(event) {
       this.set('page','assignment');

@@ -1,0 +1,168 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/app-datepicker/app-datepicker.html">
+
+<dom-module id="careplan-health">
+    <template>
+        <style include="iron-flex iron-flex-alignment iron-flex-factors">
+            :host {
+                @apply (--layout-vertical);
+            }
+
+            .font-face {
+                @apply --paper-font-subhead;
+                font-family: 'Athiti', sans-serif;
+            }
+
+            .header div {
+                @apply --paper-font-subhead;
+                font-family: 'Athiti', sans-serif;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .header {
+                font-family: 'Athiti', sans-serif;
+                font-size: 25px;
+                padding-left: 16px;
+                padding-right: 16px;
+                background: var(--paper-grey-400);
+            }
+
+            .font-face {
+                @apply --paper-font-subhead;
+                font-family: 'Athiti', sans-serif;
+                font-size: 18px;
+                margin: 5px;
+            }
+
+            paper-item.iron-selected {
+                background-color: #efefef;
+            }
+
+            .line-style {
+                border-bottom: 1px solid #ddd;
+            }
+
+            paper-item {
+                cursor: pointer;
+                cursor: hand;
+            }
+
+            paper-item.iron-selected {
+                background-color: #efefef;
+            }
+
+            app-toolbar {
+                /*background-color: var(--paper-red-500);*/
+                background-color: #e65540;
+                color: white;
+            }
+        </style>
+
+        <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+        </app-localstorage-document>
+
+        <iron-ajax method="POST" id="query" url="https://maas.nuqlis.com:8000/v2/obec/form_record_homevisit/query" content-type="application/json"
+            handle-as="json" headers$='{"Authorization":"JWT {{jwtToken.token}}"}' body='{"query":{"hostid":"1035430078","cid":"1139700059691"}}'
+            on-response="handleResponse">
+        </iron-ajax>
+
+        <div>
+            <div class="layout horizontal header">
+                <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
+                <div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
+            </div>
+            <div class="layout horizontal flex">
+                <div class="flex-4 font-face">พิการ/ช่วยเหลือตนเองไม่ได้</div>
+                <div class="flex-4 font-face">
+                    <paper-checkbox checked>การให้การสงเคราะห์กายอุปกรณ์และเครื่องช่วยความพิการ</paper-checkbox>
+                </div>
+                <div class="flex-4 font-face horizontal end-justified layout">
+                        <app-datepicker ></app-datepicker>
+                </div>
+            </div>
+        </div>
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'careplan-health',
+            properties: {
+                cid: {
+                    type: String,
+                    reflectToAttribute: true,
+                    notify: true
+                },
+                host: {
+                    type: String,
+                    reflectToAttribute: true,
+                    notify: true
+                },
+                document: {
+                    type: Object,
+                    notify: true
+                }
+            },
+            observers: [
+                'executeQuery(host,cid,jwtToken.token)'
+            ],
+            executeQuery: function (host, cid, token) {
+                if (token == null) return;
+                this.$.query.generateRequest();
+            },
+            handleResponse: function (e) {
+                var res = e.detail.response;
+                //console.log(res);
+                if (res.length == 0) return;
+                var form = res[0];
+                var _document = [];
+                var handle = function (group, question) {
+                    /*if(group.id == "0002" &&
+                       (question.id == "0001" ||
+                        question.id == "0002" ||
+                        question.id == "0009" ||
+                        question.id == "0011" ||
+                        question.id == "0012" ||
+                        question.id == "0010" )) {*/
+                    if (group.id == "0001" && question.id == "0010") {
+                        var _doc = { 'text': 'เศรษฐกิจของครอบครัว' };
+                        _doc['values'] = [];
+                        var salary;
+                        if (!question.value) {
+                            salary = 'ไม่มีข้อมูล';
+                        } else {
+                            salary = question.value + ' บาท';
+                        }
+                        var checked = Number(question.value) <= 3000 ? true : false;
+                        _doc['values'].push({ 'text': 'รายได้น้อย (' + salary + ')', 'type': 'checkbox', 'checked': checked });
+                        _document.push(_doc);
+                    }
+                    if (group.id == "0002" &&
+                        (question.id == "0002" ||
+                            question.id == "0009")) {
+                        var _doc = { 'text': question.text };
+                        _doc['values'] = [];
+                        question.answers.forEach(function (answer) {
+                            _doc['values'].push({ 'text': answer.text, 'type': answer.type, 'checked': answer.checked ? answer.checked : false });
+                        });
+                        _document.push(_doc);
+                    }
+                };
+                form.group.forEach(function (group) {
+                    group.questions.forEach(function (question) {
+                        handle(group, question);
+                    });
+                });
+                this.set('document', _document);
+                console.log(_document);
+            }
+        });
+    </script>
+</dom-module>

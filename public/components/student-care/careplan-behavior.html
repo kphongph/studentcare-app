@@ -7,7 +7,7 @@
 <link rel="import" href="../../bower_components/app-datepicker/app-datepicker.html">
 <link rel="import" href="../../bower_components/app-datepicker/app-datepicker-dialog.html">
 
-<dom-module id="careplan-health">
+<dom-module id="careplan-behavior">
 	<template>
 		<style include="iron-flex iron-flex-alignment iron-flex-factors">
 			:host {
@@ -82,18 +82,17 @@
 				<div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
 				<div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
 			</div>
-			<template is="dom-repeat" items="{{employees}}"> 
+			<template is="dom-repeat" items="{{employees}}">
 				<div class="layout horizontal flex">
 					<div class="flex-4 font-face">{{item.problem}}</div>
-					<div class="flex-6 font-face">
+					<div class="flex-6 ">
 						<paper-checkbox class="font-face">{{item.service}}</paper-checkbox>
 					</div>
-					<div class="flex-4 font-face horizontal end-justified layout">
+					<div class="flex-4 horizontal end-justified layout">
 						<div class="datepicker-dialog">
 							<paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
-							<app-datepicker-dialog id="datepicker" 
-								with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" 
-								show-long-date="true" locale="th">
+							<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
+							 locale="th">
 							</app-datepicker-dialog>
 						</div>
 					</div>
@@ -107,7 +106,7 @@
 
 	<script>
 		Polymer({
-			is: 'careplan-health',
+			is: 'careplan-behavior',
 			properties: {
 				cid: {
 					type: String,
@@ -127,38 +126,35 @@
 			observers: [
 				'executeQuery(host,cid,jwtToken.token)'
 			],
-			_openDialog : function (e) {
-			this.$.datepicker.open();
+			_openDialog: function (e) {
+				this.$.datepicker.open();
 			},
 			executeQuery: function (host, cid, token) {
 				if (token == null) return;
 				this.$.query.generateRequest();
 			},
-			ready: function() {
+	
+			ready: function () {
 				var now = new Date();
 				var nowFy = now.getFullYear();
 				var nowM = now.getMonth() + 1;
 				var nowD = now.getDate();
 				this.dynamicDate = nowFy + '/' + ('0' + nowM).slice(-2) + '/' + ('0' + nowD).slice(-2);
-        this.employees = [
-            {problem: 'พิการ/ช่วยเหลือตนเองไม่ได้', service: 'การให้การสงเคราะห์กายอุปกรณ์และเครื่องช่วยความพิการ'},
-            {problem: '', service: 'ขึ้นทะเบียนผู้พิการ'},
-						{problem: '', service: 'การสงเคราะห์ครอบครัวคนพิการ'},
-						{problem: '', service: 'เงินเบี้ยยังชีพคนพิการ'},
-						{problem: '', service: 'บริการสิ่งอำนวยความสะดวก'},
-						{problem: '', service: 'บริการเงินกู้'},
-						{problem: '', service: 'บริการสวัสดิการสังคม'},
-						{problem: '', service: 'บริการล่ามภาษามือ'},
-						{problem: '', service: 'การลดหย่อนภาษีเงินได้'},
-						{problem: '', service: 'บริการฟื้นฟูสมรรถภาพโดยกระบวนการทางการแพทย์'},
-						{problem: '', service: 'บริการจ้างงานคนพิการ'},
-						{problem: '', service: 'ค่าใช้จ่ายสำหรับจัดทำสิ่งอำนวยความสะดวกที่บ้าน หรือสถานที่พัก'},
-						{problem: '', service: 'สถานที่เลี้ยงดูสำหรับคนพิการไร้ที่พึ่ง'},
-						{problem: '', service: 'โรงเรียนเฉพาะทาง เพราะเด็กพิการ'},
-						{problem: '', service: 'ความเข้าใจของเด็กคนอื่นในโรงเรียนเกี่ยวกับเด็กพิการ'},
-						{problem: '', service: 'สิ่งอำนวยความสะดวกที่ทำให้เด็กพิการไปโรงเรียนได้'}
-        ];
-      }
+				this.employees = [
+					{ problem: 'ไม่อยากเรียน/เบื่อเรียน/เบื่อครู', service: 'รับการศึกษาต่อ' },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' },
+					{ problem: 'เรียนไม่ไหว/เรียนไม่ทันเพื่อน/เรียนไม่รู้เรื่อง', service: 'รับการศึกษาต่อ' },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' },
+					{ problem: '', service: 'เรียนเสริมให้ทันเพื่อน' },
+					{ problem: '', service: 'ความเข้าใจ/ใส่ใจของครู' },
+					{ problem: 'เคยต้องโทษและประสบปัญหาการใช้ชีวิตในสังคม', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)' },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)' },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)' },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)' },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)' },
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' }
+				];
+			}
 
 
 		});

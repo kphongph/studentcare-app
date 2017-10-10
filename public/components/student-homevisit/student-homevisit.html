@@ -8,6 +8,9 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
+
+<link rel="import" href="hv-risk.html">
+<link rel="import" href="hv-family-relation.html">
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
 <dom-module id="student-homevisit">
@@ -96,8 +99,8 @@
         </paper-tabs>
         <iron-pages selected="{{page}}" class="bg">
           <div>นักเรียน</div>
-          <div>ความสัมพันธ์ในครอบครัว</div>
-          <div>พฤติกรรมและความเสี่ยง</div>
+          <div><hv-family-relation></hv-family-relation></div>
+          <div><hv-risk></hv-risk></div>
           <div>ภาพถ่ายบ้านนักเรียน</div>
         </iron-pages>
     </paper-material>

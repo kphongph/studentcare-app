@@ -8,13 +8,12 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
-<link rel="import" href="careplan-health.html">
-<link rel="import" href="careplan-family.html">
-<link rel="import" href="careplan-economy.html">
 
+<link rel="import" href="hv-risk.html">
+<link rel="import" href="hv-family-relation.html">
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
-<dom-module id="student-plan">
+<dom-module id="student-homevisit">
   <template>
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
        :host {
@@ -73,7 +72,7 @@
         </div>
       </div>
       <app-toolbar>
-        <div main-title>วางแผน</div>
+        <div main-title>เยี่ยมบ้าน</div>
       </app-toolbar>
         <div class="flex layout horizontal bg">
           <div class="flex-6 font-face">ชื่อ: {{students.0.title}}{{students.0.name}} {{students.0.lastname}}</div>
@@ -93,24 +92,23 @@
           <div class="flex-6">ตำแหน่ง: ผู้ดูแลระบบ</div>
         </div>
         <paper-tabs selected="{{page}}" no-slide>
-          <paper-tab><div class="font-face-big">ครอบคร้ว/สังคม</div></paper-tab>
-          <paper-tab><div class="font-face-big">เศรษฐกิจ</div></paper-tab>
-          <paper-tab><div class="font-face-big">สุขภาพ</div></paper-tab>
-          <paper-tab><div class="font-face-big">ตัวเด็ก(พฤติกรรม)</div></paper-tab>
+          <paper-tab><div class="font-face-big">นักเรียน</div></paper-tab>
+          <paper-tab><div class="font-face-big">ความสัมพันธ์ในครอบครัว</div></paper-tab>
+          <paper-tab><div class="font-face-big">พฤติกรรมและความเสี่ยง</div></paper-tab>
+          <paper-tab><div class="font-face-big">ภาพถ่ายบ้านนักเรียน</div></paper-tab>
         </paper-tabs>
-
-        <iron-pages selected="{{page}}">
-          <div><careplan-family></careplan-family></div>
-          <div><careplan-economy></careplan-economy></div>
-          <div><careplan-health></careplan-health></div>
-          <div>ตัวเด็ก(พฤติกรรม)</div>
+        <iron-pages selected="{{page}}" class="bg">
+          <div>นักเรียน</div>
+          <div><hv-family-relation></hv-family-relation></div>
+          <div><hv-risk></hv-risk></div>
+          <div>ภาพถ่ายบ้านนักเรียน</div>
         </iron-pages>
     </paper-material>
   </template>
 
   <script>
     Polymer({
-      is: 'student-plan',
+      is: 'student-homevisit',
       properties: {
         cid: {
           type:String,

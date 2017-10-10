@@ -1,127 +1,181 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
-<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-
-<!--<link rel="import" href="../../bower_components/studentcare-components/student-profile.html">-->
-<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<link rel="import" href="../../bower_components/app-datepicker/app-datepicker.html">
+<link rel="import" href="../../bower_components/app-datepicker/app-datepicker-dialog.html">
 
 <dom-module id="careplan-family">
-  <template>
-    <style include="iron-flex iron-flex-alignment iron-flex-factors">
-        :host {
-            @apply (--layout-vertical);
-        }
-        
-        .font-face {
-            @apply --paper-font-subhead;
-            font-family: 'Athiti', sans-serif;
-        }
-        
-        .header div {
-            @apply --paper-font-subhead;
-            font-family: 'Athiti', sans-serif;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-    
-        .header {
-            font-family: 'Athiti', sans-serif;
-            font-size: 25px;
-            padding-left:16px;
-            padding-right:16px;
-            background: var(--paper-grey-400);
-        }
-        .font-face {
-            @apply --paper-font-subhead;
-            font-family: 'Athiti', sans-serif;
-            font-size: 16px;
-            margin:5px;
-        }
-        paper-item.iron-selected {
-            background-color:#efefef;
-        }
-        .line-style {
-            border-bottom: 1px solid #ddd;
-        }
-        paper-item {
-            cursor: pointer; cursor: hand; 
-        }
-        paper-item.iron-selected {
-            background-color:#efefef;
-        }
-        app-toolbar {
-            /*background-color: var(--paper-red-500);*/
-            background-color: #e65540;
-            color: white; 
-        }
-        paper-button.green {
-             background-color: var(--paper-green-500);
-             color: white;
-        }
-    </style>
-    <div>
-    <div class="layout horizontal header">
-        <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
-        <div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
-    </div>
-    <template is="dom-repeat" items="{{employees}}">
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face">{{item.problem}}</div>
-            <div class="flex-4 font-face">
-                <paper-checkbox class="font-face">{{item.service}}</paper-checkbox>
-            </div>
-            <div class="flex-4 font-face horizontal end-justified layout">
-                <div class="datepicker-dialog">
-                    <paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
-                    <app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" 
-                        view="vertical" date="{{dynamicDate}}" show-long-date="true" locale="th">
-                    </app-datepicker-dialog>
-                </div>
-            </div>
-    </div>
-    </template>
+	<template>
+		<style include="iron-flex iron-flex-alignment iron-flex-factors">
+			:host {
+				@apply (--layout-vertical);
+			}
 
-    </div>
-    
-  </template>
+			.font-face {
+				@apply --paper-font-subhead;
+				font-family: 'Athiti', sans-serif;
+			}
 
-<script>
-    Polymer({
-        is: 'careplan-family',
-        properties: {
-            
-        },
-        ready: function () {
+			.header div {
+				@apply --paper-font-subhead;
+				font-family: 'Athiti', sans-serif;
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+
+			.header {
+				font-family: 'Athiti', sans-serif;
+				font-size: 25px;
+				padding-left: 16px;
+				padding-right: 16px;
+				background: var(--paper-grey-400);
+			}
+
+			.font-face {
+				@apply --paper-font-subhead;
+				font-family: 'Athiti', sans-serif;
+				font-size: 16px;
+				margin: 5px;
+			}
+
+			paper-item.iron-selected {
+				background-color: #efefef;
+			}
+
+			.line-style {
+				border-bottom: 1px solid #ddd;
+			}
+
+			paper-item {
+				cursor: pointer;
+				cursor: hand;
+			}
+
+			paper-item.iron-selected {
+				background-color: #efefef;
+			}
+
+			app-toolbar {
+				/*background-color: var(--paper-red-500);*/
+				background-color: #e65540;
+				color: white;
+			}
+
+			paper-button.green {
+				background-color: var(--paper-green-500);
+				color: white;
+			}
+		</style>
+
+		<!-- <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+		</app-localstorage-document>
+
+		<iron-ajax method="POST" id="query" url="https://maas.nuqlis.com:8000/v2/obec/form_record_homevisit/query" content-type="application/json"
+		 handle-as="json" headers$='{"Authorization":"JWT {{jwtToken.token}}"}' body='{"query":{"hostid":"1035430078","cid":"1139700059691"}}'
+		 on-response="handleResponse">
+		</iron-ajax> -->
+
+		<div>
+			<div class="layout horizontal header">
+				<div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
+				<div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
+			</div>
+
+			<div class="layout horizontal flex">
+				<div class="flex-4 font-face">พิการ/ช่วยเหลือตนเองไม่ได้</div>
+				<div class="flex-6 font-face">
+					<paper-checkbox class="font-face" checked=true>จดทะเบียนบุตรบุญธรรม</paper-checkbox>
+				</div>
+				<div class="flex-4 font-face horizontal end-justified layout">
+					<div class="datepicker-dialog">
+						<paper-button raised on-tap="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
+						<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
+						 locale="th">
+						</app-datepicker-dialog>
+					</div>
+				</div>
+			</div>
+
+			<template is="dom-repeat" items="{{employees}}">
+				<div class="layout horizontal flex">
+					<div class="flex-4 font-face">{{item.problem}}</div>
+					<div class="flex-6 font-face">
+						<paper-checkbox class="font-face" checked="{{item.selected}}">{{item.service}}</paper-checkbox>
+					</div>
+					<div class="flex-4 font-face horizontal end-justified layout">
+						<div class="datepicker-dialog">
+							<paper-button raised on-tap="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
+							<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
+							 locale="th">
+							</app-datepicker-dialog>
+						</div>
+					</div>
+				</div>
+			</template>
+		</div>
+
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'careplan-family',
+			properties: {
+				cid: {
+					type: String,
+					reflectToAttribute: true,
+					notify: true
+				},
+				host: {
+					type: String,
+					reflectToAttribute: true,
+					notify: true
+				},
+				document: {
+					type: Object,
+					notify: true
+				},
+				checked: {
+					type: Boolean,
+					value: false
+				}
+			},
+			observers: [
+				'executeQuery(host,cid,jwtToken.token)'
+			],
+			_openDialog: function (e) {
+				// console.log("this.$.datepicker", this.$.datepicker);
+				this.$.datepicker.open();
+			},
+			executeQuery: function (host, cid, token) {
+				if (token == null) return;
+				this.$.query.generateRequest();
+			},
+			ready: function () {
 				var now = new Date();
 				var nowFy = now.getFullYear();
 				var nowM = now.getMonth() + 1;
 				var nowD = now.getDate();
 				this.dynamicDate = nowFy + '/' + ('0' + nowM).slice(-2) + '/' + ('0' + nowD).slice(-2);
 				this.employees = [
-					{ problem: 'ผู้ปกครองหรือผู้ดูแลไม่สามารถอุปการะเลี้ยงดูได้', service: 'จดทะเบียนบุตรบุญธรรม' },
-					{ problem: '', service: 'ครอบครัวอุปถัมภ์' },
-					{ problem: '', service: 'จัดบริการที่พักชั่วคราว' },
-					{ problem: '', service: 'เครื่องอุปโภค-บริโภค' },
-					{ problem: '', service: 'เงินสงเคราะห์' },
-					{ problem: 'ครอบครัวแตกแยก พ่อแม่หย่าร้าง/เสียชีวิต', service: 'จดทะเบียนบุตรบุญธรรม ' },
-					{ problem: '', service: 'ครอบครัวอุปถัมภ์' },
-					{ problem: '', service: 'จัดบริการที่พักชั่วคราว' },
-					{ problem: '', service: 'เครื่องอุปโภค-บริโภค' },
-					{ problem: '', service: 'เงินสงเคราะห์' },
-					{ problem: 'ต้องรับภาระดูแลเด็กเล็ก/คนพิการ/คนป่วยในบ้าน', service: 'การรักษาพยาบาล(กรณีเจ็บป่วยทั่วไป)' },
-                    { problem: '', service: 'การรักษาพยาบาล : กรณีเจ็บป่วยฉุกเฉิน' },
-                    { problem: '', service: 'ผู้ดูแลคนป่วย/พิการในบ้าน' },
+					// { problem: 'ผู้ปกครองหรือผู้ดูแลไม่สามารถอุปการะเลี้ยงดูได้', service: 'จดทะเบียนบุตรบุญธรรม' , selected: false },
+					{ problem: '', service: 'ครอบครัวอุปถัมภ์', selected: false  },
+					{ problem: '', service: 'จัดบริการที่พักชั่วคราว', selected: true  },
+					{ problem: '', service: 'เครื่องอุปโภค-บริโภค' , selected: false },
+					{ problem: '', service: 'เงินสงเคราะห์' , selected: false },
+					{ problem: 'ครอบครัวแตกแยก พ่อแม่หย่าร้าง/เสียชีวิต', service: 'จดทะเบียนบุตรบุญธรรม ', selected: false  },
+					{ problem: '', service: 'ครอบครัวอุปถัมภ์', selected: false  },
+					{ problem: '', service: 'จัดบริการที่พักชั่วคราว', selected: false  },
+					{ problem: '', service: 'เครื่องอุปโภค-บริโภค', selected: false  },
+					{ problem: '', service: 'เงินสงเคราะห์', selected: true  },
+					{ problem: 'ต้องรับภาระดูแลเด็กเล็ก/คนพิการ/คนป่วยในบ้าน', service: 'การรักษาพยาบาล(กรณีเจ็บป่วยทั่วไป)' , selected: true },
+                    { problem: '', service: 'การรักษาพยาบาล : กรณีเจ็บป่วยฉุกเฉิน', selected: false  },
+                    { problem: '', service: 'ผู้ดูแลคนป่วย/พิการในบ้าน', selected: true  },
 				];
 			}
-    });
-</script>
+		});
+	</script>
 </dom-module>

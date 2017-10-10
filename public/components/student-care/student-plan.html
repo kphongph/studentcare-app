@@ -2,9 +2,9 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
-<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-tabs/color.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
@@ -16,14 +16,73 @@
        :host {
         @apply --layout-vertial;
         font-family: 'Athiti', sans-serif;
+        /*background-color: white;*/
       }
+
+      app-toolbar {
+        /*background-color: var(--paper-red-500);*/
+        background-color: #cd333f;
+        color: white;
+      }
+
+      paper-material {
+        padding: 2px;
+
+      }
+
+      paper-tabs {
+        --paper-tabs-selection-bar-color: #cceeff;
+        --paper-tab-content-unselected: {
+          opacity: 0.52;
+        };
+        background-color: #3f51b5;
+        color: #fff;
+        height: 50px;
+      }
+      /*.bg{
+        background-color: white;
+      }*/
 
       .font-face {
         font-family: 'Athiti', sans-serif;
       }
     </style>
 
-    plan
+    <paper-material elevation="0">
+      <div class="flex layout horizontal">
+          <div class="flex-6">&nbsp;</div>
+        <div class="flex-6">
+          <user-profile></user-profile>
+        </div>
+      </div>
+      <app-toolbar>
+        <div main-title class="font-face">วางแผน</div>
+      </app-toolbar>
+        <div class="flex layout horizontal">
+          <div class="flex-6">ชื่อ</div>
+          <div class="flex-6">เลขบัตรประชาชน</div>
+        </div>
+        <div class="flex layout horizontal">
+          <div class="flex-6">วันเกิด</div>
+          <div class="flex-6">ที่อยู่</div>
+        </div>
+        <div class="flex layout horizontal">
+          <div class="flex-6">ผู้ทำแผน</div>
+          <div class="flex-6">ตำแหน่ง</div>
+        </div>
+        <paper-tabs selected="{{page}}" scrollable>
+          <paper-tab>ครอบคร้ว/สังคม</paper-tab>
+          <paper-tab>เศรษฐกิจ</paper-tab>
+          <paper-tab>สุขภาพ</paper-tab>
+          <paper-tab>ตัวเด็ก(พฤติกรรม)</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{page}}">
+          <div>ครอบคร้ว/สังคม</div>
+          <div>เศรษฐกิจ</div>
+          <div>สุขภาพ</div>
+          <div>ตัวเด็ก(พฤติกรรม)</div>
+        </iron-pages>
+    </paper-material>
   </template>
 
   <script>
@@ -33,7 +92,11 @@
         cid: {
           type:String,
           reflectToAttribute:true
-        }
+        },
+        page: {
+          type: Number,
+          value: 0
+        },
       }
     });
   </script>

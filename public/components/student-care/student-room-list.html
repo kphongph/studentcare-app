@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -82,6 +83,8 @@
         </div>
       </div>
       <app-toolbar>
+        <!--<paper-icon-button icon="arrow-back" hidden$="{{_isEqual(page,0)}}" on-tap="_back">
+        </paper-icon-button>-->
         <div main-title class="font-face">รายชื่อนักเรียน</div>
       </app-toolbar>
 
@@ -120,7 +123,11 @@
         year: {
           type:String,
           reflectToAttribute:true
-        }
+        },
+        _title: {
+          type: String,
+          computed: '_computeTitle(page)'
+        },
       },
       observers: [
         '__execute(jwtToken,host,level,room,year)',
@@ -136,9 +143,19 @@
       },
       _selected: function (e) {
         //console.log(e.detail.item.name);
-        this.fire('student-selected', { '_id': e.detail.item.name});
+        this.fire('studentcare-selected', { '_id': e.detail.item.name});
         this.$.listbox.selected=null;
-      }
+      },
+      /*_computeTitle: function(page) {
+        var title;
+        if (page == 0) {
+          title = "รายชื่อนักเรียน";
+        }
+        if (page == 1) {
+          title = "วางแผน";
+        }
+        return title;
+      },*/
     });
   </script>
 </dom-module>

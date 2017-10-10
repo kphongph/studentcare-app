@@ -51,7 +51,8 @@
     "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^2.0.0",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^2.0.1",
     "paper-progress": "PolymerElements/paper-progress#^2.0.1",
-    "paper-toast": "PolymerElements/paper-toast#^2.0.0"
+    "paper-toast": "PolymerElements/paper-toast#^2.0.0",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1"
   },
   "resolutions": {
     "webcomponentsjs": "^1.0.0",

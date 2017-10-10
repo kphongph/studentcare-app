@@ -1,0 +1,137 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<!--<link rel="import" href="../../bower_components/studentcare-components/student-profile.html">-->
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="careplane-family">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+        :host {
+            @apply (--layout-vertical);
+        }
+        
+        .font-face {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+        }
+        
+        .header div {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    
+        .header {
+            font-family: 'Athiti', sans-serif;
+            font-size: 25px;
+            padding-left:16px;
+            padding-right:16px;
+            background: var(--paper-grey-400);
+        }
+        .font-face {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+            font-size: 18px;
+            margin:5px;
+        }
+        paper-item.iron-selected {
+            background-color:#efefef;
+        }
+        .line-style {
+            border-bottom: 1px solid #ddd;
+        }
+        paper-item {
+            cursor: pointer; cursor: hand; 
+        }
+        paper-item.iron-selected {
+            background-color:#efefef;
+        }
+        app-toolbar {
+            /*background-color: var(--paper-red-500);*/
+            background-color: #e65540;
+            color: white; 
+        }
+    </style>
+
+    <div> 
+        <div class="layout horizontal header">
+            <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
+            <div class="flex-6 font-face layout horizontal center-justified">บริการ</div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face">ผู้ปกครองหรือผู้ดูแลไม่สามารถอุปการะเลี้ยงดูได้</div>
+            <div class="flex-8 font-face"><paper-checkbox>จดทะเบียนบุตรบุญธรรม</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>ครอบครัวอุปถัมภ์</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>จัดบริการที่พักชั่วคราว</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>เครื่องอุปโภค-บริโภค</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox checked noink>เงินสงเคราะห์</paper-checkbox></div>
+        </div>
+        
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face">ครอบครัวแตกแยก พ่อแม่หย่าร้าง/เสียชีวิต</div>
+            <div class="flex-8 font-face"><paper-checkbox>จดทะเบียนบุตรบุญธรรม</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>ครอบครัวอุปถัมภ์</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>จัดบริการที่พักชั่วคราว</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox  checked noink>เครื่องอุปโภค-บริโภค</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>เงินสงเคราะห์</paper-checkbox></div>
+        </div>
+
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face">ต้องรับภาระดูแลเด็กเล็ก/คนพิการ/คนป่วยในบ้าน</div>
+            <div class="flex-8 font-face"><paper-checkbox checked noink>การรักษาพยาบาล(กรณีเจ็บป่วยทั่วไป)</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox>การรักษาพยาบาล : กรณีเจ็บป่วยฉุกเฉิน</paper-checkbox></div>
+        </div>
+        <div class="layout horizontal flex">
+            <div class="flex-4 font-face"></div>
+            <div class="flex-8 font-face"><paper-checkbox checked noink>ผู้ดูแลคนป่วย/พิการในบ้าน</paper-checkbox></div>
+        </div>
+        
+    </div>
+  </template>
+
+<script>
+    Polymer({
+        is: 'careplane-family',
+        properties: {
+            
+        },
+    });
+</script>
+</dom-module>

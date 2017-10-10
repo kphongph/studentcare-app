@@ -25,6 +25,8 @@
 <link rel="import" href="db-classteacher.html">
 <link rel="import" href="student-care/student-room-list.html">
 <link rel="import" href="student-care/student-plan.html">
+<link rel="import" href="student-homevisit/student-room-query.html">
+<link rel="import" href="student-homevisit/student-homevisit.html">
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -108,6 +110,14 @@
     }
 
     student-room-list {
+      width: 96%;
+    }
+
+    student-room-query {
+      width: 96%;
+    }
+
+    student-homevisit {
       width: 96%;
     }
 
@@ -197,10 +207,16 @@
                     <iron-icon src="{{imgSchool}}" slot="item-icon"></iron-icon>
                     ข้อมูลโรงเรียน
                   </paper-icon-item>
-                  <paper-icon-item class="white-content" name="homevisit">
-                    <iron-icon src="{{imgHomevisit}}" slot="item-icon"></iron-icon>
-                    เยี่ยมบ้าน
-                  </paper-icon-item>
+                  <paper-collapse-item src="{{imgHomevisit}}"
+                    name="homevisit"
+                    header="เยี่ยมบ้าน"
+                    class="paper-collapse-styled">
+                    <paper-listbox selected="{{_homevisit}}" on-iron-select="_changePageToHomevisit">
+                    <template is="dom-repeat" items="{{homevisits}}">
+                      <paper-item class="font-face-normal">{{item.label}}</paper-item>
+                    </template>
+                    </paper-listbox>
+                  </paper-collapse-item>
                   <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
                     <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
                     ออกจากระบบ
@@ -263,12 +279,22 @@
               </div>
               <div name="homevisit" class="align-center">
                 <template is="dom-if" if="[[_equal(page, 'homevisit')]]">
-                  เยี่ยมบ้าน
+                  <student-room-query
+                    year="{{selectedHomevisit.year}}"
+                    host="{{selectedHomevisit.host}}"
+                    level="{{selectedHomevisit.level}}"
+                    room="{{selectedHomevisit.room}}">
+                  </student-room-query>
                 </template>
               </div>
               <div name="plan" class="align-center">
                 <template is="dom-if" if="[[_equal(page, 'plan')]]">
-                  <student-plan></student-plan>
+                  <student-plan cid="{{key}}"></student-plan>
+                </template>
+              </div>
+              <div name="homevisitQuery" class="align-center">
+                <template is="dom-if" if="[[_equal(page, 'homevisitQuery')]]">
+                  <student-homevisit cid="{{key}}"></student-homevisit>
                 </template>
               </div>
             </iron-pages>
@@ -300,6 +326,13 @@
           return [];
         }
       },
+      homevisits :{
+        type:Array,
+        notify:true,
+        value:function() {
+          return [];
+        }
+      },
       selectedReport: {
         type:Object,
         notify:true,
@@ -314,6 +347,11 @@
         type:Object,
         notify:true,
         computed:'_getSelectedStudentCare(studentcares,_studentCare)'
+      },
+      selectedHomevisit: {
+        type:Object,
+        notify:true,
+        computed:'_getSelectedHomevisit(homevisits,_homevisit)'
       },
       _loadClass:{
         type:Boolean,
@@ -370,6 +408,7 @@
     ],
     listeners: {
       'studentcare-selected': '_selectStudent',
+      'student-homevisit-selected': '_selectStudentHomevisit',
     },
     openDrawer: function() {
       this.$.drawer.toggle();
@@ -391,6 +430,11 @@
       //console.log(e.detail._id);
       this.set('key', e.detail._id);
       this.set('page','plan');
+    },
+    _selectStudentHomevisit: function (e) {
+      //console.log(e.detail._id);
+      this.set('key', e.detail._id);
+      this.set('page','homevisitQuery');
     },
     /*_setActiveAssignment:function(event) {
       this.set('page','assignment');
@@ -428,14 +472,19 @@
       }
     },
     _getSelectedAssignment:function(assignments,_assignment) {
-      //console.log('assignments',assignments,_assignment);
       if(!assignments || assignments.length == 0) return;
+      console.log('assignments',assignments,_assignment);
       return assignments[_assignment];
     },
     _getSelectedStudentCare:function(studentcares,_studentCare) {
-      //console.log('student care',studentcares,_studentCare);
       if(!studentcares || studentcares.length == 0) return;
+      console.log('student care',studentcares,_studentCare);
       return studentcares[_studentCare];
+    },
+    _getSelectedHomevisit:function(homevisits,_homevisit) {
+      if(!homevisits || homevisits.length == 0) return;
+      console.log('homevisit',homevisits);
+      return homevisits[_homevisit];
     },
     _equal: function(value1, value2) {
       return value1 === value2;
@@ -448,21 +497,29 @@
       if(!classteacher.classname) return;
       this.set('assignments',[]);
       this.set('studentcares',[]);
+      this.set('homevisits',[]);
       var dict = {};
       this.push('assignments',{
-          'label':classteacher.classname+'/'+classteacher.room,
-          'level':classteacher.classname,
-          'room':classteacher.room,
-          'host':classteacher.host,
-          'year':classteacher.year
-        });
+        'label':classteacher.classname+'/'+classteacher.room,
+        'level':classteacher.classname,
+        'room':classteacher.room,
+        'host':classteacher.host,
+        'year':classteacher.year
+      });
       this.push('studentcares',{
-          'label':classteacher.classname+'/'+classteacher.room,
-          'level':classteacher.classname,
-          'room':classteacher.room,
-          'host':classteacher.host,
-          'year':classteacher.year
-        });
+        'label':classteacher.classname+'/'+classteacher.room,
+        'level':classteacher.classname,
+        'room':classteacher.room,
+        'host':classteacher.host,
+        'year':classteacher.year
+      });
+      this.push('homevisits',{
+        'label':classteacher.classname+'/'+classteacher.room,
+        'level':classteacher.classname,
+        'room':classteacher.room,
+        'host':classteacher.host,
+        'year':classteacher.year
+      });
     },
     _teacherListRefresh:function(e) {
       this.$$('teacher-app').refresh();
@@ -472,6 +529,9 @@
     },
     _changePageToStudentCare:function(e) {
       this.set('page','studentcare');
+    },
+    _changePageToHomevisit:function(e) {
+      this.set('page','homevisit');
     },
     _changePageToReport:function(e) {
       this.set('page','report');

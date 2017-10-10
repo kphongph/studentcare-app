@@ -120,16 +120,6 @@
         page: {
           type: Number,
           value: 0
-        },
-        student:{
-          type: Object,
-          notify:true,
-          computed:'_getStudent(students)'
-        },
-        stdAddress:{
-          type: String,
-          notify:true,
-          computed:'_getStudentAddress(students)'
         }
       },
       observers: [

@@ -23,6 +23,7 @@
 <link rel="import" href="role-assign.html">
 <link rel="import" href="homepage-app.html">
 <link rel="import" href="db-classteacher.html">
+<link rel="import" href="student-care/student-room-list.html">
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -69,6 +70,12 @@
       color: #fff;
     }
 
+    .white-content {
+      font-family: 'Athiti', sans-serif;
+      background-color: white;
+      color: #000;
+    }
+
     .font-face-normal{
       margin-left: 40px;
       font-family: 'Athiti', sans-serif;
@@ -80,8 +87,8 @@
     }
 
     iron-icon{
-      height: 40px;
-      width: 40px;
+      height: 35px;
+      width: 35px;
     }
 
     paper-item:hover{
@@ -96,6 +103,10 @@
     }
 
     studentcare-app {
+      width: 96%;
+    }
+
+    student-room-list {
       width: 96%;
     }
 
@@ -163,9 +174,27 @@
                     </template>
                     </paper-listbox>
                   </paper-collapse-item>
-                  <paper-icon-item class="drawer-content" name="report">
+                  <paper-icon-item class="white-content" name="report">
                     <iron-icon src="{{imgReport}}" slot="item-icon"></iron-icon>
                     รายงาน
+                  </paper-icon-item>
+                  <paper-collapse-item src="{{imgStudentCare}}"
+                    name="studentcare"
+                    header="แผนการดูแล"
+                    class="paper-collapse-styled">
+                    <paper-listbox selected="{{_studentCare}}" on-iron-select="_changePageToStudentCare">
+                    <template is="dom-repeat" items="{{studentcares}}">
+                      <paper-item class="font-face-normal">{{item.label}}</paper-item>
+                    </template>
+                    </paper-listbox>
+                  </paper-collapse-item>
+                  <paper-icon-item class="white-content" name="school">
+                    <iron-icon src="{{imgSchool}}" slot="item-icon"></iron-icon>
+                    ข้อมูลโรงเรียน
+                  </paper-icon-item>
+                  <paper-icon-item class="white-content" name="homevisit">
+                    <iron-icon src="{{imgHomevisit}}" slot="item-icon"></iron-icon>
+                    เยี่ยมบ้าน
                   </paper-icon-item>
                   <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
                     <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
@@ -198,7 +227,7 @@
               </div>
               <div name="assignment" class="align-center">
                 <template is="dom-if" if="[[_equal(page, 'assignment')]]">
-                  <studentcare-app  id="studentcare"
+                  <studentcare-app
                     host="{{selectedAssignment.host}}"
                     level="{{selectedAssignment.level}}"
                     room="{{selectedAssignment.room}}"
@@ -210,6 +239,26 @@
                 <template is="dom-if" if="[[_equal(page, 'report')]]">
                   <studentcare-report host-id="{{role.profile.hostid}}" year="2017">
                   </studentcare-report>
+                </template>
+              </div>
+              <div name="studentcare" class="align-center">
+                <template is="dom-if" if="[[_equal(page, 'studentcare')]]">
+                  <student-room-list
+                    year="{{selectedStudentCare.year}}"
+                    host="{{selectedStudentCare.host}}"
+                    level="{{selectedStudentCare.level}}"
+                    room="{{selectedStudentCare.room}}">
+                  </student-room-list>
+                </template>
+              </div>
+              <div name="school" class="align-center">
+                <template is="dom-if" if="[[_equal(page, 'school')]]">
+                  ข้อมูลโรงเรียน
+                </template>
+              </div>
+              <div name="homevisit" class="align-center">
+                <template is="dom-if" if="[[_equal(page, 'homevisit')]]">
+                  เยี่ยมบ้าน
                 </template>
               </div>
             </iron-pages>
@@ -234,6 +283,13 @@
           return [];
         }
       },
+      studentcares :{
+        type:Array,
+        notify:true,
+        value:function() {
+          return [];
+        }
+      },
       selectedReport: {
         type:Object,
         notify:true,
@@ -243,6 +299,11 @@
         type:Object,
         notify:true,
         computed:'_getSelectedAssignment(assignments,_assignment)'
+      },
+      selectedStudentCare: {
+        type:Object,
+        notify:true,
+        computed:'_getSelectedStudentCare(studentcares,_studentCare)'
       },
       _loadClass:{
         type:Boolean,
@@ -273,6 +334,21 @@
         notify:true,
         computed:'_imgLogo()'
       },
+      imgHomevisit:{
+        type:String,
+        notify:true,
+        computed:'_imgHomevisit()'
+      },
+      imgSchool:{
+        type:String,
+        notify:true,
+        computed:'_imgSchool()'
+      },
+      imgStudentCare:{
+        type:String,
+        notify:true,
+        computed:'_imgStudentCare()'
+      },
       /*_opened:{
         type:String,
         notify:true,
@@ -298,9 +374,9 @@
         this.set('page','homepage');
       }
     },
-    _setActiveAssignment:function(event) {
+    /*_setActiveAssignment:function(event) {
       this.set('page','assignment');
-    },
+    },*/
     _imgHome:function(){
       return this.resolveUrl("./images/home.png");
     },
@@ -316,6 +392,15 @@
     _imgLogo:function(){
       return this.resolveUrl("./images/logo.png");
     },
+    _imgHomevisit:function(){
+      return this.resolveUrl("./images/homevisit.png");
+    },
+    _imgSchool:function(){
+      return this.resolveUrl("./images/school.png");
+    },
+    _imgStudentCare:function(){
+      return this.resolveUrl("./images/student_care.png");
+    },
     _getSelectedReport:function(report) {
       var arr = report.split('_');
       if(arr.length > 1) {
@@ -323,11 +408,16 @@
       } else {
         return {'level':false,'host':arr[0]};
       }
-
     },
     _getSelectedAssignment:function(assignments,_assignment) {
+      //console.log('assignments',assignments,_assignment);
       if(!assignments || assignments.length == 0) return;
       return assignments[_assignment];
+    },
+    _getSelectedStudentCare:function(studentcares,_studentCare) {
+      //console.log('student care',studentcares,_studentCare);
+      if(!studentcares || studentcares.length == 0) return;
+      return studentcares[_studentCare];
     },
     _equal: function(value1, value2) {
       return value1 === value2;
@@ -339,8 +429,16 @@
       //console.log(classteacher);
       if(!classteacher.classname) return;
       this.set('assignments',[]);
+      this.set('studentcares',[]);
       var dict = {};
       this.push('assignments',{
+          'label':classteacher.classname+'/'+classteacher.room,
+          'level':classteacher.classname,
+          'room':classteacher.room,
+          'host':classteacher.host,
+          'year':classteacher.year
+        });
+      this.push('studentcares',{
           'label':classteacher.classname+'/'+classteacher.room,
           'level':classteacher.classname,
           'room':classteacher.room,
@@ -353,6 +451,9 @@
     },
     _changePageToAssignment:function(e) {
       this.set('page','assignment');
+    },
+    _changePageToStudentCare:function(e) {
+      this.set('page','studentcare');
     },
     _changePageToReport:function(e) {
       this.set('page','report');

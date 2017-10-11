@@ -1,131 +1,185 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
-<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-
-<!--<link rel="import" href="../../bower_components/studentcare-components/student-profile.html">-->
-<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<link rel="import" href="../../bower_components/app-datepicker/app-datepicker.html">
+<link rel="import" href="../../bower_components/app-datepicker/app-datepicker-dialog.html">
 
 <dom-module id="careplan-economy">
-  <template>
-    <style include="iron-flex iron-flex-alignment iron-flex-factors">
-        :host {
-            @apply (--layout-vertical);
-        }
-        
-        .font-face {
-            @apply --paper-font-subhead;
-            font-family: 'Athiti', sans-serif;
-        }
-        
-        .header div {
-            @apply --paper-font-subhead;
-            font-family: 'Athiti', sans-serif;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-    
-        .header {
-            font-family: 'Athiti', sans-serif;
-            font-size: 25px;
-            padding-left:16px;
-            padding-right:16px;
-            background: var(--paper-grey-400);
-        }
-        .font-face {
-            @apply --paper-font-subhead;
-            font-family: 'Athiti', sans-serif;
-            font-size: 16px;
-            margin:5px;
-        }
-        paper-item.iron-selected {
-            background-color:#efefef;
-        }
-        .line-style {
-            border-bottom: 1px solid #ddd;
-        }
-        paper-item {
-            cursor: pointer; cursor: hand; 
-        }
-        paper-item.iron-selected {
-            background-color:#efefef;
-        }
-        app-toolbar {
-            /*background-color: var(--paper-red-500);*/
-            background-color: #e65540;
-            color: white; 
-        }
-        paper-button.green {
-             background-color: var(--paper-green-500);
-             color: white;
-        }
-    </style>
+	<template>
+		<style include="iron-flex iron-flex-alignment iron-flex-factors">
+			:host {
+				@apply (--layout-vertical);
+			}
 
-<div>
-    <div class="layout horizontal header">
-        <div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
-        <div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
-    </div>
-    <template is="dom-repeat" items="{{employees}}">
-        <div class="layout horizontal flex">
-            <div class="flex-4 font-face">{{item.problem}}</div>
-            <div class="flex-4 font-face">
-                <paper-checkbox class="font-face">{{item.service}}</paper-checkbox>
-            </div>
-            <div class="flex-4 font-face horizontal end-justified layout">
-                <div class="datepicker-dialog">
-                    <paper-button  raised class="green font-face">วันที่ได้รับบริการ</paper-button>
-                    <app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" 
-                        view="vertical" date="{{dynamicDate}}" show-long-date="true" locale="th">
-                    </app-datepicker-dialog>
-                </div>
-            </div>
-    </div>
-    </template>
+			.font-face {
+				@apply --paper-font-subhead;
+				font-family: 'Athiti', sans-serif;
+			}
 
-    </div>
-    
-  </template>
+			.header div {
+				@apply --paper-font-subhead;
+				font-family: 'Athiti', sans-serif;
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
 
-<script>
-    Polymer({
-        is: 'careplan-economy',
-        properties: {
-            
-        },
-        ready: function () {
+			.header {
+				font-family: 'Athiti', sans-serif;
+				font-size: 25px;
+				padding-left: 16px;
+				padding-right: 16px;
+				background: var(--paper-grey-400);
+			}
+
+			.font-face {
+				@apply --paper-font-subhead;
+				font-family: 'Athiti', sans-serif;
+				font-size: 16px;
+				margin: 5px;
+			}
+
+			paper-item.iron-selected {
+				background-color: #efefef;
+			}
+
+			.line-style {
+				border-bottom: 1px solid #ddd;
+			}
+
+			paper-item {
+				cursor: pointer;
+				cursor: hand;
+			}
+
+			paper-item.iron-selected {
+				background-color: #efefef;
+			}
+
+			app-toolbar {
+				/*background-color: var(--paper-red-500);*/
+				background-color: #e65540;
+				color: white;
+			}
+
+			paper-button.green {
+				background-color: var(--paper-green-500);
+				color: white;
+			}
+		</style>
+
+		<!-- <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+		</app-localstorage-document>
+
+		<iron-ajax method="POST" id="query" url="https://maas.nuqlis.com:8000/v2/obec/form_record_homevisit/query" content-type="application/json"
+		 handle-as="json" headers$='{"Authorization":"JWT {{jwtToken.token}}"}' body='{"query":{"hostid":"1035430078","cid":"1139700059691"}}'
+		 on-response="handleResponse">
+		</iron-ajax> -->
+
+		<div>
+			<div class="layout horizontal header">
+				<div class="flex-4 font-face layout horizontal center-justified">ปัญหา</div>
+				<div class="flex-8 font-face layout horizontal center-justified">บริการ</div>
+			</div>
+
+			<div class="layout horizontal flex">
+				<div class="flex-4 font-face">ครอบครัวยากจน ส่งเสียไม่ไหว/ไม่มีทุนการศึกษา</div>
+				<div class="flex-6 font-face">
+					<paper-checkbox class="font-face" checked=true>สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)</paper-checkbox>
+				</div>
+				<div class="flex-4 font-face horizontal end-justified layout">
+					<div class="datepicker-dialog">
+						<paper-button raised on-tap="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
+						<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
+						 locale="th">
+						</app-datepicker-dialog>
+					</div>
+				</div>
+			</div>
+
+			<template is="dom-repeat" items="{{employees}}">
+				<div class="layout horizontal flex">
+					<div class="flex-4 font-face">{{item.problem}}</div>
+					<div class="flex-6 font-face">
+						<paper-checkbox class="font-face" checked="{{item.selected}}">{{item.service}}</paper-checkbox>
+					</div>
+					<div class="flex-4 font-face horizontal end-justified layout">
+						<div class="datepicker-dialog">
+							<paper-button raised on-tap="_openDialog" class="green font-face">วันที่ได้รับบริการ</paper-button>
+							<app-datepicker-dialog id="datepicker" with-backdrop theme="light-theme" view="vertical" date="{{dynamicDate}}" show-long-date="true"
+							 locale="th">
+							</app-datepicker-dialog>
+						</div>
+					</div>
+				</div>
+			</template>
+		</div>
+
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'careplan-economy',
+			properties: {
+				cid: {
+					type: String,
+					reflectToAttribute: true,
+					notify: true
+				},
+				host: {
+					type: String,
+					reflectToAttribute: true,
+					notify: true
+				},
+				document: {
+					type: Object,
+					notify: true
+				},
+				checked: {
+					type: Boolean,
+					value: false
+				}
+			},
+			observers: [
+				'executeQuery(host,cid,jwtToken.token)'
+			],
+			_openDialog: function (e) {
+				// console.log("this.$.datepicker", this.$.datepicker);
+				this.$.datepicker.open();
+			},
+			executeQuery: function (host, cid, token) {
+				if (token == null) return;
+				this.$.query.generateRequest();
+			},
+			ready: function () {
 				var now = new Date();
 				var nowFy = now.getFullYear();
 				var nowM = now.getMonth() + 1;
 				var nowD = now.getDate();
 				this.dynamicDate = nowFy + '/' + ('0' + nowM).slice(-2) + '/' + ('0' + nowD).slice(-2);
 				this.employees = [
-					{ problem: 'ครอบครัวยากจน ส่งเสียไม่ไหว/ไม่มีทุนการศึกษา', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)' },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)' },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)' },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)' },
-					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)' },
-					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' },
-					{ problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (โรงเรียนปกติ)' },
-					{ problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยครอบครัว)' },
-                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยสถานประกอบการ)' },
-                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนประจำ)' },
-                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนไป-กลับ)' },
-                    { problem: '', service: 'ทุนการศึกษา' },
-                    { problem: 'โรงเรียนอยู่ไกลเดินทางไม่ไหว', service: 'บริการรถรับส่ง' },
-                    { problem: '', service: 'ค่าเดินทาง เพราะโรงเรียนอยู่ไกล' },
-                    { problem: '', service: 'หอพัก/โรงเรียนประจำ' },
-                    { problem: 'ต้องย้ายที่อยู่ตามครอบครัวเป็นประจำ (ก่อสร้าง/ทำไร่ต่างถิ่น)', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' },
+					// { problem: 'ครอบครัวยากจน ส่งเสียไม่ไหว/ไม่มีทุนการศึกษา',
+                    //  service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา แก่ศูนย์เด็กเล็ก (ระดับก่อนประถมศึกษา)', selected: false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษาโรงเรียนปกติ(ระดับมัธยมศึกษาตอนต้น)' , selected: false},
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา โรงเรียนปกติ (ระดับมัธยมศึกษาตอนปลาย)', selected: true },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา(อาชีวะ)', selected: false },
+					{ problem: '', service: 'สนับสนุนค่าใช้จ่ายในการจัดการศึกษา (การศึกษานอกโรงเรียน)' , selected: false},
+					{ problem: '', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)' , selected: true},
+					{ problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (โรงเรียนปกติ)', selected: false },
+					{ problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยครอบครัว)', selected: false },
+                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน (การจัดการศึกษาขั้นพื้นฐานโดยสถานประกอบการ)', selected: false },
+                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนประจำ)' , selected: false},
+                    { problem: '', service: 'เงินอุดหนุนปัจจัยพื้นฐานสำหรับนักเรียนยากจน โรงเรียนศึกษาสงเคราะห์ (นักเรียนไป-กลับ)' , selected: false},
+                    { problem: '', service: 'ทุนการศึกษา', selected: true },
+                    { problem: 'โรงเรียนอยู่ไกลเดินทางไม่ไหว', service: 'บริการรถรับส่ง', selected: true },
+                    { problem: '', service: 'ค่าเดินทาง เพราะโรงเรียนอยู่ไกล' , selected: true},
+                    { problem: '', service: 'หอพัก/โรงเรียนประจำ' , selected: false},
+                    { problem: 'ต้องย้ายที่อยู่ตามครอบครัวเป็นประจำ (ก่อสร้าง/ทำไร่ต่างถิ่น)', service: 'การศึกษาทางเลือก (กศน./ภาคค่ำ)', selected: true },
 				];
 			}
-    });
-</script>
+		});
+	</script>
 </dom-module>

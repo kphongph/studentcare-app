@@ -235,6 +235,9 @@
           </app-header>
             <iron-pages selected="{{page}}" attr-for-selected="name">
               <div name="homepage">
+                <template is="dom-if" if="{{!signed}}">
+                  <login-box signed="{{signed}}" user="{{user}}" id="loginBox"></login-box>
+                </template>
                 <template is="dom-if" if="{{signed}}">
                 <homepage-app></homepage-app>
                   <db-classteacher tid="{{role.profile._teacher}}"

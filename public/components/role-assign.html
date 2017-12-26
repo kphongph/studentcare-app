@@ -43,7 +43,7 @@
 
   <iron-ajax
     id="getRoleAjax"
-    url="https://maas.nuqlis.com:8000/v2/cores/role_db/query"
+    url="https://thaieduforall.org:8000/v2/cores/role_db/query"
     method="POST"
     headers$='{"Authorization":"JWT {{token.token}}"}'
     on-response="_onRoleResponse"
@@ -53,7 +53,7 @@
 
   <iron-ajax
     id="queryTeacher"
-    url="https://maas.nuqlis.com:8000/v2/obec/teacher_db/query"
+    url="https://thaieduforall.org:8000/v2/obec/teacher_db/query"
     method="POST"
     headers$='{"Authorization":"JWT {{token.token}}"}'
     on-response="_onQueryResponse"
@@ -63,7 +63,7 @@
 
   <iron-ajax
     id="insertRoleAjax"
-    url="https://maas.nuqlis.com:8000/v2/cores/role_db/data"
+    url="https://thaieduforall.org:8000/v2/cores/role_db/data"
     method="POST"
     headers$='{"Authorization":"JWT {{token.token}}"}'
     on-response="_onInsertResponse"

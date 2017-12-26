@@ -59,7 +59,7 @@
 
     <iron-ajax id="listAjax"
       method="POST"
-      url="https://maas.nuqlis.com:8000/v2/obec/student_data_db/query"
+      url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
       content-type="application/json"
       headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
       last-response="{{students}}"
@@ -94,7 +94,7 @@
           <div class="flex-6">ตำแหน่ง: ผู้ดูแลระบบ</div>
         </div>
         <paper-tabs selected="{{page}}" no-slide>
-          <paper-tab><div class="font-face-big">ครอบคร้ว/สังคม</div></paper-tab>
+          <paper-tab><div class="font-face-big">ครอบครัว/สังคม</div></paper-tab>
           <paper-tab><div class="font-face-big">เศรษฐกิจ</div></paper-tab>
           <paper-tab><div class="font-face-big">สุขภาพ</div></paper-tab>
           <paper-tab><div class="font-face-big">ตัวเด็ก(พฤติกรรม)</div></paper-tab>

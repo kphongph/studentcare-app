@@ -12,8 +12,8 @@
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-app.html">
 <link rel="import" href="../bower_components/studentcare-components/studentcare-report.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
@@ -85,6 +85,7 @@
       /*font-size: 110%;*/
       color: #000;
     }
+
     app-drawer-layout:not([narrow]) [drawer-toggle] {
       display: none;
     }
@@ -127,7 +128,7 @@
 
     studentcare-report {
       width: 96%;
-      background-color:white;
+      /*background-color:white;*/
     }
 
     report-class {
@@ -136,6 +137,12 @@
 
     report-host {
       width: 96%;
+    }
+
+    #startDrawer {
+      --app-drawer-content-container: {
+        box-shadow: 1px 0 2px 1px rgba(0,0,0,0.18);
+      }
     }
 
     .align-center{
@@ -154,7 +161,8 @@
     </style>
 
       <app-drawer-layout>
-        <app-drawer swipe-open slot="drawer">
+        <app-drawer swipe-open slot="drawer" id="startDrawer" align="start">
+        <!--<app-drawer id="startDrawer" align="start">-->
           <app-header-layout has-scrolling-region class="drawer-content">
             <app-header class="whiteHeader" waterfall fixed slot="header">
               <app-toolbar class="drawer-content">
@@ -166,6 +174,7 @@
                 <!--</div>-->
               </app-toolbar>
             </app-header>
+
               <paper-listbox selected="{{page}}" attr-for-selected="name">
                 <template is="dom-if" if="{{!signed}}">
                   <paper-icon-item class="drawer-content" name="login">
@@ -228,10 +237,8 @@
 
         <app-header-layout>
           <app-header class="blueHeader" condenses reveals effects="waterfall" slot="header">
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <!--<app-toolbar>
-              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            </app-toolbar>-->
+            <!--<paper-icon-button icon="menu" drawer-toggle></paper-icon-button>-->
+            <paper-icon-button icon="menu" on-tap="openDrawer"></paper-icon-button>
           </app-header>
             <iron-pages selected="{{page}}" attr-for-selected="name">
               <div name="homepage">
@@ -413,8 +420,11 @@
       'studentcare-selected': '_selectStudent',
       'student-homevisit-selected': '_selectStudentHomevisit',
     },
-    openDrawer: function() {
+    /*openDrawer: function() {
       this.$.drawer.toggle();
+    },*/
+    openDrawer: function() {
+      this.$.startDrawer.toggle();
     },
     _toggle: function() {
       this.$.collapse.toggle();

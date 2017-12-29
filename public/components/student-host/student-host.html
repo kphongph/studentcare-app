@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="student-host">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply --layout-vertial;
+        font-family: 'Athiti', sans-serif;
+        /*background-color: white;*/
+      }
+      app-toolbar {
+        /*background-color: var(--paper-red-500);*/
+        background-color: #cd333f;
+        color: white;
+      }
+      paper-material {
+        padding: 2px;
+      }
+      paper-tabs {
+        --paper-tabs-selection-bar-color: #F44336;
+        background-color: var(--paper-grey-200);
+        height: 40px;
+      }
+      .bg{
+        background-color: white;
+      }
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        margin-left: 20px;
+      }
+      .font-face-big {
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+      }
+    </style>
+
+    <paper-material elevation="0">
+      <div class="flex layout horizontal">
+        <div class="flex-6">&nbsp;</div>
+        <div class="flex-6">
+          <user-profile></user-profile>
+        </div>
+      </div>
+      <app-toolbar>
+        <div main-title>ข้อมูลโรงเรียน</div>
+      </app-toolbar>
+        <paper-tabs selected="{{page}}" no-slide>
+          <paper-tab><div class="font-face-big">ข้อมูลทั่วไป</div></paper-tab>
+          <paper-tab><div class="font-face-big">ข้อมูลอัตลักษณ์เครื่องแบบ</div></paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{page}}" class="bg">
+          <div>ข้อมูลทั่วไป</div>
+          <div>ข้อมูลอัตลักษณ์เครื่องแบบ</div>
+        </iron-pages>
+    </paper-material>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'student-host',
+      properties: {
+        cid: {
+          type:String,
+          reflectToAttribute:true
+        },
+        page: {
+          type: Number,
+          value: 0
+        }
+      }
+    });
+  </script>
+</dom-module>

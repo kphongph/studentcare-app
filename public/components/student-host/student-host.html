@@ -3,10 +3,10 @@
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link rel="import" href="school-info.html">
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -59,7 +59,7 @@
           <paper-tab><div class="font-face-big">ข้อมูลอัตลักษณ์เครื่องแบบ</div></paper-tab>
         </paper-tabs>
         <iron-pages selected="{{page}}" class="bg">
-          <div>ข้อมูลทั่วไป</div>
+          <div><school-info host-id="{{hostId}}"></school-info></div>
           <div>ข้อมูลอัตลักษณ์เครื่องแบบ</div>
         </iron-pages>
     </paper-material>
@@ -69,9 +69,9 @@
     Polymer({
       is: 'student-host',
       properties: {
-        cid: {
+        hostId: {
           type:String,
-          reflectToAttribute:true
+          notify:true
         },
         page: {
           type: Number,

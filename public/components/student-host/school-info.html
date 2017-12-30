@@ -1,0 +1,104 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="school-info">
+ <template>
+  <style is="customer-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      display:block;
+      @apply --layout-vertial;
+      font-family: 'Athiti', sans-serif;
+    }
+
+    paper-input{
+      margin-left: 5px;
+    }
+  </style>
+
+  <app-localstorage-document
+    key="jwtToken"
+    data="{{token}}">
+  </app-localstorage-document>
+
+  <iron-ajax 
+    id="getHostInfo"
+    url="https://thaieduforall.org:8000/v2/obec/school/query"
+    method="POST"
+    on-response="_onHostInfoResponse"
+    content-type="application/json"
+    body$='{"query":{"hostid":"{{hostId}}"}}'>
+  </iron-ajax>
+
+  <div class="layout horizontal">
+    <div class="flex"><paper-input label="รหัสโรงเรียน" value="{{value.hostid}}"></div>
+  </div>
+  <div class="layout horizontal">
+    <div class="flex"><paper-input label="ชื่อโรงเรียน" value="{{value.host}}"></div>
+    <div class="flex"><paper-input label="อักษรย่อ" value=""></div>
+  </div>
+  <div class="layout horizontal">
+    <div class="flex"><paper-input label="ประเภทโรงเรียน" value=""></div>
+    <div class="flex"><paper-input label="สังกัด" value=""></div>
+  </div>
+  <div class="layout horizontal">
+    <div class="flex"><paper-input label="ระดับชั้นที่เปิดสอน" value=""></div>
+  </div>
+  <div class="layout horizontal">
+    <div class="flex"><paper-input label="ที่อยู่โรงเรียน เลขที่" value=""></div>
+    <div class="flex"><paper-input label="หมู่ที่" value=""></div>
+    <div class="flex"><paper-input label="ถนน" value=""></div>
+    <div class="flex"><paper-input label="ตำบล" value=""></div>
+  </div>
+  <div class="layout horizontal">
+    <div class="flex"><paper-input label="อำเภอ" value=""></div>
+    <div class="flex"><paper-input label="จังหวัด" value="{{value.province}}"></div>
+    <div class="flex"><paper-input label="รหัสไปรษณีย์" value=""></div>
+  </div>
+  <div class="layout horizontal">
+    <div class="flex"><paper-input label="โทรศัพท์" value=""></div>
+    <div class="flex"><paper-input label="โทรสาร" value=""></div>
+  </div>
+ </template>
+ <script>
+  Polymer({
+    is:"school-info",
+    properties:{
+      hostId: {
+        type:String,
+        notify:true
+      },
+      token: {
+        type:Object,
+        value:{}
+      },
+      value:{
+        type:Object,
+        value:{}
+      }
+    },
+    observers:[
+     '__executeQuery(token.token)'
+    ],
+    __executeQuery:function(token) {     
+      if(token == null) return;
+      this.$.getHostInfo.headers = {
+        'Authorization':'JWT '+token
+      };      
+      this.$.getHostInfo.generateRequest();
+    },
+    _onHostInfoResponse:function(e) {
+      //console.log('value',e.detail.response);
+      var response = e.detail.response;
+      if(response.length == 1) {
+        var doc = response[0];
+        this.set('value',doc);
+      }
+    }
+  });
+ </script>
+</dom-module>

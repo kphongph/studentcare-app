@@ -27,6 +27,7 @@
 <link rel="import" href="student-care/student-plan.html">
 <link rel="import" href="student-homevisit/student-room-query.html">
 <link rel="import" href="student-homevisit/student-homevisit.html">
+<link rel="import" href="student-host/student-host.html">
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -119,6 +120,10 @@
     }
 
     student-homevisit {
+      width: 96%;
+    }
+
+    student-host {
       width: 96%;
     }
 
@@ -284,7 +289,7 @@
               </div>
               <div name="school" class="align-center">
                 <template is="dom-if" if="[[_equal(page, 'school')]]">
-                  ข้อมูลโรงเรียน
+                  <student-host host-id="{{role.profile.hostid}}"></student-host>
                 </template>
               </div>
               <div name="homevisit" class="align-center">

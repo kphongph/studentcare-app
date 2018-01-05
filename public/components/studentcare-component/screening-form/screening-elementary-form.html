@@ -1,0 +1,967 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+
+<link rel="import" href="homevisit-query.html">
+<link rel="import" href="homevisit-sdq-query.html">
+<link rel="import" href="weight-height-query.html">
+<link rel="import" href="grade-query.html">
+<link rel="import" href="disability-query.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="screening-elementary-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+
+      :host {
+        @apply --paper-font-display;
+        @apply --layout-vertical;
+        background-color: white;
+        display: block;
+        font-family: 'Athiti', sans-serif;
+        --paper-checkbox-vertical-align: top;
+        --paper-checkbox-margin: 8px 16px 8px 0;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      .formEntry div {
+        @apply --paper-font-display;
+        margin:3px;
+        padding:0px;
+      }
+
+      .evaluation {
+        padding:5px;
+      }
+
+      .sub-question {
+        padding-left:20px;
+      }
+
+      .topic1 {
+        padding:20px;
+        margin-right:20px;
+        @apply --layout-vertical;
+      }
+
+      .topic1 paper-input {
+        /*font-family: 'Itim', cursive;
+         font-size: 120%;*/
+        margin-left:50px;
+
+      }
+
+      .topic1 paper-checkbox {
+        margin-top:10px;
+      }
+
+      .check-icon {
+        width:30px;
+      }
+
+      .font-face-normal {
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+      }
+      .font-face-bolder {
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+        font-weight: bold;
+      }
+
+      .flex-1{
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+      }
+
+      .checkbox-font {
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+      }
+
+
+      label{
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+      }
+      .headQ{
+        font-weight: bold;
+        font-size: 120%;
+      }
+      /*.label2{
+ font-family: 'Itim', cursive;
+        font-size: 120%;
+      }*/
+      .font-face-underline {
+        font-family: 'Athiti', sans-serif;
+        /*font-weight: bold;*/
+        text-decoration: underline;;
+        font-size: 120%;
+      }
+      .border-topic{
+        border-bottom: 1px solid var(--paper-grey-300);
+      }
+      paper-checkbox {
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+        margin-right:20px;
+      }
+
+      .margin-content{
+        margin-right: 20px;
+      }
+
+      .margin-div{
+        margin-left: 20px;
+      }
+     #res {
+      --paper-input-container-input: {
+        /*font-size: 24px;*/
+        font-family: 'Athiti', sans-serif;
+      };
+      --paper-input-container-label:{
+        font-family: 'Athiti', sans-serif;
+      };
+      --paper-input-container-focus-color:#F44336;
+      /* .. */
+     }
+
+    </style>
+
+    <homevisit-query host="{{document.value.dmc.host}}"
+       cid="{{document.value.student.cid}}"
+       document="{{homevisit}}">
+    </homevisit-query>
+
+    <homevisit-sdq-query host="{{document.value.dmc.host}}"
+       cid="{{document.value.student.cid}}"
+       document="{{homevisitSDQ}}">
+    </homevisit-sdq-query>
+
+    <weight-height-query
+      cid="{{document.value.student.cid}}"
+      semester="{{document.value.student.semester}}"
+      year="{{document.value.student.year}}"
+      is-weight-height="{{document.value.form_value.q3_1_m}}">
+    </weight-height-query>
+    <!--{{weightheight.height1}}-->
+
+    <disability-query
+      cid="{{document.value.student.cid}}"
+      year="{{document.value.dmc.year}}"
+      is-visual="{{document.value.form_value.q3_5_m}}"
+      is-hearing="{{document.value.form_value.q3_6_m}}"
+      is-health="{{document.value.form_value.q3_7_m}}"
+      is-autistic="{{document.value.form_value.q5_4_m}}"
+      is-learning="{{document.value.form_value.q5_5_m}}"
+      is-intelligence="{{document.value.form_value.q5_6_m}}"
+      is-communication="{{document.value.form_value.q5_7_m}}"
+      is-behavior="{{document.value.form_value.q5_8_m}}"
+      document="{{disability}}">
+    </disability-query>
+
+    <grade-query
+      cid="1417100037098"
+      year="2558"
+      semester="6"
+	    is-gpax-lessthan-one="{{document.value.form_value.q2_1_p}}"
+	    is-gpax-between="{{document.value.form_value.q2_1_m}}"
+      document="{{gradedoc}}">
+    </grade-query>
+
+    <form-control id="control"
+      on-form-action="_tap"
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div slot="description">
+        <ol class="num"><b class="font-face-bolder"> คำชี้แจง</b>
+         <li class="font-face-normal">ให้เลือกว่าอาการในแต่ละข้อนั้นตรงกับลักษณะของเด็กที่ท่านประเมินเพียงใด</li>
+        </ol>
+      </div>
+      <div slot="formEntry" class="margin-content margin-div">
+       <!--<ol>
+         <li>-->
+           <!--<label id="label1" class="headQ">ความสามารถพิเศษ (ความถนัดและความสนใจในวิชาที่เรียน)</label>-->
+           <label class="headQ">1. ด้านความสามารถ</label>
+           <paper-radio-group aria-labelledby="label1" selected="{{document.value.form_value.q1}}">
+             <paper-radio-button name="y" class="font-face-normal">มี</paper-radio-button>
+             <paper-radio-button name="n" class="font-face-normal">ไม่มี</paper-radio-button>
+           </paper-radio-group>
+           <template is="dom-if" if="{{_isEquals(document.value.form_value.q1,'y')}}">
+           <div class="topic1">
+             <paper-checkbox checked="{{document.value.form_value.q1_1}}">
+              <div class="font-face-normal">กลุ่มสาระการเรียนรู้คณิตศาสตร์</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_1_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_1}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_1_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_1}}">
+             </paper-input>
+
+             <paper-checkbox checked="{{document.value.form_value.q1_2}}">
+             <div class="font-face-normal">กลุ่มสาระการเรียนรู้ภาษาไทย</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_2_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_2}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_2_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_2}}">
+             </paper-input>
+
+             <paper-checkbox checked="{{document.value.form_value.q1_3}}">
+             <div class="font-face-normal">กลุ่มสาระการเรียนรู้ภาษาต่างประเทศ</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_3_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_3}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_3_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_3}}">
+             </paper-input>
+
+             <paper-checkbox checked="{{document.value.form_value.q1_4}}">
+             <div class="font-face-normal">กลุ่มสาระการเรียนรู้วิทยาศาสตร์</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_4_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_4}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_4_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_4}}">
+             </paper-input>
+
+             <paper-checkbox checked="{{document.value.form_value.q1_5}}">
+             <div class="font-face-normal">กลุ่มสาระการเรียนรู้ศิลปะ</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_5_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_5}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_5_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_5}}">
+             </paper-input>
+
+             <paper-checkbox checked="{{document.value.form_value.q1_6}}">
+             <div class="font-face-normal">กลุ่มสาระการเรียนรู้การงานอาชีพและเทคโนโลยี</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_6_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_6}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_6_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_6}}">
+             </paper-input>
+
+             <paper-checkbox checked="{{document.value.form_value.q1_7}}">
+             <div class="font-face-normal">กลุ่มสาระการเรียนรู้สุขศึกษาและพลศึกษา</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_7_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_7}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_7_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_7}}">
+             </paper-input>
+
+             <paper-checkbox checked="{{document.value.form_value.q1_8}}">
+             <div class="font-face-normal">กลุ่มสาระการเรียนรู้สังคมศึกษา ศาสนา และวัฒนธรรม</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_8_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_8}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_8_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_8}}">
+             </paper-input>
+
+             <paper-checkbox checked="{{document.value.form_value.q1_9}}">
+             <div class="font-face-normal"> อื่น ๆ</div>
+             </paper-checkbox>
+             <paper-input id ="res" value="{{document.value.form_value.q1_9_t1}}"
+               label="ลำดับที่ 1"
+               disabled="{{!document.value.form_value.q1_9}}">
+             </paper-input>
+             <paper-input id ="res" value="{{document.value.form_value.q1_9_t2}}"
+               label="ลำดับที่ 2"
+               disabled="{{!document.value.form_value.q1_9}}">
+             </paper-input>
+           </div>
+           </template>
+         <!--</li>
+         <li>-->
+           <!--<label id="label2"  class="headQ">ด้านการเรียน</label>-->
+           <div class="flex layout horizontal">
+             <label class="headQ">1.1 ผลการเรียน ({{_gpax}})</label>
+           </div>
+           <paper-input id ="res"  label="ผลการประเมิน" readonly
+             value="{{_q2Text(document.value.form_value.q2)}}">
+           </paper-input>
+
+           <!--<div class="flex layout horizontal font-face-underline">
+             2.1 ผลการเรียน
+           </div>-->
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_1_m}}" disabled>
+                 ผลการเรียนเฉลี่ย 1.00 - 2.00
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_1_p}}" disabled>
+                 ผลการเรียนเฉลี่ยต่ำกว่า 1.00
+               </paper-checkbox>
+             </div>
+           </div>
+           <div class="flex layout horizontal border-topic">
+             <div class="flex-6  margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_2_m}}"><!-- M ซ้าย -->
+                 ติด 0, ร, มส, มผ 1-2 วิชา ต่อ 1 ภาคเรียน
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_2_p}}"><!-- P ขวา -->
+                 ติด 0, ร, มส, มผ มากกว่า 2 วิชา ต่อ 1 ภาคเรียน
+               </paper-checkbox>
+             </div>
+           </div>
+           <div class="flex layout horizontal font-face-underline"><!-- หัวตาราง -->
+             เข้าเรียน
+           </div>
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_3_m}}">
+                 ไม่เขัาเรียน 1-2 ครั้ง ต่อ รายวิชา
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_5_p}}">
+                 ไม่เข้าเรียนหลายครั้งโดยไม่มีเหตุจำเป็น
+               </paper-checkbox>
+             </div>
+           </div>
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_4_m}}">
+                 มาเรียนสาย 3 ครั้งต่อสัปดาห์
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_4_p}}">
+                 มาเรียนสายมากกว่า 3 ครั้งต่อสัปดาห์
+               </paper-checkbox>
+             </div>
+           </div>
+           <div class="flex layout horizontal border-topic">
+             <div class="flex-6 margin-content">&nbsp;</div>
+             <div class="flex-6 margin-content">
+              <paper-checkbox checked="{{document.value.form_value.q2_7_p}}">
+               ขาดเรียนบ่อยมากกว่า 1 วันต่อสัปดาห์
+              </paper-checkbox>
+            </div>
+           </div>
+           <div class="flex layout horizontal font-face-underline"><!-- หัวตาราง -->
+             ความตั้งใจ/สมาธิในการเรียน
+           </div>
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_5_m}}">
+                 ไม่ตั้งใจเรียนขณะครูสอน
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_6_p}}">
+                 สมาธิสั้น
+               </paper-checkbox>
+             </div>
+             <!--<paper-checkbox class="flex-1" checked="{{document.value.form_value.q2_5_p}}">
+               ไม่เข้าเรียนหลายครั้งโดยไม่มีเหตุจำเป็น
+             </paper-checkbox>-->
+           </div>
+           <div class="flex layout horizontal border-topic">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_6_m}}">
+                 ไม่มีอุปกรณ์การเรียนมาเรียนหรือนำอุปกรณ์การเรียนมาไม่ครบ
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">&nbsp;
+               <!--<paper-checkbox class="flex-1" checked="{{document.value.form_value.q2_6_p}}">
+                 สมาธิสั้น
+               </paper-checkbox>-->
+             </div>
+           </div>
+           <div class="flex layout horizontal font-face-underline"><!-- หัวตาราง -->
+             การอ่าน/การเขียน
+           </div>
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_7_m}}">
+                  อ่านสะกดคำไม่ได้
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">&nbsp;</div>
+             <!--<paper-checkbox class="flex-1" checked="{{document.value.form_value.q2_7_p}}">
+                ขาดเรียนบ่อยมากกว่า 1 วันต่อสัปดาห์
+             </paper-checkbox>-->
+           </div>
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_10_m}}">
+                  อ่านไม่ได้ใจความ
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">&nbsp;</div>
+           </div>
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox cchecked="{{document.value.form_value.q2_8_m}}">
+                 จับใจความสำคัญไม่ได้
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">&nbsp;</div>
+           </div>
+           <div class="flex layout horizontal border-topic">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_9_m}}">
+                  เขียนตัวอักษรไม่ได้
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content ">&nbsp;</div>
+           </div>
+           <div class="flex layout horizontal font-face-underline"><!-- หัวตาราง -->
+             ความรับผิดชอบ
+           </div>
+           <div class="flex layout horizontal border-topic">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_11_m}}">
+                  ไม่ส่งงาน 1-2 วิชา
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_11_p}}">
+                 ไม่ส่งงานมากกว่า 2 วิชา
+               </paper-checkbox>
+             </div>
+           </div>
+           <div class="flex layout horizontal font-face-underline"><!-- หัวตาราง -->
+             อื่นๆ
+           </div>
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_12_m}}">
+                  ไม่ผ่านคุณลักษณะอันพึงประสงค์ 1 ข้อ
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_12_p}}">
+                 ไม่ผ่านคุณลักษณะอันพึงประสงค์ตั้งแต่ 2 ข้อขึ้นไป
+               </paper-checkbox>
+             </div>
+           </div>
+           <div class="flex layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_13_m}}">
+                  ผลการประเมินการอ่านคิดวิเคราะห์และเขียนสื่อความอยู่ในระดับ 1
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q2_13_p}}">
+                  ผลการประเมินการอ่านคิดวิเคราะห์และเขียนสื่อความไม่ผ่าน
+               </paper-checkbox>
+             </div>
+           </div>
+         <!--</li>-->
+         <!-- ********************** homevisit ************************************** -->
+          <label class="headQ">2. ด้านครอบครัว</label>
+           <template is="dom-repeat" items="{{homevisit}}" as="subject">
+             <!--<li>-->
+               <div>
+                <label id="label2" class="headQ">{{subject.text}} (แบบเยี่ยมบ้าน)</label>
+               </div>
+               <div class="layout vertical">
+               <template is="dom-repeat" items="{{subject.values}}">
+                 <paper-checkbox checked="{{item.checked}}" disabled class="checkbox-font">
+                 {{item.text}}
+                 </paper-checkbox>
+               </template>
+               </div>
+             <!--</li>-->
+           </template>
+          <!-- ********************** homevisit ************************************** -->
+
+         <!--<li>-->
+           <!--<label id="label2" class="headQ">ด้านสุขภาพ</label>-->
+           <label class="headQ">3. ด้านสุขภาพ/ความบกพร่องของร่างกาย</label>
+           <paper-input id ="res" label="ผลการประเมิน" readonly
+             value="">
+           </paper-input>
+           <div class="flex layout horizontal font-face-underline"><!-- หัวตาราง -->
+             3.1 น้ำหนัก/ส่วนสูง
+           </div>
+            <div class="layout horizontal">
+              <div class="flex margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q3_1_m}}" disabled>
+                  น้ำหนักผิดปกติ  และไม่สัมพันธ์กับส่วนสูง  หรืออายุ
+               </paper-checkbox>
+             </div>
+             <!--<div class="flex-6 margin-content">&nbsp;</div>-->
+             <!--<div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q3_1_p}}">
+                  ป่วยเป็นโรคหรือมีความพิการทางร่างกายมีความบกพร่องทางการได้ยินการมองเห็น  และความเจ็บป่วย  หรือบกพร่องดังกล่าวมีผลกระทบต่อความสามารถด้านการเรียนในระดับมีปัญหา
+               </paper-checkbox>
+             </div>-->
+           </div>
+           <div class="flex layout horizontal font-face-underline"><!-- หัวตาราง -->
+             3.2 โรคประจำตัว
+           </div>
+           <div class="layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q3_2_m}}">
+                  มีโรคประจำตัวหรือเจ็บป่วยบ่อยๆ
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q3_1_p}}">
+                  ป่วยเป็นโรคหรือมีความพิการทางร่างกายมีความบกพร่องทางการได้ยินการมองเห็น  และความเจ็บป่วย  หรือบกพร่องดังกล่าวมีผลกระทบต่อความสามารถด้านการเรียนในระดับมีปัญหา
+               </paper-checkbox>
+             </div>
+             <!--<div class="flex-6 margin-content">&nbsp;</div>-->
+           </div>
+           <div class="flex layout horizontal font-face-underline"><!-- หัวตาราง -->
+             3.3 ความบกพร่องของร่างกาย
+           </div>
+            <div class="flex layout horizontal margin-content">
+              <paper-checkbox checked="{{document.value.form_value.q3_5_m}}" disabled>
+                 มีความบกพร่องด้านการมองเห็น
+              </paper-checkbox>
+            </div>
+            <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q3_6_m}}" disabled>
+                มีความบกพร่องด้านการได้ยิน
+             </paper-checkbox>
+            </div>
+            <div class="flex layout horizontal margin-content">
+              <paper-checkbox checked="{{document.value.form_value.q3_7_m}}" disabled>
+                 มีความบกพร่องทางด้านร่างกาย
+              </paper-checkbox>
+            </div>
+            <!--<div class="layout horizontal">
+              <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q3_3_m}}">
+                  มีความพิการทางร่างกายหรือบกพร่องด้านการยิน การฟัง การมองเห็น  หรืออื่นๆ
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">&nbsp;</div>
+           </div>
+           <div class="layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q3_4_m}}">
+                  ให้นักเรียนพิจารณาใช้แบบประเมินพฤติกรรมหรือเครื่องมืออื่นๆ ตามความเหมาะสมกับสภาพโรงเรียน
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q3_4_p}}">
+                  ให้นักเรียนพิจารณาใช้แบบประเมินพฤติกรรมหรือเครื่องมืออื่นๆ ตามความเหมาะสมกับสภาพโรงเรียน
+               </paper-checkbox>
+             </div>
+           </div>-->
+
+         <!--</li>
+         <li>-->
+           <!--<label id="label2"  class="headQ">ด้านพฤติกรรม</label>-->
+           <label class="headQ">4. ด้านสุขภาพจิตและพฤติกรรม</label>
+           <paper-input id ="res" label="ผลการประเมิน" readonly
+             value="">
+           </paper-input>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q4_2_m}}" disabled>
+                พฤติกรรม (SDQ)
+             </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q4_3_m}}" disabled>
+               ความฉลาดทางอารมณ์ (EQ)
+            </paper-checkbox>
+           </div>
+           <!--<div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q4_4_m}}" disabled>
+                สารเสพติด
+             </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q4_5_m}}" disabled>
+                ความรุนแรง
+             </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q4_6_m}}" disabled>
+               เพศ
+            </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q4_7_m}}" disabled>
+                การติดเกมส์
+             </paper-checkbox>
+           </div>-->
+           <!-- ******************* homevisit-sdq-query ********** -->
+           <template is="dom-repeat" items="{{homevisitSDQ}}" as="homevisitSDQ">
+               <div>
+                <label id="label2" class="headQ">{{homevisitSDQ.text}} (แบบเยี่ยมบ้าน)</label>
+               </div>
+               <div class="layout vertical">
+               <template is="dom-repeat" items="{{homevisitSDQ.values}}">
+                 <paper-checkbox checked="{{item.checked}}" disabled class="checkbox-font">
+                 {{item.text}}
+                 </paper-checkbox>
+               </template>
+               </div>
+           </template>
+           <!-- ******************* homevisit-sdq-query ********** -->
+
+           <label class="headQ">5. ปัญหาทางการเรียนรู้</label>
+           <paper-input id ="res" label="ผลการประเมิน" readonly
+             value="">
+           </paper-input>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q5_4_m}}" disabled>
+                ออทิสติก
+             </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q5_5_m}}" disabled>
+               LD (การเรียนรู้)
+            </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q5_6_m}}" disabled>
+                สติปัญญา
+             </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q5_7_m}}" disabled>
+               พูด/ภาษา
+            </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q5_8_m}}" disabled>
+                พฤติกรรม/อารมณ์
+             </paper-checkbox>
+           </div>
+           <div class="flex layout horizontal margin-content">
+             <paper-checkbox checked="{{document.value.form_value.q5_9_m}}" disabled>
+               สมาธิสั้น/SNAP-IV
+            </paper-checkbox>
+           </div>
+            <!--<div class="layout horizontal">
+             <paper-checkbox class="flex-1" checked="{{document.value.form_value.q4_1_m}}">
+                มีพฤติกรรมแสดงออกดังนี้<br>
+                1.	ความเฉี่อยชา<br>
+                2.	ชอบเก็บตัว<br>
+                3.	การลักขโมย<br>
+                4.	การโกหก<br>
+                ฯลฯ<br>
+                ซึ่งเป็นพฤติกรรมที่แสดงออกเป็นครั้งคราว
+
+             </paper-checkbox>
+             <paper-checkbox class="flex-1" checked="{{document.value.form_value.q4_1_p}}">
+                มีพฤติกรรมแสดงออกดังนี้<br>
+                1.	ความก้าวร้าว<br>
+                2.	หนีโรงเรียน<br>
+                3.	ชอบรังแกคนอื่น/สัตว์<br>
+                4.	การใช้สารเสพติด<br>
+                ฯลฯ<br>
+                ซึ่งเป็นพฤติกรรมที่แสดงออกเป็นประจำ
+
+             </paper-checkbox>
+           </div>-->
+         <!--</li>
+                  <li>-->
+           <!--<label id="label2"  class="headQ">ด้านอื่นๆ</label>
+           <paper-input id ="res" label="ผลการประเมิน" readonly
+             value="">
+           </paper-input>
+            <div class="layout horizontal">
+              <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q5_1_m}}">
+                  มีการทดลองดื่มเบียร์ สุรา หรือสูบบุหรี่โดยตนเองหรือเพื่อนชักชวน
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q5_1_p}}">
+                  ใช้ยาเสพติด  สารเสพติด ดื่มเบียร์  สุรา  หรือสูบบุหรี่เป็นครั้งคราวและมีแนวโน้นว่าจะเพิ่มขึ้นและเป็นผู้ชวนให้ผู้อื่นปฏิบัติตาม
+               </paper-checkbox>
+             </div>
+           </div>
+            <div class="layout horizontal">
+              <div class="flex-6 margin-content">
+                 <paper-checkbox checked="{{document.value.form_value.q5_2_m}}">
+                    ติดเพื่อนต่างเพศแนวชู้สาว
+                 </paper-checkbox>
+               </div>
+               <div class="flex-6 margin-content">
+                 <paper-checkbox checked="{{document.value.form_value.q5_2_p}}">
+                    ติดต่อเพื่อนต่างเพศในแนวชู้สาว  หรือถึงขั้นมีความสัมพันธ์ทางเพศ
+                 </paper-checkbox>
+               </div>
+           </div>
+           <div class="layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q5_3_m}}">
+                  จับคู่ชัดเจนและแยกอยู่กันสองต่อสองบ่อยๆ
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">&nbsp;</div>
+           </div>
+           <div class="layout horizontal">
+             <div class="flex-6 margin-content">
+               <paper-checkbox checked="{{document.value.form_value.q5_3_m}}">
+                  มีพฤติกรรมเบี่ยงเบนทางเพศ  จนมีผลต่อการเรียน
+               </paper-checkbox>
+             </div>
+             <div class="flex-6 margin-content">&nbsp;</div>
+           </div>-->
+         <!--</li>
+                  <li>-->
+           <!--<label id="label2"  class="headQ">ด้านสังคม</label>
+           <paper-input id ="res" label="ผลการประเมิน" readonly
+             value="">
+           </paper-input>
+            <div class="layout horizontal">
+              <div class="flex-6 margin-content">
+                 <paper-checkbox checked="{{document.value.form_value.q6_1_m}}">
+                    สามารถปรับตัวได้ในบางเรื่องบางกรณี  และมักปฏิบัติตนขัดแย้งกับกฎเกณฑ์ต่างๆของโรงเรียน  ห้องเรียนเมื่อได้รับการตักเตือนก็เลิกพฤติกรรมนั้นได้
+                 </paper-checkbox>
+               </div>
+               <div class="flex-6 margin-content">
+                 <paper-checkbox checked="{{document.value.form_value.q6_1_p}}">
+                    สามารถปรับตัวได้ในบางกรณี  แต่มีข้อขัดแย้งสม่ำเสมอ ก่อปัญหาให้แก้ไข  อยู่เสมอ  เมื่อได้รับการตักเตือนก็ไม่หยุดพฤติกรรมต่อด้าน
+                 </paper-checkbox>
+               </div>
+           </div>-->
+         <!--</li>
+       </ol>-->
+     </div>
+
+     <div slot="evaluation">
+      <!--
+      <div class="layout vertical">
+       <div class="layout horizontal">
+        <div class="check-icon">
+          <iron-icon icon="check" hidden$="{{!_mark}}">
+          </iron-icon>
+        </div>
+        <span class="flex" id="markPositive">
+          พบความบกพร่อง
+        </span>
+       </div>
+       <div class="layout horizontal">
+        <div class="check-icon">
+          <iron-icon icon="check" hidden$="{{_mark}}">
+          </iron-icon>
+        </div>
+        <span class="flex" id="markNegative">
+          ไม่พบความบกพร่อง
+        </span>
+       </div>
+      </div>
+      -->
+      <!--<div>ด้านการเรียน : {{document.value.form_result.q2.result}}</div>
+      <div>ด้านสุขภาพ : {{document.value.form_result.homevisit.0.type}}</div>
+      <div>ด้านสวัสดิการหรือความปลอดภัย : {{document.value.form_result.homevisit.1.type}}</div>
+      <div>ด้านพฤติกรรมการใช้สารเสพติด : {{document.value.form_result.homevisit.2.type}}</div>
+      <div>ด้านพฤติกรรมการใช้ความรุนแรง : {{document.value.form_result.homevisit.3.type}}</div>
+      <div>ด้านพฤติกรรมทางเพศ : {{document.value.form_result.homevisit.4.type}}</div>
+      <div>ด้านการติดเกม : {{document.value.form_result.homevisit.5.type}}</div>-->
+      <div>ด้านการเรียน : </div>
+      <div>ด้านครอบครัว : </div>
+      <div>ด้านสุขภาพ/ความบกพร่องของร่างกาย : </div>
+      <div>ด้านสุขภาพจิตและพฤติกรรม : </div>
+      <div>ปัญหาทางการเรียนรู้ : </div>
+     </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'screening-elementary-form',
+      listeners : {
+      },
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบคัดกรองนักเรียนรายบุคคล ระดับประถม"
+        },
+        _gpax:{
+          type:String,
+          notify:true,
+          computed:'___GPAX(gradedoc.GPAX)'
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers:[
+        '_result(document.value.form_result)',
+        '_monitor(document.value.form_value.*)',
+      ],
+      ___GPAX:function(gpax){
+        //console.log(gpax);
+        return gpax/100;
+      },
+      _tap:function(e) {
+        if(e.detail.type == "save") {
+          this.$.control.save();
+        }
+      },
+      _q2Text:function(q2) {
+        if(q2=='p') {
+          return 'มีปัญหา';
+        } else {
+          if(q2=='m') {
+            return 'เสี่ยง';
+          }
+        }
+      },
+      _monitor:function(changeRecord) {
+        if(!this.document.value) return;
+        var tmp = this.document.value.form_value;
+        var current_max = '';
+        for(var q in tmp) {
+          var qs = q.split('_');
+          if(qs[0] =='q2' && tmp[q]) {
+            if(qs[2] == 'p') {
+              current_max = 'p';
+            } else {
+              if(current_max != 'p') {
+                current_max = qs[2];
+              }
+            }
+          }
+        }
+        this.set('document.value.form_value.q2',current_max);
+      },
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score = {};
+
+        //for(var q in values) {
+          //var p = q.split('_')[0];
+          //if(!score[p]) score[p] = {'y':0,'n':0};
+          //score[p][values[q]]++;
+        //}
+
+        var name_dict = {
+          'q2':'ด้านการเรียน'
+        };
+        var result_dict = {
+          'm':'เสี่ยง',
+          'p':'มีปัญหา'
+        };
+
+        for(var q in values) {
+          if(name_dict[q]) {
+            var obj = {'name':name_dict[q],'result':result_dict[values[q]]};
+            if(values[q]=='m' || values[q]=='p') {
+              score['_risk'] = true;
+            }
+            score[q] = obj;
+          }
+        }
+        //console.log(this.homevisit);
+
+        var result_homevisit = [];
+        var result_type;
+        var tmp_homevisit = this.homevisit;
+        for(var i=0;i<tmp_homevisit.length;i++) {
+            //console.log(tmp_homevisit[i]);
+           //console.log(tmp_homevisit[i].values.length);
+            for(var j=0;j<tmp_homevisit[i].values.length;j++){
+              //console.log(tmp_homevisit[i].values[j].type);
+              var chk_type = tmp_homevisit[i].values[j].type;
+              if(chk_type == "มีปัญหา"){
+                result_type = "มีปัญหา";
+              }else{
+                result_type = "เสี่ยง";
+              }
+            }
+            result_homevisit.push({
+              "text":tmp_homevisit[i].text,
+              "type":result_type
+            });
+		    }
+        //console.log(result_homevisit);
+        score["homevisit"] = result_homevisit;
+        console.log(score);
+        return score;
+      },
+      _validate:function() {
+        /*
+        var eles =Polymer.dom(this.root)
+         .querySelectorAll('snap-choice');
+        for(var i=0;i<eles.length;i++) {
+          if(!eles[i].value)  {
+            console.log(eles[i]);
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            eles[i].classList.remove('invalid');
+          }
+        }
+        */
+        return true;
+      },
+      _isEquals:function(a,b) {
+        return a != null && a == b ;
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});
+      },
+      _result:function(score) {
+        /*
+        if(!score) return;
+        var foundSub = false;
+        for(var key in score) {
+          if(key.indexOf('s') == 0 && score[key].y>=2) {
+            foundSub=true;
+            break;
+          }
+        }
+        if(score.p1.y >= 1  && foundSub) {
+          this.$$('#markPositive').classList.add('mark');
+          this.$$('#markNegative').classList.remove('mark');
+          this.set('_mark',true);
+        } else {
+          this.$$('#markNegative').classList.add('mark');
+          this.$$('#markPositive').classList.remove('mark');
+          this.set('_mark',false);
+        }
+        */
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,32 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="check-only-level-behavior.html">
+
+<dom-module is="dl3-generator">
+ <script>
+  Polymer({
+    is:"dl3-generator",
+    behaviors:[
+     CheckOnlyLevelBehavior
+    ],
+    properties:{
+      formType:{
+        type:String,
+        value:'dl3-form'
+      },
+      atLevel:{
+        type:Array,
+        value:function() {
+          return [
+            "มัธยมศึกษาปีที่ 1",
+            "มัธยมศึกษาปีที่ 2",
+            "มัธยมศึกษาปีที่ 3",
+            "มัธยมศึกษาปีที่ 4",
+            "มัธยมศึกษาปีที่ 5",
+            "มัธยมศึกษาปีที่ 6"
+          ];
+        }
+      }
+    }
+  });
+ </script>
+</dom-module>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>studentcare-component demo</title>
+
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="../../../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../../bower_components/iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+    <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+    <link rel="import" href="../studentcare-app.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles iron-flex iron-flex-alignment iron-flex-factors">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container">
+      <h3>studentcare-app</h3>
+        <div class="layout horizontal">
+          <div class="flex">
+            <studentcare-app
+              host="1071020101"
+              level="ประถมศึกษาปีที่ 1"
+              year="2017"
+              room="1">
+            </studentcare-app>
+            <!--<studentcare-app
+              host="{{host}}"
+              level="{{lavel}}"
+              year="{{yesr}}"
+              room="{{room}}">
+            </studentcare-app>-->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

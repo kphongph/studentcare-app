@@ -1,0 +1,29 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="check-only-level-behavior.html">
+
+<dom-module is="disability-intelligence-generator">
+ <script>
+  Polymer({
+    is:"disability-intelligence-generator",
+    behaviors:[
+      CheckOnlyLevelBehavior
+    ],
+    properties:{
+      formType:{
+        type:String,
+        value:'disability-intelligence-form'
+      },
+      atLevel:{
+        type:Array,
+        value:function() {
+          return [
+            "ประถมศึกษาปีที่ 1",
+            "ประถมศึกษาปีที่ 4",
+            "มัธยมศึกษาปีที่ 1"
+          ];
+        }
+      }
+    }
+  });
+ </script>
+</dom-module>

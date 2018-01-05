@@ -1,0 +1,78 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="homevisit-sdq-query">
+ <template>
+   <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+   </app-localstorage-document>
+
+   <iron-ajax
+     method="POST"
+     id="query"
+     url="https://thaieduforall.org:8000/v2/obec/form_record_homevisit/query"
+     content-type="application/json"
+     handle-as="json"
+     headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+     body='{"query":{"hostid":"1035430078","cid":"1139700059691"}}'
+     on-response="handleResponse">
+   </iron-ajax>
+
+ </template>
+ <script>
+   Polymer({
+     is:'homevisit-sdq-query',
+     properties:{
+       cid:{
+         type:String,
+         reflectToAttribute:true,
+         notify:true
+       },
+       host:{
+         type:String,
+         reflectToAttribute:true,
+         notify:true
+       },
+       document: {
+         type:Object,
+         notify:true
+       }
+     },
+     observers:[
+       'executeQuery(host,cid,jwtToken.token)'
+     ],
+     executeQuery:function(host,cid,token) {
+       if(token == null) return;
+       this.$.query.generateRequest();
+     },
+     handleResponse:function(e) {
+       var res = e.detail.response;
+       //console.log(res);
+       if(res.length == 0) return;
+       var form = res[0];
+       var _document = [];
+       var handle = function(group,question) {
+         if(group.id == "0002" &&
+            (question.id == "0010" ||
+             question.id == "0011" ||
+             question.id == "0012" ||
+             question.id == "0013" )) {
+           var _doc = {'text':question.text};
+           _doc['values']=[];
+           question.answers.forEach(function(answer) {
+             _doc['values'].push({'text':answer.text,'type':answer.type,'checked':answer.checked?answer.checked:false});
+           });
+           _document.push(_doc);
+         }
+       };
+       form.group.forEach(function(group) {
+         group.questions.forEach(function(question) {
+           handle(group,question);
+         });
+       });
+       this.set('document',_document);
+       //console.log(_document);
+     }
+   });
+ </script>
+</dom-module>

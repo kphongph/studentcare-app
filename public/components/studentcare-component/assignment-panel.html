@@ -1,0 +1,175 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="local/assignment-card.html">
+<link rel="import" href="view-iterator.html">
+
+<dom-module id="assignment-panel">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply --layout-vertical;
+        display: block;
+      }
+
+      .query-form {
+        padding-left:5px;
+        padding-right:15px;
+        padding-top:15px;
+      }
+
+      .no-icon {
+        padding-left:40px;
+      }
+
+      .top-panel {
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        @apply --paper-font-body2;
+        padding:5px;
+        height:40px;
+        background:var(--paper-grey-200);
+      }
+     
+      .assignment-list {
+        @apply --layout-vertical;
+      }
+    </style>
+
+    <div class="top-panel">
+     <template is="dom-if" if="{{_equal(page,'form')}}">
+      <paper-icon-button icon="arrow-back" on-tap="_back">
+      </paper-icon-button>
+      <div>แบบประเมิน</div>
+     </template>
+     <template is="dom-if" if="{{_equal(page,'list')}}">
+      <paper-icon-button icon="search" on-tap="_toggleSearch">
+      </paper-icon-button>
+      <div>รายการแบบประเมิน</div>
+     </template>
+    </div>
+
+    <iron-pages selected="{{page}}" attr-for-selected="name">
+     <div name="list" class="layout horizontal">
+      <div class="query-form" hidden="{{!_search}}">
+        <paper-checkbox checked="{{_evaluated}}">ประเมินแล้ว</paper-checkbox>
+      </div>
+      <div class="assignment-list flex">
+        <template is="dom-repeat" items="{{data}}"> 
+          <assignment-card data="{{item}}"></assignment-card>  
+        </template>
+       
+        <div class="layout horizontal">
+          <paper-button raised 
+            on-tap="_loadMore"
+            disabled="{{_end}}">More</paper-button>
+          <view-iterator 
+           id="viewer"
+           url="https://maas.nuqlis.com:9000/api"
+           db-name="students_care"
+           view-name="assignments_by_room"
+           data="{{data}}"
+           end="{{_end}}"
+           query="{{query}}">
+          </view-iterator>
+        </div>
+      </div>
+     </div>
+
+     <div name="form" id="formEntry">
+     </div>
+   </iron-pages>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'assignment-panel',
+      listeners:{
+        'assignment-update':'_onAssignmentUpdate',
+        'select-assignment':'_onSelectAssignment'
+      },
+      properties: {
+        host: {
+          type:String
+        },
+        level:{
+          type:String
+        },
+        room:{
+          type:String
+        },
+        status: {
+          type:Boolean,
+          value:false
+        },
+        _search:{
+          type:Boolean,
+          value:false
+        },
+        limit: {
+          type:Number,
+          value:1
+        },
+        page: {
+          type:String,
+          readOnly:true,
+          value:"list"
+        },
+        query:{
+          type:Object,
+          computed:'__computeQuery(host,level,room,_evaluated)'
+        }
+      },
+      observers:[
+      ],
+      __computeQuery:function(host,level,room,_evaluated) {
+        return {"match":[host,level,room,_evaluated],"limit":5};
+      },
+      _loadMore:function(e) {;
+        this.$.viewer.next(function() {
+        });
+      },
+      _getScrollTarget:function() {
+        return this.$.header.scrollTarget;
+      },
+      _onAssignmentUpdate:function(e) {
+        var card = e.target;
+        var old = e.detail.old.key;
+        var status='_'+old[4]+'Count';
+        this.set(status,this.get(status)-1);
+        status='_'+e.target.data.key[4]+'Count';
+        this.set(status,this.get(status)+1);
+      },
+      _onSelectAssignment:function(e) {
+        this._setPage("form");
+        var node = this.$.formEntry;
+        while(node.firstChild) {
+          node.removeChild(node.firstChild);
+        }
+        var formElement = e.detail.formElement;
+        this.$.formEntry.appendChild(formElement);
+      },
+      _equal:function(a,b) {
+        return a == b;
+      },
+      _back:function(e) {
+        if(this.page == "form") {
+          this._setPage("list");
+        }
+      },
+      _toggleSearch:function(e) {
+        this.set('_search',!this._search);
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,292 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="eq-teacher-choice.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="eq-teacher-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply --paper-font-display;
+        @apply --layout-vertical;
+        display: block;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      .formEntry div {
+        @apply --paper-font-title;
+        margin: 3px;
+        padding: 0px;
+        background: #efefef;
+      }
+
+      .description ol {
+        @apply --paper-font-body1;
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+        .num {
+          list-style-type: decimal;
+        }
+      }
+
+      .check-icon {
+        width: 30px;
+      }
+
+      .mark {
+        font-weight: bold;
+      }
+
+      .font-face-underline {
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+        text-decoration: underline;
+        font-size: 120%;
+      }
+
+      .font-face-bold {
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+        /*font-size: 120%;*/
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        /*font-size: 120%;*/
+      }
+
+      .bg-color{
+        background-color: white;
+      }
+    </style>
+
+    <form-control id="control" on-form-action="_tap" doc-key="{{document.key}}" doc-value="{{document.value}}">
+      <div slot="description">
+        <ol class="num"><b class="font-face-bold"><u>ความหมาย</u></b>
+          <li class="font-face">ความฉลาดทางอารมณ์ของเด็กเป็นความพร้อมทางอารมณ์ที่จะอยู่ร่วมกับผู้อื่นด้อย่างราบรื่น โดยรู้จักอารมณ์ตนเองและผู้อื่น
+            แสดงความเห็นใจหรือปลอบใจผู้อื่น อดทนและรอคอยได้ มีน้ำใจ รู้จักให้ รู้จักแบ่งปัน รู้ว่าทำผิด หรือยอมรับผิด พร้อมที่จะพัฒนาตนไปสู่ความสำเร็จ
+            โดยมีความกระตือรือร้น สนใจใฝ่รู้ และปรับตัวต่อการเปลี่ยนแปลง พร้อมทำให้ตนเองเกิดความสุข โดยมีความพอใจ ความอบอุ่นใจ
+            และความสนุกสนานร่าเริง</li>
+        </ol>
+        <ul class="num"><b class="font-face-bold"><u>คำชี้แจง</u></b>
+          <li class="font-face">ให้ครูตอบคำถามที่เกี่ยวกับเด็กในช่วง 4 เดือนที่ผ่านมา โดยเลือกคำตอบที่ใกล้เคียงกับตัวเด็กที่เป็นอยู่จริงมากที่สุด
+            ในข้อคำถามแต่ละข้อมีคำตอบที่เป็นไปได้ 4 คำตอบ </li>
+          <li class="font-face">"ไม่เป็นเลย" หมายถึง ไม่เคยปรากฏ</li>
+          <li class="font-face">"เป็นบางครั้ง" หมายถึง นานๆครั้งหรือทำบ้างไม่ทำบ้าง</li>
+          <li class="font-face">"เป็นบ่อยครั้ง" หมายถึง ทำบ่อยๆหรือเกือบทุกครั้ง</li>
+          <li class="font-face">"เป็นประจำ" หมายถึง ทำทุกครั้งเมื่อเกิดสถานการณ์นั้น</li>
+        </ul>
+        <ol class="num"> <b class="font-face-bold"><u>วิธีการประเมินและข้อพึงระวัง</u></b>
+          <li class="font-face">ครูประเมินความฉลาดทางอารมณ์เด็กในภาคการศึกษาที่ 2 หรือหลังจากคุ้นเคยกับนักเรียนอย่างน้อย 4 เดือน</li>
+          <li class="font-face">ผลการประเมินเป็นคะแนนของเด็กรายบุคคล ไม่ควรนำไปเปรียบเทียบกับเด็กอื่น ว่ากล่าวตำหนิเด็กหรือใช้เป็นข้อตัดสินในการคัดเลือกเด็ก</li>
+        </ol>
+        <ol class="num"><b class="font-face-bold"><u>การให้คะแนน</u></b> แบ่งเป็น 2 กลุ่ม
+          <li> <div class="font-face">กลุ่มที่ 1</div>
+            <ul class="num"><div class="font-face">ให้คะแนนแต่ละข้อดังนี้</div>
+              <li class="font-face">ข้อ 1 ,2 ,4 ,5 ,6 ,7 ,9 ,10 ,11 ,12 ,13 ,14 ,15</li>
+              <li class="font-face">"ไม่เป็นเลย" ให้ 1 คะแนน</li>
+              <li class="font-face">"เป็นบางครั้ง" ให้ 2 คะแนน</li>
+              <li class="font-face">"เป็นบ่อยครั้ง" ให้ 3 คะแนน</li>
+              <li class="font-face">"เป็นประจำ" ให้ 4 คะแนน</li>
+            </ul>
+          </li>
+          <li ><div class="font-face">กลุ่มที่ 2</div>
+            <ul class="num"><div class="font-face">ให้คะแนนแต่ละข้อ 3 และ 8</div>
+              <li class="font-face">"ไม่เป็นเลย" ให้ 4 คะแนน</li>
+              <li class="font-face">"เป็นบางครั้ง" ให้ 3 คะแนน</li>
+              <li class="font-face">"เป็นบ่อยครั้ง" ให้ 2 คะแนน</li>
+              <li class="font-face">"เป็นประจำ" ให้ 1 คะแนน</li>
+            </ul>
+          </li>
+        </ol>
+        <ul class="num"><b class="font-face-bold"><u> การแปลผล</u></b>
+          <li class="font-face">คะแนนรวม มากกว่า" 56 คะแนน ความฉลาดทางอารมณ์สูงกว่าปกติ</li>
+          <li class="font-face">คะแนนรวม มากกว่า 42-56 คะแนน ความฉลาดทางอารมณ์ปานกลาง</li>
+          <li class="font-face">คะแนนรวม มากกว่า 42 คะแนน ความฉลาดทางอารมณ์ต่ำกว่าปกติ</li>
+        </ul>
+        <ul class="num"><b class="font-face-bold"><u>หมายเหตุ</u></b>
+          <li class="font-face">ก่อนและหลังประเมินครูควรจัดกิจกรรมส่งเสริมความฉลาดทางอารมณ์ เพื่อพัฒนาความฉลาดทางอารมณ์แก่เด็กอย่างต่อเนื่อง</li>
+        </ul>
+      </div>
+      <div slot="formEntry" class="bg-color">
+        <div class="font-face-underline">ดี</div>
+        <eq-teacher-choice value="{{document.value.form_value.q1}}"
+          label="1. รู้จักให้กำลังใจผู้อื่น">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q2}}"
+          label="2. รู้จักรับฟังความคิดเห็นของผู้อื่น">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q3}}"
+          label="3. ชอบแกล้งเพื่อน">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q4}}"
+          label="4. ยอมรับเมื่อทำผิด เช่น ขอโทษหรือยกมือไหว้">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q5}}"
+          label="5. ทักทายหรือทำความรู้จักกับเพื่อนใหม่ ">
+        </eq-teacher-choice>
+        <div class="font-face-underline">เก่ง</div>
+        <eq-teacher-choice value="{{document.value.form_value.q6}}"
+          label="1. มีความตั้งใจเมื่อทำสิ่งต่างๆ ที่สนใจ">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q7}}"
+          label="2. พยายามทำงานที่ยากให้สำเร็จได้ด้วยตนเอง เช่น การบ้าน งานฝีมือ">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q8}}"
+          label="3. ท้อใจหรือล้มเลิกความตั้งใจเมื่อทำงานไม่สำเร็จ หรือเมื่อมีปัญหา">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q9}}"
+          label="4. รู้จักรอคอยเวลาที่เหมาะสมในการแก้ปัญหา เช่นเมื่อไม่ได้ในสิ่งที่ต้องการ">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q10}}"
+          label="5. เมื่อมีปัญหา ชอบคิดหาวิธีแก้ปัญหาหลายๆทาง">
+        </eq-teacher-choice>
+        <div class="font-face-underline">สุข</div>
+        <eq-teacher-choice value="{{document.value.form_value.q11}}"
+          label="1. ภูมิใจในจุดดีของตนเอง">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q12}}"
+          label="2. มีอารมณ์ขัน">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q13}}"
+          label="3. ทำกิจกรรมสร้างสุขให้ตนเองได้อย่างเหมาะสม">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q14}}"
+          label="4. มีวิธีผ่อนคลายความเครียดด้วยตนเอง เช่นอ่านหนังสือ ดูหนัง ฟังเพลง เล่นสนุก วาดรูป พูดคุยกับเพื่อน">
+        </eq-teacher-choice>
+        <eq-teacher-choice value="{{document.value.form_value.q15}}"
+          label="5. เป็นเด็กอารมณ์ดี">
+        </eq-teacher-choice>
+      </div>
+
+      <div slot="evaluation">
+        <div class="layout vertical">
+          <div class="layout horizontal">
+            <div class="check-icon">
+              <iron-icon icon="check" hidden$="{{!_criteria.c1}}">
+              </iron-icon>
+            </div>
+            <span class="flex" id="c1_label">
+          <div class="font-face">คะแนนรวม มากกว่า 56 คะแนน ความฉลาดทางอารมณ์สูงกว่าปกติ</div>
+        </span>
+          </div>
+          <div class="layout horizontal">
+            <div class="check-icon">
+              <iron-icon icon="check" hidden$="{{!_criteria.c2}}">
+              </iron-icon>
+            </div>
+            <span class="flex" id="c2_label">
+          <div class="font-face">คะแนนรวม มากกว่า 42-56 คะแนน ความฉลาดทางอารมณ์ปานกลาง</div>
+        </span>
+          </div>
+          <div class="layout horizontal">
+            <div class="check-icon">
+              <iron-icon icon="check" hidden$="{{!_criteria.c3}}">
+              </iron-icon>
+            </div>
+            <span class="flex" id="c3_label">
+          <div class="font-face">คะแนนรวม ต่ำกว่า 42 คะแนน ความฉลาดทางอารมณ์ต่ำกว่าปกติ</div>
+        </span>
+          </div>
+        </div>
+      </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'eq-teacher-form',
+      properties: {
+        name: {
+          type: String,
+          reflectToAttribute: true,
+          value: "แบบประเมินความฉลาดทางอารมณ์ (EQ)ฉบับครูประเมินนักเรียน (6-11 ปี)"
+        }
+      },
+      observers: [
+        '_result(document.value.form_result.score)'
+      ],
+      behaviors: [
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      _tap: function (e) {
+        if (e.detail.type == "save") {
+          this.$.control.save();
+        }
+      },
+      _evaluate: function () {
+        var values = this.document.value.form_value;
+        var score_list = ['', 'n', 's', 'u', 'a'];
+        var score38_list = ['', 'a', 'u', 's', 'n'];
+        var score = 0;
+        var risk;
+        for (var q in values) {
+          if (q == 'q3' || q == 'q8') {
+            score += score38_list.indexOf(values[q]);
+          } else {
+            score += score_list.indexOf(values[q]);
+          }
+        }
+        console.log(score);
+          if(score < 42){
+            risk = true;
+           }
+        return { 'score': score ,'_risk':risk};
+      },
+
+      _validate: function () {
+        var eles = Polymer.dom(this.root)
+          .querySelectorAll('eq-teacher-choice');
+        for (var i = 0; i < eles.length; i++) {
+          if (!eles[i].value) {
+            this.$.control.setInvalidateMessage({'text':'ยังทำแบบประเมินไม่ครบถ้วน'});
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            this.$.control.setInvalidateMessage({'text':''});
+            eles[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _reset: function () {
+        this.set('document.value.form_value', {});
+      },
+      _result: function (score) {
+        var _criteria = { 'c1': false, 'c2': false, 'c3': false };
+        if (score >= 56) {
+          _criteria.c1 = true;
+        } else {
+          if (score >= 42) {
+            _criteria.c2 = true;
+          } else {
+            _criteria.c3 = true;
+          }
+        }
+        for (var key in _criteria) {
+          if (_criteria[key]) {
+            this.$$('#' + key + '_label').classList.add('mark');
+          } else {
+            this.$$('#' + key + '_label').classList.remove('mark');
+          }
+        }
+        this.set('_criteria', _criteria);
+      }
+    });
+  </script>
+</dom-module>

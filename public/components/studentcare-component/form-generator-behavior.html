@@ -1,0 +1,85 @@
+<link rel="import" href="../../bower_components/iron-ajax/iron-request.html">
+
+<script>
+  FormGeneratorBehavior = {
+    properties : {
+      jwtToken:String,
+      year:String,
+      formType:String,
+      student: {
+        type:Object
+      },
+      forms: {
+        type:Array,
+        notify:true
+      },
+      document: {
+        type:Object,
+        notify:true
+      },
+    },
+    observers:[
+      'generate(forms)'
+    ],
+    requireForm:function(cb) {
+      cb(false);
+    },
+    generate:function(forms) {
+      if(forms == null) return;
+      var self = this;
+      this.requireForm(function(_required) {
+        self.fire('required-form-checked',{
+          'form_type':self.formType,
+          'required':_required
+        });
+        if(_required) {
+         var time = document.createElement('iron-request');
+         time.send({
+           method:'GET',
+           url:'https://maas.nuqlis.com:9001/servertime'
+         }).then(function(res) {
+           var ts = Number(res.response)*-1;
+           var ele = document.createElement('iron-request');
+           var assignment = {
+             doc_type:"assignment",
+             dmc:{
+               host:self.student.hostid,
+               year:''+self.year,
+               level:self.student['class'],
+               room:self.student.room
+             },
+             mandatory:true,
+             status:"new",
+             ts:ts,
+             form_type:self.formType,
+             student:{
+               cid:self.student.cid,
+               title:self.student.title,
+               name:self.student.name+' '+self.student.lastname,
+             },
+             form_value:{},
+             form_result:{}
+           };
+           ele.send({
+             method:'POST',
+             url:'https://maas.nuqlis.com:9000/api/dbs/students_care',
+             headers:{
+               'Content-Type':'application/json',
+               'Authorization':'JWT '+self.jwtToken
+             },
+             handleAs:'json',
+             body:assignment
+           }).then(function(res) {
+             if(res.response.ok) {
+               console.log(res.response);
+               self.fire('form-generated',{'key':res.response.key});
+               assignment['_id']=res.response.key;
+               self.push('forms',assignment);
+             }
+           });
+         });
+        }
+      });
+    }
+  }
+</script>

@@ -1,0 +1,27 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="check-only-level-behavior.html">
+
+<dom-module is="eq-student-generator">
+ <script>
+  Polymer({
+    is:"eq-student-generator",
+    behaviors:[
+     CheckOnlyLevelBehavior
+    ],
+    properties:{
+      formType:{
+        type:String,
+        value:'eq-student-form'
+      },
+      atLevel:{
+        type:Array,
+        value:function() {
+          return [
+            "มัธยมศึกษาปีที่ 1"
+          ];
+        }
+      }
+    }
+  });
+ </script>
+</dom-module>

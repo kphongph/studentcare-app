@@ -1,0 +1,266 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="forms.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="./local/assignment-card.html">
+<link rel="import" href="./form-generator.html">
+<link rel="import" href="./option-forms.html">
+
+<!-- <link rel="import" href="../../bower_components/moment/moment.html"> -->
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<dom-module id="report-room2">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply (--layout-vertical);
+      }
+      
+      .container {
+        @apply (--layout-horizontal);
+        @apply (--layout-center-justified);
+      }
+      .form_group {
+        @apply (--paper-font-subhead);
+        padding: 10px;
+        background: var(--paper-grey-100);
+      }
+      .content{
+        background :white;
+      }
+      .header {
+        font-family: 'Athiti', sans-serif;
+        font-size: 25px;
+        font-weight: bold;
+      }
+      .header2 {
+        @apply (--layout-center-justified);
+        font-family: 'Athiti', sans-serif;
+        /* font-size: 25px; */
+        /* font-weight: bold; */
+        
+      }
+      .note{
+        border:2px solid #44ada8;
+        font-family: 'Athiti', sans-serif;
+        background: #fff;
+        color: #000;
+      }
+
+      iron-icon {
+        width: 40px;
+        height: 40px;
+      }
+      .marker-new {
+        width: 5px;
+        height: 30px;
+        background:#000000;
+      }
+
+      .marker-working {
+        width: 5px;
+        height: 30px;
+        background:#FF0000;
+      }
+
+      .layout-note {
+        @apply --layout-horizontal;
+        margin-bottom: 5px;
+      }
+      .font-face {
+         @apply --paper-font-subhead;
+        font-family: 'Athiti', sans-serif;
+        font-size: 18px;
+      }
+      /* .line-style {
+        border-bottom: 1px solid #ddd;
+        height: 30px;
+        padding: 10px;
+      } */
+      app-toolbar {
+        /*background-color: var(--paper-red-500);*/
+        background-color: #e65540;
+        color: white; 
+      }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+      
+    <iron-ajax 
+      id="listAjax" 
+      method="GET" 
+      url$="https://thaieduforall.org:8000/v2/obec/_studentcare_report/data/students_{{year}}_{{hostid}}_{{level}}_{{room}}" 
+      content-type="application/json"
+      handle-as ="json"
+      on-response="handleResponse">
+    </iron-ajax>
+
+    <app-toolbar>
+      <div class="header">รายงานนักเรียนโรงเรียน {{hostid}}&nbsp;ชั้น{{level}} ห้อง {{room}} &nbsp; &nbsp;ปีการศึกษา {{year}}</div>
+    </app-toolbar>
+   
+    <app-toolbar>     
+      <div class="header2 layout">จำนวน {{total}} คน ข้อมูล ณ วันที่ {{ts}}</div>
+    </app-toolbar>
+
+    <div class="layout horizontal">
+      <div class="flex-1 font-face form_group">ชื่อ-นามสกุล</div>
+      <div class="flex-2 font-face form_group">SDQ</div>
+      <div class="flex-2 font-face form_group">EQ</div>
+      <div class="flex-2 font-face form_group">เด็กพิการ 9 ด้าน</div>
+      <div class="flex-2 font-face form_group">นักเรียนรายบุคคล</div>
+      <div class="flex-2 font-face form_group">อื่นๆ</div>
+    </div>
+
+    <template is="dom-repeat"  as="type" items="[[list]]" >
+      <div class="layout horizontal content">
+        <div class="flex-3 font-face line-style">{{type.name}}</br></br></div>
+        <template is="dom-repeat" as="group" items="[[name.doc]]">
+        <div class="flex-2 font-face line-style"items="[[group]]" >
+            {{item.type}}</br></br>
+            <!-- - แบบประเมินพฤติกรรมเด็ก (SDQ) ฉบับครูเป็นผู้ประเมินนักเรียน</br></br>
+            - แบบประเมินพฤติกรรมนักเรียน (SDQ) ฉบับนักเรียนประเมินตนเอง -->
+          </div>
+        </template>
+          <div class="flex-2 font-face line-style">
+            <!-- - แบบประเมินความฉลาดทางอารมณ์ (EQ) ฉบับนักเรียนประเมินตนเอง (12-17 ปี) -->
+          </div>
+          <div class="flex-2 font-face line-style">
+            <!-- - ความบกพร่องทางการเห็น</br></br>
+            - ความบกพร่องทางการได้ยิน</br></br>
+            - ความบกพร่องทางสติปัญญา</br></br>
+            - ความบกพร่องทางร่างกาย หรือการเคลื่อนไหว หรือสุขภาพ</br></br>
+            - ความบกพร่องทางการเรียนรู้ (ประถมศึกษา)</br></br>
+            - ความบกพร่องทางการเรียนรู้ (มัธยมศึกษา)</br></br>
+            - ออทิสติก</br></br>
+            - ความบกพร่องทางการพูดและภาษา</br></br>
+            - ความบกพร่องทางพฤติกรรม หรืออารมณ์ -->
+          </div>
+          <div class="flex-2 font-face line-style">
+            <!-- - แบบคัดกรองนักเรียนรายบุคคล ระดับประถม</br></br>
+            - แบบคัดกรองนักเรียนรายบุคคล ระดับมัธยม -->
+          </div>
+          <div class="flex-2 font-face line-style">
+            <!-- - แบบประเมินความเครียดกรมสุขภาพจิต (ST–5)</br></br>
+            - แบบประเมินพฤติกรรม SNAP-IV (Shot Form)</br></br>
+            - แบบประเมินการฆ่าตัวตาย 8 คำถาม (8Q)</br></br>
+            - แบบคัดกรองภาวะซึมเศร้าในเด็ก (CDI)</br></br>
+            - แบบทดสอบการติดเกม ฉบับเด็กและวัยรุ่น (GAST) -->
+          </div>
+      </div>
+    </template>
+  </template>
+  
+  <script>
+    Polymer({
+      is: "report-room2",
+      properties:{
+        hostid:{
+          type:String,
+          notify:true
+        },
+        level:{
+          type:String,
+          notify:true
+        },
+        room:{
+          type:String,
+          notify:true
+        },
+        year:{
+          type:String,
+          notify:true
+        },
+        list: {
+          type:Array,
+          notify:true,
+          value:function() {
+              return [];
+          }
+        }   
+      },
+      observers:[
+        '_execute(jwtToken)'
+      ],
+      _formName:function(form) {
+        var obj = {   
+          'dl2-form': 'แบบประเมินพฤติกรรมนักเรียน ฉบับครูประเมินนักเรียน',
+          'dl3-form': 'แบบประเมินพฤติกรรมนักเรียน ฉบับนักเรียนประเมินตนเอง',
+          'disability-visual-form': 'แบบคัดกรองบุคคลที่มีความบกพร่องทางการเห็น',
+          'eq-teacher-form': 'แบบประเมินความฉลาดทางอารมณ์เด็กอายุ 6-11 ปี (ฉบับครูประเมินนักเรียน)', 
+          'eq-student-form': 'แบบประเมิน ความฉลาดทางอารมณ์สำหรับวัยรุ่น (อายุ 12-17 ปี) (ฉบับนักเรียนประเมินตนเอง)',    
+          'disability-hearing-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางการได้ยิน' ,
+          'disability-intelligence-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางสติปัญญา' ,
+          'disability-health-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางร่างกาย หรือการเคลื่อนไหว หรือสุขภาพ' , 
+          'disability-learning-elementary-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางการเรียนรู้ (ประถมศึกษา)' , 
+          'disability-learning-secondary-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางการเรียนรู้ (มัธยมศึกษา)' ,
+          'disability-communication-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางการพูดและภาษา', 
+          'disability-behavior-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางพฤติกรรม หรืออารมณ์', 
+          'disability-autistic-form':  'แบบคัดกรองบุคคลออทิสติก' ,
+          'snap-form': 'แบบประเมินพฤติกรรม SNAP-IV (Shot Form)' , 
+          'st5-form':  'แบบประเมินความเครียดกรมสุขภาพจิต ( ST – 5 ) รายบุคคล' , 
+          'cdi-form':  'แบบคัดกรองภาวะซึมเศร้าในเด็ก Children’s Depression Inventory (CDI) ฉบับภาษาไทย' , 
+          'suicide8q-form':  'แบบประเมินการฆ่าตัวตาย 8 คำถาม (8Q) ใช้ประเมินร่วมกับแบบประเมินโรคซึมเศร้า 9 คำถาม' , 
+          'game-form': 'แบบทดสอบการติดเกม ฉบับเด็กและวัยรุ่น (Game Addiction Screening Test – GAST Child and Adolescent Version)', 
+          'screening-elementary-form':'แบบคัดกรองนักเรียนรายบุคคล ระดับประถม',
+          'screening-secondary-form':'แบบคัดกรองนักเรียนรายบุคคล ระดับมัธยม'
+        }     
+        var result = obj[form]?obj[form]:form;
+        return result;
+      },
+      _execute(token) {
+        if(token == null || !token.token) return;  
+        this.$.listAjax.headers = {
+          'Authorization':'JWT '+token.token
+        }
+        this.$.listAjax.generateRequest();
+      },
+      handleResponse(e) {
+        var doc = e.detail.response;
+        var student ={};
+        for(var key in doc.value) {
+          var cid = doc.value[key];
+          if(!student[cid.name]){
+            student[cid.name] = {content:[]};
+          }
+        }
+        console.log(doc.value);
+        for(var key in doc.value) {
+          var cid = doc.value[key];
+          for(var form in cid){
+            if(form != "name"){
+              if(student[cid.name] && cid[form].risk ==true){
+                student[cid.name].content.push({
+                  type : form,
+                  doc : cid[form].doc
+                });
+              }
+            }  
+          }
+        }
+        var list = [];
+        for(var tmp in student)
+        { 
+          list.push({
+            name:tmp,
+            doc:student[tmp].content
+          });
+        }
+        console.log(list);   
+        this.set('list',list);
+      }
+    });
+    
+  </script>
+</dom-module>

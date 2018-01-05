@@ -1,0 +1,91 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="grade-query">
+ <template>
+
+   <app-localstorage-document
+     key="jwtToken"
+     data="{{token}}">
+   </app-localstorage-document>
+
+   <iron-ajax
+     id="query"
+     url="https://thaieduforall.org:8000/v2/obec/obec_grade/query"
+     method="POST"
+     headers$='{"Authorization":"JWT {{token.token}}"}'
+     content-type="application/json"
+     on-response="handleResponse"
+     body$='{"query":{"PP_ID":"{{cid}}","YY_END":"{{year}}","TERM_END":"{{semester}}"}}'>
+   </iron-ajax>
+
+ </template>
+ <script>
+   Polymer({
+    is:'grade-query',
+    properties:{
+      cid:{
+        type:String,
+        notify:true,
+        reflectToAttribute:true
+      },
+      year:{
+        type:String,
+        notify:true,
+        reflectToAttribute:true
+      },
+      semester:{
+        type:String,
+        notify:true,
+        reflectToAttribute:true
+      },
+      isGpaxLessthanOne:{
+        type:Boolean,
+        notify:true,
+        computed:'__computedIsGpaxLessThanOne(document)'
+      },
+      isGpaxBetween:{
+        type:Boolean,
+        notify:true,
+        computed:'__computedIsGpaxBetween(document)'
+      },
+      document: {
+        type:Object,
+        notify:true
+      }
+    },
+    observers:[
+      'executeQuery(token.token,cid,year,semester)'
+    ],
+    executeQuery:function(token,cid,year,semester) {
+      if(!token || !cid || !year || !semester) return;
+      this.$.query.generateRequest();
+    },
+    handleResponse:function(e) {
+      var res = e.detail.response;
+      if(res.length == 0) return;
+      var form = res[0];
+      //console.log(form);
+      this.set('document',form);
+    },
+    __computedIsGpaxLessThanOne(document) {
+      //console.log(document);
+      var gpaxN = Number(document.GPAX);
+      //console.log(gpaxN);
+      return (gpaxN / 100.0) < 1.0;
+    },
+    __computedIsGpaxBetween(document) {
+      //console.log(document);
+      var gpaxN = Number(document.GPAX);
+      //console.log(gpaxN);
+      var gpaxC = gpaxN / 100.0;
+      if(gpaxC >= 1.0 && gpaxC <= 2.0){
+        return true;
+      }else{
+        return false;
+      }
+    }
+   });
+ </script>
+</dom-module>

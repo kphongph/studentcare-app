@@ -1,0 +1,152 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="view-iterator">
+  <template> 
+    <style includes="iron-flex iron-flex-alignment">
+      :host {
+        padding:5px;
+        height:10px;
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        @apply --paper-font-body1;
+      }
+    </style>
+    <app-localstorage-document 
+      id="marker"
+      key="jwtToken" 
+      data="{{token}}">
+    </app-localstorage-document>
+    
+  </template>
+  <script>
+    Polymer({
+      is: 'view-iterator',
+      properties: {
+        url: {
+          type:String
+        },
+        data: {
+          type:Array,
+          notify:true, 
+          value:function() {
+            return [];
+          }
+        },
+        dbName: {
+          type:String
+        },
+        loading:{
+          type:Boolean,
+          readOnly:true,
+          notify:true
+        },
+        viewName: {
+          type:String
+        },
+        query:{
+          type:Object,
+          observer:'_onQueryChanged'
+        },
+        end:{
+          type:Boolean,
+          readOnly:true,
+          notify:true,
+          value:false
+        },
+        _lastData:{
+          type:Object,
+          value:function() {
+            return {'key':[]};
+          }
+        },
+        _execute:{
+          type:Object,
+          computed:'__computeQuery(query,_lastData)'
+        }
+      },
+      observers:[
+        '_tokenLoaded(token,query)'
+      ],
+      _onQueryChanged:function(n) {
+        this._setEnd(false);
+        this.set('data',[]);
+        this.set('_lastData',[]);
+      },
+      _tokenLoaded:function(token,query) {
+        if(token && token.token != null) {
+          this.__next(function() {});
+        }
+      },
+      __next:function(cb) {
+        if(this.end) {
+          return;
+        }
+        var ele = document.createElement('iron-request'); 
+        var self = this;
+        this._setLoading(true);
+        ele.send({
+          url:this.url+'/query/'+this.dbName+'/'+this.viewName,
+          method:'POST',
+          handleAs:'json',
+          body:JSON.stringify(this._execute),
+          headers:{
+            'content-type':'application/json',
+            'authorization':'JWT '+this.token.token
+          }
+        }).then(function(res) {
+          self._setLoading(false);
+          var docs = res.response;
+          if(docs.constructor === Array) {
+            var added = 0;
+            self.set('_lastData',docs[docs.length-1]);
+            var last = docs.length==(self.query.limit+1)?
+               docs.length-1:docs.length;
+            
+            for(var i=0;i<last;i++) {
+              var doc = docs[i];
+              var out = false;
+              for(var j=0;j<self.query.match.length;j++) { 
+                if(self.query.match[j] != doc.key[j+1]) {
+                  out = true;
+                }
+              }
+              if(!out) {
+                added++;
+                self.push('data',doc);
+              }
+            }
+            if(docs.length < (self.query.limit+1)) {
+              self._setEnd(true);
+            }
+            cb();
+          }
+        });
+      },
+      next:function(cb) {
+        this.__next(cb);
+      },
+      __computeQuery:function(query,data) {
+        var _tmp = null;
+        if(data.length == 0 || data.key.length == 0) {
+          _tmp = {"match":query.match,"limit":query.limit+1};
+        } else {
+          var tmp = data.key.slice(1);
+          for(var j=0;j<query.match.length;j++) { 
+            if(query.match[j] != tmp[j]) {
+              this._setEnd(true);
+            }
+          }
+          _tmp = {"start":tmp,"limit":query.limit+1};
+        }
+        return _tmp;
+      }
+    });
+  </script>
+</dom-module>

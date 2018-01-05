@@ -1,0 +1,30 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="check-only-level-behavior.html">
+
+<dom-module is="eq-teacher-generator">
+ <script>
+  Polymer({
+    is:"eq-teacher-generator",
+    behaviors:[
+     CheckOnlyLevelBehavior
+    ],
+    properties:{
+      formType:{
+        type:String,
+        value:'eq-teacher-form'
+      },
+      atLevel:{
+        type:Array,
+        value:function() {
+          var level = [1,2,3,4,5,6];
+          var result = [];
+          level.forEach(function(item) {
+            result.push('ประถมศึกษาปีที่ '+item);
+          });
+          return result;
+        }
+      }
+    }
+  });
+ </script>
+</dom-module>

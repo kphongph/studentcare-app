@@ -1,0 +1,31 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!--
+`studentcare-component`
+Polymer Component for StudentCare project
+
+@demo demo/index.html 
+-->
+
+<dom-module id="studentcare-component">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'studentcare-component',
+      properties: {
+        prop1: {
+          type: String,
+          value: 'studentcare-component',
+        },
+      },
+    });
+  </script>
+</dom-module>

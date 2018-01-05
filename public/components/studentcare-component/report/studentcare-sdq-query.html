@@ -1,0 +1,75 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="studentcare-sdq-query">
+ <template>
+   <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+   </app-localstorage-document>
+
+   <iron-ajax 
+     method="POST"
+     id="query"
+     url="https://thaieduforall.org:8000/v2/obec/students_care/query"
+     content-type="application/json"
+     handle-as="json"
+     headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+     body$='{"query":{"student.cid":"{{cid}}","dmc.year":"{{year}}"}'
+     on-response="handleResponse">
+   </iron-ajax>
+ </template>
+ <script>
+   Polymer({
+     is:'studentcare-sdq-query',
+     properties:{
+       cid:String,
+       host:String,
+       year:String,
+     Lavel:{
+      type:String,
+      notify:true,
+      computed:'__chkLavel(lavel)'
+     },
+	   Report:{
+      type:Boolean,
+      notify:true,
+      computed:'__computedIsReport(document)'
+     },
+       document: {
+         type:Object,
+         notify:true
+       }
+     },
+     observers:[
+       '_executeQuery(jwtToken)'
+     ],
+     _executeQuery(token) {
+      if(token == null || !token.token) return;  
+      this.$.query.headers = {
+        'Authorization':'JWT '+token.token
+      }
+      this.$.query.generateRequest();
+    },
+     handleResponse:function(e) {
+      var res = e.detail.response;
+      if(res.length == 0) return;
+      var form = res[0].value.doc;
+	    this.set('document',form);
+      console.log("d");
+     },
+     __computedIsReport(document) {
+	    console.log(document);
+	   },
+     __chkLavel(lavel){
+       //console.log(lavel);
+       var chkLavel;
+       if((lavel=="10")||(lavel=="11")||(lavel=="12")){
+        chkLavel="dl3-form";
+       }else{
+        chkLavel="dl2-form";
+       }
+       return chkLavel;
+     }
+   });
+ </script>
+</dom-module>

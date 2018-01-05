@@ -2,10 +2,10 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../bower_components/studentcare-components/view-iterator.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../studentcare-components/view-iterator.html">
 
 <dom-module id="student-list">
  <template>
@@ -15,8 +15,8 @@
     :host {
       display:box;
       padding:5px;
-      @apply(--layout-vertical);
-      @apply(--paper-font-body2);
+      @apply --layout-vertical;
+      @apply --paper-font-body2;
     }
     view-iterator {
       display:none;

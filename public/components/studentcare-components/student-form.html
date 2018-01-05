@@ -140,11 +140,17 @@
         <div class="layout-chkrisk">
           <div class="flex-11"><assignment-card data="{{item}}"></assignment-card></div>
           <div class="flex-1">
-            <template is="dom-if" if="[[_equal(group.name,'แบบคัดกรอง SDQ')]]">
+            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.0.forms_name)]]">
               <iron-icon src="{{imgSDQRisk}}"></iron-icon>
             </template>
-            <template is="dom-if" if="[[_equal(group.name,'แบบคัดกรองนักเรียนรายบุคคล')]]">
+            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.1.forms_name)]]">
               <iron-icon src="{{imgScreeningRisk}}"></iron-icon>
+            </template>
+            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.2.forms_name)]]">
+              <iron-icon src="{{imgEQRisk}}"></iron-icon>
+            </template>
+            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.3.forms_name)]]">
+              <iron-icon src="{{imgST5Risk}}"></iron-icon>
             </template>
           </div>
       </div>
@@ -200,6 +206,16 @@
           type:String,
           notify:true,
           computed:'_imgScreeningRisk(chkrisk)'
+        },
+        imgEQRisk:{
+          type:String,
+          notify:true,
+          computed:'_imgEQRisk(chkrisk)'
+        },
+        imgST5Risk:{
+          type:String,
+          notify:true,
+          computed:'_imgST5Risk(chkrisk)'
         }
       },
       listeners: {
@@ -230,11 +246,16 @@
         return this.resolveUrl("./images/note.png");
       },
       _imgSDQRisk:function(chkrisk){
-        //console.log('img',chkrisk);
         return this.resolveUrl(chkrisk[0]._risk);
       },
       _imgScreeningRisk:function(chkrisk){
         return this.resolveUrl(chkrisk[1]._risk);
+      },
+      _imgEQRisk:function(chkrisk){
+        return this.resolveUrl(chkrisk[2]._risk);
+      },
+      _imgST5Risk:function(chkrisk){
+        return this.resolveUrl(chkrisk[3]._risk);
       },
       _sortByTime: function (a, b) {
         return a.key[4][1] - b.key[4][1];
@@ -351,44 +372,67 @@
             data.push({ 'name': option_group[i].group, 'forms': option_group[i].forms, 'option':true });
           }
         }
+        //console.log(data);
         return data;
       },
       __chkrisk(formList){
+        //console.log(formList);
         var risk = [];
-        var chkSDQrisk="";
-        if(formList[0].forms[0].form_result.behavior.result != "ปกติ"){
-          risk.push({ '_risk': formList[0].forms[0].form_result.behavior.result });
-        }
-        if(formList[0].forms[0].form_result.behavior_active.result != "ปกติ"){
-          risk.push({ '_risk': formList[0].forms[0].form_result.behavior_active.result });
-        }
-        if(formList[0].forms[0].form_result.emotion.result != "ปกติ"){
-          risk.push({ '_risk': formList[0].forms[0].form_result.emotion.result });
-        }
-        if(formList[0].forms[0].form_result.friend.result != "ปกติ"){
-          risk.push({ '_risk': formList[0].forms[0].form_result.friend.result });
-        }
-        if(formList[0].forms[0].form_result.social.result != "ปกติ"){
-          risk.push({ '_risk': formList[0].forms[0].form_result.social.result });
+        var _risk = [];
+        var chkImgrisk="";
+        var forms_name = [];
+        for(var i=0;i<formList.length;i++){
+          //console.log(formList[i].forms[0].form_type);
+          forms_name.push({'name':formList[i].forms[0].form_type});
+          if(formList[i].forms[0].form_type == "dl2-form"){
+            if(formList[0].forms[0].form_result.behavior.result != "ปกติ"){
+              risk.push({ '_risk': formList[0].forms[0].form_result.behavior.result });
+            }
+            if(formList[0].forms[0].form_result.behavior_active.result != "ปกติ"){
+              risk.push({ '_risk': formList[0].forms[0].form_result.behavior_active.result });
+            }
+            if(formList[0].forms[0].form_result.emotion.result != "ปกติ"){
+              risk.push({ '_risk': formList[0].forms[0].form_result.emotion.result });
+            }
+            if(formList[0].forms[0].form_result.friend.result != "ปกติ"){
+              risk.push({ '_risk': formList[0].forms[0].form_result.friend.result });
+            }
+            if(formList[0].forms[0].form_result.social.result != "ปกติ"){
+              risk.push({ '_risk': formList[0].forms[0].form_result.social.result });
+            }
+
+            if(risk.length!=0){
+              for(var i=0;i<risk.length;i++){
+                if(SDQrisk[i]._risk=="มีปัญหา"){
+                  chkImgrisk="./images/red.png";
+                  break;
+                }
+                if(SDQrisk[i]._risk=="เสี่ยง"){
+                  chkImgrisk="./images/yellow.png";
+                }
+              } //end for
+            }else{
+              chkImgrisk="./images/green.png";
+            }//end if check SDQ risk
+          }//end if check dl-form
+
+          if(formList[i].forms[0].form_type == "screening-elementary-form"){
+            chkImgrisk="./images/green.png";
+          }//end if check screening-elementary-form
+
+          if(formList[i].forms[0].form_type == "eq-teacher-form"){
+            chkImgrisk="./images/green.png";
+          }//end if check eq-teacher-form
+
+          if(formList[i].forms[0].form_type == "snap-form"){
+            chkImgrisk="./images/green.png";
+          }//end if check snap-form
+
+          _risk.push({ 'forms_name':formList[i].forms[0].form_type,'_risk': chkImgrisk });
         }
 
-        if(risk.length!=0){
-          for(var i=0;i<risk.length;i++){
-            if(SDQrisk[i]._risk=="มีปัญหา"){
-              chkSDQrisk="./images/red.png";
-              break;
-            }
-            if(SDQrisk[i]._risk=="เสี่ยง"){
-              chkSDQrisk="./images/yellow.png";
-            }
-          }
-        }else{
-          chkSDQrisk="./images/green.png";
-        }
-        risk.push({ 'forms':'แบบคัดกรอง SDQ','_risk': chkSDQrisk });
-        risk.push({ 'forms':'แบบคัดกรองนักเรียนรายบุคคล','_risk': './images/green.png' });
-        //console.log('chk ',risk);
-        return risk;
+        console.log('chk ',_risk);
+        return _risk;
       }
     });
   </script>

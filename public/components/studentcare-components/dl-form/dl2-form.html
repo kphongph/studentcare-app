@@ -1,0 +1,328 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="sdq-form-choice.html">
+<link rel="import" href="sdq-form-teacher.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="dl2-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host{
+        background-color: white;
+      }
+      paper-tabs {
+        background: #20acbb;
+        color: white;
+        height: 40px;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+      }
+
+    #title {
+      --paper-input-container-input: {
+        /*font-size: 24px;*/
+        font-family: 'Athiti', sans-serif;
+      };
+      --paper-input-container-label:{
+        font-family: 'Athiti', sans-serif;
+      };
+
+        /*--paper-input-container-color:red;*/
+
+        --paper-input-container-focus-color:#e94a60;
+
+       /*--paper-input-container-input-color:var blue;*/
+     }
+
+    </style>
+
+    <form-control id="control" doc-key="{{document.key}}" doc-value="{{document.value}}">
+      <div slot="description">
+        <p class="font-face">เลือกคำตอบเพียงข้อเดียวในแต่ละข้อคำถามที่ใกล้เคียงกับพฤติกรรมของนักเรียนที่เกิดขึ้นในช่วง 6 เดือนที่ผ่านมา</p>
+      </div>
+      <div slot="formEntry">
+        <paper-tabs selected="{{part}}" class="flex">
+          <paper-tab>
+            <div class="font-face">หน้าแรก{{invalidMessage}}</div>
+          </paper-tab>
+          <paper-tab>
+            <div class="font-face">หน้าหลัง</div>
+          </paper-tab>
+        </paper-tabs>
+
+        <!--<iron-pages selected="{{part}}">
+          <sdq-form-choice id="formStudent" value="{{document.value.form_value}}" invalid-message="{{xxx}}">
+          </sdq-form-choice>
+          <sdq-form-teacher id="formTeacher" value="{{document.value.form_value}}" invalid-message="{{xxx}}">
+          </sdq-form-teacher>
+        </iron-pages>-->
+
+        <iron-pages selected="{{part}}">
+          <sdq-form-choice id="formStudent" value="{{document.value.form_value}}">
+          </sdq-form-choice>
+          <sdq-form-teacher id="formTeacher" value="{{document.value.form_value}}" invalid-message="{{invalidMessage}}">
+          </sdq-form-teacher>
+        </iron-pages>
+      </div>
+      <div class="font-face" slot="evaluation">
+        ผลการประเมิน
+        <div class="layout vertical">
+          <template is="dom-repeat" items="{{_result}}" class="font-face">
+            <paper-input id="title" label="{{item.label}}" readonly value="{{item.result}}">
+            </paper-input>
+          </template>
+        </div>
+      </div>
+    </form-control>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'dl2-form',
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        StudentcareFormBehavior
+      ],
+      properties: {
+        name: {
+          type: String,
+          reflectToAttribute: true,
+          readOnly:true,
+          value: "แบบประเมินพฤติกรรมเด็ก (SDQ) ฉบับครูเป็นผู้ประเมินนักเรียน"
+        },
+        part: {
+          type: Number,
+          value: 0
+        },
+        _result: {
+          type: Array,
+          computed: '__computeResult(document.value.form_result)',
+          value: function () {
+            return [];
+          }
+        },
+        invalidMessage:{
+          type:String,
+          notify:true,
+          value:''
+        }
+      },
+      _reset : function() {
+        this.set('document.value.form_value',{});
+      },
+      __computeResult: function (result) {
+        var tmp = [];
+        for (var k in result) {
+          tmp.push(result[k]);
+        }
+        return tmp;
+      },
+      _evaluate: function () {
+        var values = this.document.value.form_value;
+        console.log(values);
+        var i_order = {
+          'score': ['n', 'm', 'y'],
+        };
+        var d_order = {
+          'score': ['y', 'm', 'n'],
+          'item': [7, 11, 14, 21, 25]
+        }
+        var score = {
+          emotion: {
+            '_item': [3, 8, 13, 16, 24],
+            'score': 0,
+            'label': 'ด้านอารมณ์',
+            'result': '',
+            '_result': {
+              'ปกติ': [0, 5],
+              'เสี่ยง': [6, 6],
+              'มีปัญหา': [7, 10],
+            },
+            '_risk':'',
+            '_risk':{
+                false:[0, 6],
+                true:[7, 10]
+            },
+          },
+          behavior: {
+            '_item': [5, 7, 12, 18, 22],
+            'score': 0,
+            'label': 'ด้านความประพฤติ / เกเร',
+            'result': '',
+            '_result': {
+              'ปกติ': [0, 4],
+              'เสี่ยง': [5, 5],
+              'มีปัญหา': [6, 10],
+            },
+            '_risk':'',
+            '_risk':{
+                'false':[0, 5],
+                'true':[6, 10]
+            },
+          },
+          behavior_active: {
+            '_item': [2, 10, 15, 21, 25],
+            'score': 0,
+            'label': 'ด้านพฤติกรรมไม่อยู่นิ่ง',
+            'result': '',
+            '_result': {
+              'ปกติ': [0, 5],
+              'เสี่ยง': [6, 6],
+              'มีปัญหา': [7, 10],
+            },
+            '_risk':'',
+            '_risk':{
+              'false':[0, 6],
+              'true':[7, 10]
+          },
+          },
+          friend: {
+            '_item': [6, 11, 14, 19, 23],
+            'score': 0,
+            'label': 'ด้านความสัมพันธ์กับเพื่อน',
+            'result': '',
+            '_result': {
+              'ปกติ': [0, 3],
+              'เสี่ยง': [4, 4],
+              'มีปัญหา': [5, 10],
+            },
+            '_risk':'',
+            '_risk':{
+              'false':[0, 4],
+              'true':[5, 10]
+          },
+          },
+          social: {
+            '_item': [1, 4, 9, 17, 20],
+            'score': 0,
+            'label': 'ด้านสัมพันธภาพทางสังคม',
+            'result': '',
+            '_result': {
+              'ปกติ': [4, 10],
+              'เสี่ยง': [3, 3],
+              'มีปัญหา': [0, 2],
+            },
+            '_risk':'',
+            '_risk':{
+              'false':[0, 6],
+              'true':[7, 10]
+          }
+          }
+        };
+        for (var t in score) {
+          var _type = score[t];
+          for (var i = 0; i < _type._item.length; i++) {
+            var p = _type._item[i];
+            var _index = i_order.score;
+            if (d_order.item.indexOf(p) != -1) {
+              _index = d_order.score;
+            }
+            _type.score += _index.indexOf(values['f_q' + p]);
+          }
+          for (var l in _type._result) {
+            if (_type.score >= _type._result[l][0] &&
+              _type.score <= _type._result[l][1]) {
+              _type.result = l;
+            }
+          }
+          for (var l in _type._risk) {
+            if (_type.score >= _type._risk[l][0] &&
+              _type.score <= _type._risk[l][1]) {
+              _type.risk = l;
+            }
+          }
+          for (var att in _type) {
+            if (/^_/.test(att)) {
+              delete _type[att];
+            }
+          }
+        }
+        score['weakness'] = {
+          'score': 0,
+          'label': 'รวมพฤติกรรมที่เป็นปัญหา',
+          'result': ''
+        };
+
+        for (var t in score) {
+          if (t != 'social' && t != 'weakness') {
+            score['weakness'].score += score[t].score;
+          }
+        }
+        if (score['weakness'].score <= 40) {
+          score['weakness'].result = "มีปัญหา";
+          score['_risk'] = true;
+        }
+        if (score['weakness'].score <= 18) {
+          score['weakness'].result = "เสี่ยง";
+          score['_risk'] = true;
+        }
+        if (score['weakness'].score <= 16) {
+          score['weakness'].result = "ปกติ";
+        }
+        // second part
+        score['back'] = {
+          'score': 0,
+          'label': 'สรุปการแปลผลด้านหลัง',
+          'result': ''
+        };
+        var _attrs = ['friend', 'social', 'study', 'unhappy'];
+        if (values['exist'] == 'y') {
+          _attrs.forEach(function (attr) {
+            var _score = Number(values[attr]);
+            console.log(attr, _score);
+            if (_score >= 2) {
+              score['back'].score += _score - 1;
+            }
+          });
+        }
+        if (score['back'].score >= 0) {
+          score['back'].result = "ปกติ";
+        }
+        if (score['back'].score >= 1) {
+          score['back'].result = "รุนแรงปานกลาง";
+          score['_risk'] = true;
+        }
+        if (score['back'].score >= 3) {
+          score['back'].result = "รุนแรงมาก";
+          score['_risk'] = true;
+        }
+        console.log(score);
+        return score;
+      },
+      _validate: function () {
+        console.log('test',this.invalidMessage);
+        if (!this.$.formStudent.validate()) {
+          this.$.control.setInvalidateMessage({'text':'ยังทำแบบประเมินไม่ครบถ้วน'});
+          this.set('part', 0);
+          return false;
+        } else {  
+          if (!this.$.formTeacher.validate()) {
+            this.$.control.setInvalidateMessage({'text':'ยังทำแบบประเมินไม่ครบถ้วน'});
+            this.set('part', 1);
+            return false;
+          } else {
+            this.$.control.setInvalidateMessage({'text':''});
+          }
+        }
+        return true;
+      }
+
+    });
+  </script>
+</dom-module>

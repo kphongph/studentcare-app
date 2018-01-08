@@ -1,0 +1,95 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link rel="import" href="../forms.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="form-link">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply --layout-horizontal;        
+        cursor:hand;
+        cursor:pointer;  
+        padding:5px;          
+      }
+
+      :host(:hover) {
+        background-color: #efefef;                
+      }
+            
+      .font-face {
+        @apply --paper-font-subhead;
+        font-family: 'Athiti', sans-serif;
+        font-size: 18px;
+      }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+
+    <iron-ajax id="getAjax" 
+      method="GET" 
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}' 
+      url="https://thaieduforall.org:8000/v2/obec/students_care/data/{{docId}}"
+      content-type="application/json" 
+      handle-as="json" 
+      on-response="handleResponse">
+    </iron-ajax>
+    <iron-icon icon="assignment"></iron-icon>
+    <div class="font-face">
+      {{message}}
+    </div>
+  </template>
+  
+  <script>
+    Polymer({
+      is: "form-link",
+      listeners:{
+        'tap':'_select'
+      },
+      properties:{
+        message:{
+          type:String,
+          reflectToAttribute:true,
+          notify:true
+        },
+        docId:{
+          type:String,
+          notify:true
+        }
+      },
+      observers:[
+      ],
+      _select:function(e) {
+        if(this.jwtToken.token) {
+          if(this.docId) {
+            this.$.getAjax.generateRequest();
+          }
+        }
+      },
+      handleResponse:function(e) {
+        var doc = e.detail.response;
+        var form = document.createElement(doc.form_type);
+        var _doc = {'key':doc._id,'value':doc};
+        form.setAttribute('form-type',doc.form_type);
+        form.setAttribute('document',JSON.stringify(_doc));
+        this.fire('form-linked',{'form':form});
+      }
+    });
+  </script>
+</dom-module>

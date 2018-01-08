@@ -1,0 +1,205 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="report/report-host.html">
+<link rel="import" href="report/report-sumaryhost.html">
+<link rel="import" href="report/report-room.html">
+<link rel="import" href="user-profile.html">
+
+<link rel="import" href="forms.html">
+
+<link rel="import" href="studentcare-styles.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="studentcare-report">
+  <template>
+    <style include="studentcare-styles"></style>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply --layout-vertical;
+      }
+
+      .content {
+        margin-top: 30px;
+        /*margin-right: 30px;*/
+        /*width: 95%;*/
+        background-color: #d8dbe0;
+      }
+
+      .container {
+        @apply --layout-horizontal;
+        @apply --layout-center-justified;
+      }
+      .form_group {
+        @apply --paper-font-subhead;
+        padding: 10px;
+        background: var(--paper-grey-100);
+      }
+      .header {
+        font-family: 'Athiti', sans-serif;
+        font-size: 25px;
+      }
+      .font-face {
+         @apply --paper-font-subhead;
+        font-family: 'Athiti', sans-serif;
+        font-size: 18px;
+      }
+      .line-style {
+        border-bottom: 1px solid #ddd;
+        height: 30px;
+        padding: 10px;
+      }
+      app-toolbar {
+        /*background-color: var(--paper-red-500);*/
+        background-color: #e65540;
+        color: white;
+      }
+
+      paper-tabs {
+        --paper-tabs-selection-bar-color: #cceeff;
+        --paper-tab-content-unselected: {
+          opacity: 0.42;
+        };
+        background-color: #107a87;
+        color: #fff;
+        height: 50px;
+      }
+      /* ***** */
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+
+    <!--
+    <iron-ajax
+      id="listLevel"
+      method="POST"
+      url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
+      content-type="application/json"
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+      handle-as="json"
+      last-response="{{levels}}"
+      body$='{"query":{"hostid":"{{hostId}}"},"distinct":"class"}'>
+    </iron-ajax>
+    -->
+
+    <iron-ajax
+      id="listAjax"
+      method="GET"
+      url$="https://thaieduforall.org:8000/v2/obec/_report_host/data/{{hostid}}"
+      content-type="application/json"
+      handle-as ="json"
+      on-response="handleResponse">
+    </iron-ajax>
+
+
+      <div class="layout horizontal content">
+        <div class="flex-6">&nbsp;</div>
+        <div class="flex-6">
+          <user-profile></user-profile>
+        </div>
+      </div>
+
+      <app-toolbar>
+        <div class="header">รายงานโรงเรียน</div>
+      </app-toolbar>
+
+      <paper-tabs selected="{{page}}" fallback-selection="0">
+      <paper-tab>
+        <div class="font-face-big-bold">ความก้าวหน้า</div>
+      </paper-tab>
+      <paper-tab>
+        <div class="font-face-big-bold">ภาพรวมผลการประเมิน</div>
+      </paper-tab>
+      <paper-tab>
+        <div class="font-face-big-bold">ผลการประเมินรายห้อง</div>
+      </paper-tab>
+      </paper-tabs>
+
+      <iron-pages selected="{{page}}">
+        <report-host year="2017" hostid="{{hostId}}"></report-host>
+        <div>
+          <report-sumaryhost year="2017" hostid="{{hostId}}"></report-sumaryhost>
+        </div>
+        <report-room year="2017" hostid="{{hostId}}"></report-room>
+      </iron-pages>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: "studentcare-report",
+      properties:{
+        hostId:{
+          type:String,
+          notify:true
+        },
+        level:{
+          type:String,
+          notify:true
+        },
+        room:{
+          type:String,
+          notify:true
+        },
+        list: {
+          type:Array,
+          notify:true,
+          value:function() {
+              return [];
+          }
+        }
+      },
+      observers:[
+        '_execute(jwtToken.token)'
+      ],
+      _execute(token) {
+        if(token == null) return;
+       //  this.$.listLevel.generateRequest();
+      },
+      handleResponse(e) {
+        var doc = e.detail.response;
+        var forms = [];
+        var total = 0;
+        var _forms_dict = {};
+        var ts;
+        for(var key in doc.value) {
+          if(key == 'ts') {
+            ts = new Date(doc.value[key]).toLocaleString('th');
+            continue;
+          }
+          var cid = doc.value[key];
+          total++;
+          for(var form in cid) {
+            if(!_forms_dict[form]) {
+              _forms_dict[form] = {'new':0,'done':0,'working':0,'total':0};
+            }
+            _forms_dict[form][cid[form]]++;
+            _forms_dict[form]['total']++;
+          }
+        }
+        for(var key in _forms_dict) {
+          forms.push({'type':key,'content':{
+            'working':_forms_dict[key]['new'] + _forms_dict[key]['working'],
+            'done':_forms_dict[key]['done'],
+            'total':_forms_dict[key]['total']
+          }});
+        }
+        this.set('total',total);
+        this.set('list',forms);
+        this.set('ts',ts);
+      }
+    });
+
+  </script>
+</dom-module>

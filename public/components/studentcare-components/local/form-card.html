@@ -1,0 +1,127 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../../../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../leveldb-query.html">
+
+<dom-module id="form-card">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        @apply --paper-font-subhead;
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        cursor:pointer;
+        cursor:hand;
+        padding:10px;
+        border:1px solid #eeeeee;
+      }
+      :host.iron-selected {
+        background:#efefef;
+      }
+      :host:hover {
+        background:#eaeaea;
+      }
+
+      .exists {
+        color:var(--paper-green-400);
+      }
+
+      .checkIcon {
+        width:30px;
+      }
+
+    </style>
+
+    <div class="checkIcon">
+      <iron-icon hidden="{{!exists}}" class="exists" icon="check"></iron-icon>
+    </div>
+    <div class="flex">
+      <span id="label">{{localize(label)}}</span>
+    </div>
+    <div>
+      <iron-icon icon="assignment"></iron-icon>
+      <span>{{_data.length}}</span>
+    </div>
+
+    <leveldb-query url="https://maas.nuqlis.com:9000/api"
+      db-name="students_care"
+      view-name="cid_year_type"
+      data="{{_data}}"
+      query="{{_query}}">
+    </leveldb-query>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'form-card',
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      properties: {
+        label:{
+          type:String
+        },
+        dmcStudent: {
+          type:Object
+        },
+        exists: {
+          type:Boolean,
+          readOnly:true,
+          value:false
+        },
+        _data: {
+          type:Array,
+          observer:'__dataChanged'
+        },
+        _query: {
+          type:Object,
+          computed:'__computeQuery(dmcStudent,label)'
+        },
+        language: {
+          value:'th'
+        }
+      },
+      __computeQuery:function(dmcStudent,label) {
+        var query = {match:[]};
+        var types = {
+          'dl2_form_label':'dl2form_teacher',
+          'dl3_form_label':'dl3form_student',
+          'eq_teacher_form_label':'eq_teacher_form',
+          'eq_student_form_label':'eq_student_form',          
+          'disability_visual_form_label':'disability_visual_from',
+          'st5_form_label':'st5_form'
+        };
+        if(dmcStudent.value.IDNO) {
+          query.match.push(dmcStudent.value.IDNO);
+          query.match.push(2017);
+          query.match.push(types[label]);
+        }
+        return query;
+      },
+      __dataChanged:function(data) {
+        console.log(JSON.stringify(data));
+        if(data.length == 1) {
+          if(data[0].key[1] == this.dmcStudent.value.IDNO) {
+            this._setExists(true);
+          } else {
+            this._setExists(false);
+          }
+        } else {
+          if(data.length > 1) {
+          } else {
+            this._setExists(false);
+          }
+        }
+      },
+      attached:function() {
+        this.loadResources(this.resolveUrl('../locales.json'));
+      }
+    });
+    
+  </script>
+</dom-module>

@@ -1,0 +1,360 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../../bower_components/neon-animation/web-animations.html">
+
+<link rel="import" href="../summary-report-behavior.html">
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="eq-host">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        background-color: white;
+      }
+
+      .container {
+        background-color: #eeeeee;
+      }
+
+      .highlight {
+        background-color: white;
+        margin:2px;
+      }
+
+      .label-title {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        font-family: 'Athiti', sans-serif;
+        font-size: 100%;
+      }
+
+      paper-tabs {
+        background: #20acbb;
+        color: white;
+        height: 40px;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        font-size: 100%;
+      }
+
+      #title {
+        --paper-input-container-input: {
+          /*font-size: 24px;*/
+          font-family: 'Athiti', sans-serif;
+        }
+        ;
+        --paper-input-container-label: {
+          font-family: 'Athiti', sans-serif;
+        };
+
+        --paper-input-container-focus-color:#e94a60;
+
+      }
+
+      .strength {
+        background-color:var(--paper-teal-200);
+        margin:2px;
+      }
+
+      .header-title {
+        padding-left:10px;
+      }
+
+      .row-content {
+        border-bottom: 1px solid #443F3F;
+        /* border-left:1px solid #443F3F; */
+        padding-bottom: 5px;
+        padding-top: 5px;
+      }
+    </style>
+
+    
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+
+    <paper-dropdown-menu label="ระดับชั้น">
+     <paper-listbox slot="dropdown-content" 
+      attr-for-selected="name"
+      selected="{{level}}">
+      <paper-item>ทั้งหมด</paper-item>
+      <template is="dom-repeat" items="{{levelList}}">
+       <paper-item name="{{item}}">{{item}}</paper-item>
+      </template>
+     </paper-listbox>
+    </paper-dropdown-menu>
+
+    <paper-dropdown-menu label="ห้อง">
+     <paper-listbox slot="dropdown-content" 
+      attr-for-selected="name"
+      selected="{{room}}">
+      <paper-item>ทั้งหมด</paper-item>
+      <template is="dom-repeat" items="{{roomList}}">
+       <paper-item name="{{item}}">{{item}}</paper-item>
+      </template>
+     </paper-listbox>
+    </paper-dropdown-menu>
+
+    <iron-ajax id="listLevel" 
+      method="POST" 
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}' 
+      url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
+      content-type="application/json" 
+      handle-as="json" 
+      body='{"query":{"hostid":"{{hostid}}"},"distinct":"class"}'
+      last-response="{{levelList}}">
+    </iron-ajax>
+
+    <iron-ajax id="listRoom" 
+      method="POST" 
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}' 
+      url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
+      content-type="application/json" 
+      handle-as="json" 
+      body='{"query":{"hostid":"{{hostid}}","class":"{{level}}"},"distinct":"room"}'
+      last-response="{{roomList}}">
+    </iron-ajax>
+
+    <iron-ajax 
+      id="resulthost" 
+      method="GET" 
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}' 
+      content-type="application/json" 
+      handle-as="json" 
+      on-response="handleResponse">
+    </iron-ajax>
+
+    <div class="layout vertical container">
+     <div class="layout horizontal font-face">
+       <div class="header-title highlight flex-2 layout horizontal center center-justified">
+          ความฉลาดทางอารมณ์
+       </div>
+       <div class="flex-2 layout vertical">
+         <div class="label-title strength">EQ ต่ำกว่าเกณฑ์</div>
+         <div class="label-title">
+           <div class="flex-1 label-title highlight">ชาย</div>
+           <div class="flex-1 label-title highlight">หญิง</div>
+           <div class="flex-1 label-title highlight">รวม</div>
+           <div class="flex-1 label-title highlight">ร้อยละ</div>
+         </div>
+       </div>
+       <div class="flex-2 layout vertical">
+         <div class="label-title strength">EQ ปกติ</div>
+         <div class="label-title">
+           <div class="flex-1 label-title highlight">ชาย</div>
+           <div class="flex-1 label-title highlight">หญิง</div>
+           <div class="flex-1 label-title highlight">รวม</div>
+           <div class="flex-1 label-title highlight">ร้อยละ</div>
+         </div>
+       </div>
+       <div class="flex-2 layout vertical">
+         <div class="label-title strength">EQ สูงกว่าเกณฑ์</div>
+         <div class="label-title">
+           <div class="flex-1 label-title highlight">ชาย</div>
+           <div class="flex-1 label-title highlight">หญิง</div>
+           <div class="flex-1 label-title highlight">รวม</div>
+           <div class="flex-1 label-title highlight">ร้อยละ</div>
+         </div>
+       </div>
+     </div>
+
+     <div class="layout vertical font-face flex-2" >
+        <div class="highlight flex-2 layout vertical header-title">
+           ดี
+        </div>
+        <div class="highlight flex-2 layout vertical header-title">
+            เก่ง
+         </div>
+         <div class="highlight flex-2 layout vertical header-title">
+            สุข
+         </div>      
+      </div>
+
+     <template is="dom-repeat" as="type" items="[[list]]">
+     <div class="layout horizontal font-face">
+       <div class="highlight flex-2 layout horizontal header-title">
+          {{type.type}}
+       </div>
+       <template is="dom-repeat" as="group" items="[[type.items]]">
+         <div class="flex-2 label-title">
+           <template is="dom-repeat" items="[[group]]">
+             <div class="flex-1 label-title highlight">{{item}}</div>
+           </template>
+         </div>
+       </template>
+     </div>
+     </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'eq-host',
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        SummaryReportBehavior
+      ],
+      properties: {
+        part: {
+          type: Number,
+          value: 0
+        },
+        year: {
+          type: String,
+          notify: true
+        },
+        hostid: {
+          type: String,
+          notify: true
+        },
+        form: {
+          type: String,
+          notify: true
+        },
+        _result: {
+          type: Array,
+          computed: '__computeResult(document.value.form_result)',
+          value: function () {
+            return [];
+          }
+        },
+        invalidMessage: {
+          type: String,
+          notify: true,
+          value: ''
+        }
+      },
+      observers: [
+        '_execute(jwtToken.token)',
+        '_queryLevelRoom(jwtToken.token,year,hostid,level,room)'
+      ],
+      _execute(token) {
+        if (token == null) return;
+        this.$.listLevel.generateRequest();
+      },
+      _queryLevelRoom:function(token,year,host,level,room) {
+        if(token == null) return;
+        // console.log(year,host,level,room);
+        var baseUrl="https://thaieduforall.org:8000/v2/obec/_studentcare_report/data/dl_dl2-form_";
+        var execute = false;
+        if(year!=null) {
+          this.$.resulthost.url=baseUrl+year;
+          if(host!=null) {
+            execute=true;
+            this.$.resulthost.url+='_'+host;
+            if(level!=null) {
+              this.$.resulthost.url+='_'+level;
+              this.$.listRoom.generateRequest();
+              if(room!=null) {
+                this.$.resulthost.url+='_'+room;
+              }
+            } else {
+              this.set('roomList',[]);
+            }
+          }
+        }
+        // console.log(execute);
+        if(execute) {
+          this.$.resulthost.generateRequest();
+        }
+      },
+      _handleLevelQuery:function(e) {
+        console.log(e.detail.response);
+      },
+      handleResponse(e) {
+        var doc = e.detail.response;
+        var dict = {
+          'social': 'ด้านสัมพันธภาพทางสังคม',
+          'emotion': 'ด้านอารมณ์',
+          'behavior': 'ด้านความประพฤติ / เกเร',
+          'behavior_active': 'ด้านพฤติกรรมไม่อยู่นิ่ง',
+          'friend': 'ด้านความสัมพันธ์กับเพื่อน',      
+        };
+        var item = {};
+        for(var gender in doc.value) {
+          for(var key in doc.value[gender]) { 
+            // console.log(key);
+            if(!item[key]) {
+              item[key] = {};
+            }
+            for(var type in doc.value[gender][key]) {
+              if(!item[key][type]) {
+                item[key][type] = {};
+              }
+              if(!item[key][type][gender]) {
+                item[key][type][gender] = 0;
+              }
+              item[key][type][gender]+=doc.value[gender][key][type];
+            }
+          }
+        }
+        var index = ['มีจุดแข็ง','ไม่มีจุดแข็ง','ปกติ','เสี่ยง','มีปัญหา'];
+        var gender_dict = {
+          'เด็กชาย':0,
+          'เด็กหญิง':1
+        };
+        var list = [];
+        for(var key in item) {
+          var tmp = [];
+          for(var i=0;i<5;i++) {
+            var _item = [];
+            for(var j=0;j<4;j++) _item.push(0);
+            tmp.push(_item);
+          }
+          for(var type in item[key]) {         
+            for(var gender in item[key][type]) {
+              var i = index.indexOf(type);
+              if(gender_dict[gender] && i!=-1) {
+                var j = gender_dict[gender];  
+                if(key == "social") {
+                  if(i==2) {
+                    i=0;
+                  } else {
+                    i=1;
+                  }
+                }
+                tmp[i][j]=item[key][type][gender];
+              }
+            }
+          }
+          for(var i=0;i<tmp.length;i++) {
+            for(var j=0;j<tmp[i].length;j++) {
+              tmp[i][2]=tmp[i][0]+tmp[i][1];
+            }
+          }
+          var sum = tmp[0][2]+tmp[1][2];
+          if(sum != 0) {
+            tmp[0][3] = (100*tmp[0][2])/sum;
+            tmp[1][3] = (100*tmp[1][2])/sum;
+            tmp[0][3] = Math.round(tmp[0][3]*100) / 100;
+            tmp[1][3] = Math.round(tmp[1][3]*100) / 100;
+          }
+
+          sum = tmp[2][2]+tmp[3][2]+tmp[4][2];
+          if(sum != 0) {
+            tmp[2][3] = (100*tmp[2][2])/sum;
+            tmp[3][3] = (100*tmp[3][2])/sum;
+            tmp[4][3] = (100*tmp[4][2])/sum;
+            tmp[2][3] = Math.round(tmp[2][3]*100) / 100;
+            tmp[3][3] = Math.round(tmp[3][3]*100) / 100;  
+            tmp[4][3] = Math.round(tmp[4][3]*100) / 100;
+          }
+          console.log(key);
+          console.log(tmp);
+          if(dict[key]) {
+            list.push({'type':dict[key],'items':tmp});
+          }        
+        }
+        this.set('list',list);
+        
+      }
+      
+    });
+
+  </script>
+</dom-module>

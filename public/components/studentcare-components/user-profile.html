@@ -1,0 +1,124 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="user-profile">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply --layout-vertical;
+        font-family: 'Athiti', sans-serif;
+        display: block;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+        text-decoration: underline;;
+      }
+
+      .user-style{
+        @apply --layout-horizontal;
+        @apply --layout-end-justified;
+        /*border-radius: 5px 5px 0px 0px;*/
+        border: 2px;
+        border-style: solid;
+        border-color: #e65540;
+        background-color: white;
+        height: 130px;
+      }
+
+      .header{
+        @apply --layout-horizontal;
+        @apply --layout-center-justified;
+        background-color:#e65540;
+        color:white;
+      }
+
+      iron-icon{
+        margin-left: 10px;
+        width: 100px;
+        height: 100px;
+      }
+
+    </style>
+
+    <app-localstorage-document
+      key="jwtToken"
+      data="{{token}}">
+    </app-localstorage-document>
+
+    <app-localstorage-document
+      key="role"
+      data="{{role}}">
+    </app-localstorage-document>
+
+    <iron-ajax
+      id="getTeacher"
+      url="https://thaieduforall.org:8000/v2/obec/teacher_db/query"
+      method="POST"
+      headers$='{"Authorization":"JWT {{token.token}}"}'
+      on-response="_onTeacherResponse"
+      content-type="application/json"
+      body$='{"query":{"_id":"{{role.profile._teacher}}"}}'>
+    </iron-ajax>
+
+    <div class="flex user-style">
+      <div class="flex layout horizontal">
+        <div class="flex-3"><iron-icon src="{{imgUser}}" slot="item-icon"></iron-icon></div>
+        <div class="flex-9 layout vertical">
+          <div class="font-face">ยินดีต้อนรับเข้าสู่ระบบ</div>
+          <div>ชื่อ-นามสกุล: {{teacher.title}}{{teacher.firstname}} {{teacher.lastname}}</div>
+          <div>โรงเรียน: {{teacher.hostname}}</div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'user-profile',
+      properties: {
+        token: {
+          type:Object,
+          value:{}
+        },
+        teacher:{
+          type:Object,
+          notify:true,
+          value:function() {
+            return {};
+          }
+        },
+        imgUser:{
+          type:String,
+          notify:true,
+          computed:'_imgUser()'
+        },
+      },
+      _imgUser:function(){
+        return this.resolveUrl("./images/woman.png");
+      },
+      _onTeacherResponse:function(e) {
+        //console.log('test',e.detail.response);
+        var response = e.detail.response;
+        if(response.length == 1) {
+          var doc = response[0];
+          //console.log(doc);
+          this.set('teacher',doc);
+        }
+      },
+      observers: [
+        '__execute(token.token,role.profile._teacher)',
+      ],
+      __execute: function (token,teacherId) {
+        if(!token || !teacherId) return;
+        this.$.getTeacher.generateRequest();
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,161 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="student-profile.html">
+<link rel="import" href="user-profile.html">
+<link rel="import" href="student-room.html">
+<link rel="import" href="student-form.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<!--
+`studentcare-components`
+Polymer Component for StudentCare project
+
+@demo demo/index.html
+-->
+
+<dom-module id="studentcare-app">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply --layout-vertical;
+        display: block;
+      }
+
+      paper-material {
+        padding: 2px;
+      }
+
+      app-toolbar {
+        /*background-color: var(--paper-red-500);*/
+        background-color: #cd333f;
+        color: white;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+      }
+    </style>
+
+    <paper-material elevation="0">
+      <div class="layout horizontal">
+        <template is="dom-if" if="{{!_isEqual(page,0)}}">
+          <div class="flex-6">
+            <student-profile students="{{student}}" hostid="{{student.hostid}}"></student-profile>
+          </div>
+        </template>
+        <template is="dom-if" if="{{_isEqual(page,0)}}">
+          <div class="flex-6">&nbsp;</div>
+        </template>
+        <div class="flex-6">
+          <user-profile></user-profile>
+        </div>
+      </div>
+      <app-toolbar>
+        <paper-icon-button icon="arrow-back" hidden$="{{_isEqual(page,0)}}" on-tap="_back">
+        </paper-icon-button>
+        <div main-title class="font-face">
+          {{_title}}
+        </div>
+      </app-toolbar>
+
+      <iron-pages selected="{{page}}">
+        <student-room year="{{year}}" host="{{host}}" level="{{level}}" room="{{room}}">
+        </student-room>
+        <student-form key="{{key}}" year="{{year}}" on-student-response="_studentResponse">
+        </student-form>
+        <div id="formEntry"  style="background:white;">
+        </div>
+      </iron-pages>
+    </paper-material>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'studentcare-app',
+      properties: {
+        host: {
+          type:String,
+          reflectToAttribute:true,
+          notify:true
+        },
+        level: {
+          type: String,
+          reflectToAttribute:true,
+        },
+        room: {
+          type: String,
+          reflectToAttribute:true,
+          notify:true
+        },
+        year: {
+          type: String,
+          reflectToAttribute:true,
+          notify:true
+        },
+        page: {
+          type: Number,
+          readOnly: true,
+          value: 0
+        },
+        _title: {
+          type: String,
+          computed: '_computeTitle(page)'
+        },
+        titlename:{
+          type: String,
+          notify:true
+        }
+      },
+      observers:[
+        'onHostLevelRoomChanged(host,level,room)'
+      ],
+      listeners: {
+        'student-selected': '_selectStudent',
+        'select-assignment': '_selectAssignment'
+      },
+      _studentResponse:function(e) {
+        this.set('student',e.detail.value);
+      },
+      onHostLevelRoomChanged: function(host,level,room) {
+        this._setPage(0);
+      },
+      _computeTitle: function(page) {
+        var title = 'แบบประเมิน'+this.titlename;
+        if (page == 0) {
+          title = "รายชื่อนักเรียน";
+        }
+        if (page == 1) {
+          title = "รายการแบบประเมิน";
+        }
+        return title;
+      },
+      _selectStudent: function (e) {
+        this.set('key', e.detail._id);
+        this._setPage(1);
+      },
+      _selectAssignment: function (e) {
+        var node = this.$.formEntry;
+        while (node.firstChild) {
+          node.removeChild(node.firstChild);
+        }
+        var formElement = e.detail.formElement;
+        //console.log('check form',formElement.name);
+        this.set('titlename',formElement.name);
+        this.$.formEntry.appendChild(formElement);
+        this._setPage(2);
+      },
+      _back: function () {
+        this._setPage(this.page - 1);
+      },
+      _isEqual: function (page, num) {
+        return page == num;
+      }
+
+    });
+  </script>
+</dom-module>

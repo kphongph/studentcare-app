@@ -1,0 +1,31 @@
+<link rel="import" href="../form-generator-behavior.html">
+<script>
+  CheckOnlyLevelBehaviorImpl = {
+    properties : {
+      atLevel:{
+        type:Array
+      }
+    },
+    requireForm:function(cb) {
+      //console.log('check',this.formType);
+      var _required=false;
+      var exists=false;
+      //console.log(this.formType,this.atLevel);
+      if(this.atLevel.indexOf(this.student['class']) != -1) {
+        _required=true;
+        for(var i=0;i<this.forms.length;i++) {
+          if(this.forms[i].form_type==this.formType) {
+            exists=true;
+            break;
+          }
+        }
+      }
+      if(!exists && _required) {
+        cb(true);
+      } else {
+        cb(false);
+      }
+    }
+  }
+  CheckOnlyLevelBehavior = [FormGeneratorBehavior,CheckOnlyLevelBehaviorImpl];
+</script>

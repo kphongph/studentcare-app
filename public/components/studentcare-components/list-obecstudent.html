@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="list-obecstudent">
+    <template>  
+        <iron-ajax id="ajaxres"
+            auto
+            url$="https://thaieduforall.org:8000/v2/obec/_test_report/data/{{host}}_{{level}}_{{room}}"
+            headers='{"Authorization":"JWT eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiJCb21iIiwiaWF0IjoxNDg5MDM0MTE0fQ.fv0r1vZ9B-i_AG1ogGdvumNDpnE1eowmhETO-Lqrjpyyz884_p423mH6cn-KVaZFhy9Z9Gs-0zljg6d3KUhKhDJzomJspgHiaMzrnqVs838IviD4ig-oFcSgkqCKn6aXULXoLnpb6ueKshvdHX3NIxlNPd_oPCEDOEg8ufPAnLgb78OHcwwKK_YmB7zidrs-7Ltx93lJJSF0-FO_kd3i_H4Z3vKOtKtoAnSdWQqPr2EVilxzHQwyiKrLUnzIGz6Iv3yS2qIDp8OCXVopSRwM0bnESC0tClF-7EO6J0d1NDxamuX6XHKvuujSaoynMTFtICSY0ojUYRYDDESLvXvLzg",
+                     "contentType": "application/json; charset=utf-8"}'
+            handle-as="json"
+            method="GET"
+            on-response="handleResponse">
+        </iron-ajax>  
+        
+        <style >           
+            :host {
+                display: block;
+            }  
+        </style>
+
+        <template is="dom-repeat" items="[[list]]">
+            <div>
+                <div>[[item.cid]]</div> 
+            </div>
+        </template>
+
+
+    </template>
+
+    <script>
+        /**
+     * `studentcare-report`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+        class ListObecstudent extends Polymer.Element {
+            static get is() { return 'list-obecstudent'; }
+            static get properties() {
+                return {
+                    host: {
+                        type: String                        
+                    },
+                    level:String,
+                    room:String,
+                    list: {
+                        type:Array,
+                        notify:true,
+                        value:function() {
+                            return [];
+                        }
+                    }                    
+                }    
+            }
+
+            ready() {
+                super.ready();
+                this.$.ajaxres.generateRequest();
+            }
+
+            handleResponse(e) {
+                var doc = e.detail.response;l
+                var students = [];
+                for(var key in doc.value) {
+                    if(key != 'ts') {
+                        students.push({
+                            cid:key,
+                            content:doc.value[key]
+                        });
+                    }
+                } 
+                this.set('list',students);                                    
+            }
+
+        }
+
+        window.customElements.define(ListObecstudent.is, ListObecstudent);
+    </script>
+</dom-module>

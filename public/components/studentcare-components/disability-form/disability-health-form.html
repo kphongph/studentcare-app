@@ -1,0 +1,251 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="disability-choice.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<dom-module id="disability-health-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply --paper-font-display;
+        @apply --layout-vertical;
+        background-color: white;
+        font-family: 'Athiti', sans-serif;
+        display: block;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      paper-radio-group {
+        background:#efefef;
+      }
+
+      .formEntry div {
+        @apply --paper-font-title;
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+
+      .description ol {
+        @apply --paper-font-body1;
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+        .num {list-style-type: decimal;}
+      }
+
+      .evaluation {
+        padding:5px;
+      }
+
+      .result {
+        padding-left:20px;
+        font-weight:bold;
+      }
+
+      .font-face-underline {
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+        text-decoration: underline;
+        font-size: 120%;
+      }
+
+      .font-face{
+        font-family: 'Athiti', sans-serif;
+      }
+
+      .font-face-bold{
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+        text-decoration: underline;;
+      }
+
+      dl {
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        margin-right: 0px;
+      }
+
+      disability-choice{
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+      }
+    </style>
+
+    <form-control id="control"
+      on-form-action="_tap"
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div slot="description">
+        <ol class="num"><b> คำชี้แจง</b>
+          <li>แบบคัดกรองฉบับนี้เป็นแบบคัดกรองเพื่อประโยชน์ในทางการจัดการศึกษาเท่านั้น</li>
+          <li>วิเคราะห์ลักษณะ / พฤติกรรม ของเด็ก ซึ่งเป็นลักษณะหรือพฤติกรรม ที่เด็กแสดงออกบ่อย ๆ โดยให้เลือกติ๊กลงในช่อง  <b>“ใช่”</b> หรือ <b>“ไม่ใช่”</b> ที่ตรงกับลักษณะหรือพฤติกรรมนั้น ๆ ของเด็ก</li>
+          <li>ผู้ทำการคัดกรองเบื้องต้นต้องผ่านการอบรมวิธีการใช้ และการประเมิน ตามแบบคัดกรองนี้ และควรสอบถามข้อมูลเพิ่มเติมจากผู้ที่อยู่ใกล้ชิดเด็กมากที่สุด เช่น ผู้ปกครอง หรือ ครู เพื่อให้เกิดความชัดเจนถูกต้อง</li>
+          <li>ผู้คัดกรองควรจะมีอย่างน้อย 2 คนขึ้นไป</li>
+        </ol>
+        <ol class="num">
+          <b>เกณฑ์การพิจารณา</b>
+          <li><b>ด้านร่างกาย และด้านการเคลื่อนไหว</b>
+ถ้าตอบว่าใช่ตั้งแต่ 1 ข้อ ขึ้นไป
+แสดงว่ามีแนวโน้มที่จะเป็นบุคคลที่มีความบกพร่องทางร่างกายหรือการเคลื่อนไหว ให้จัดบริการ
+ช่วยเหลือทางการศึกษาพิเศษ และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+          <li><b>ด้านสุขภาพ</b>
+ถ้าตอบว่าใช่ข้อใดข้อหนึ่ง
+แสดงว่ามีแนวโน้มที่จะเป็นบุคคลที่มีแนวโน้มที่จะเป็นบุคคลที่มีความบกพร่องทางสุขภาพ ให้จัดบริการ
+ช่วยเหลือทางการศึกษาพิเศษ และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+        </ol>
+      </div>
+      <div slot="formEntry">
+       <div class="font-face-underline">ด้านร่างกาย</div>
+       <disability-choice value="{{document.value.form_value.p1_1}}">
+         1. มีอวัยวะไม่สมส่วน หรือ แขน ขา ลีบ
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p1_2}}">
+         2. มีอวัยวะขาดหายไปและเป็นอุปสรรคในการดำรงชีวิต
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p1_3}}">
+         3. มีการผิดรูปของกระดูกและข้อ
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p1_4}}">
+         4. มีลักษณะกล้ามเนื้อแขนขาเกร็ง
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p1_5}}">
+         5. มีลักษณะกล้ามเนื้อแขนขาอ่อนแรง
+       </disability-choice>
+       <div class="font-face-underline">ด้านการเคลื่อนไหว</div>
+       <disability-choice value="{{document.value.form_value.p2_6}}">
+         1. มีการเคลื่อนไหวที่ผิดปกติ ทิศทางการเคลื่อนไหวและจังหวะการเคลื่อนไหว เช่นกระตุก เกร็ง
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p2_7}}">
+         2. ไม่สามารถนั่งทรงตัวได้ด้วยตนเอง
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p2_8}}">
+         3. ไม่สามารถลุกขึ้นยืนได้ด้วยตนเอง
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p2_9}}">
+         4. ไม่สามารถยืนทรงตัวได้ด้วยตนเอง
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p2_10}}">
+         5. ไม่สามารถเดินได้ด้วยตนเอง
+       </disability-choice>
+       <div class="font-face-underline">ด้านสุขภาพ</div>
+       <disability-choice value="{{document.value.form_value.p3_11}}">
+        <dl>
+          <dt>มีความเจ็บป่วยที่ต้องได้รับการรักษาเป็นระยะเวลานาน และเป็นอุปสรรคต่อการศึกษา เช่น<dt>
+          <dd><li>ประสบอุบัติเหตุ ผ่าตัด เป็นต้น</li></dd>
+          <dd><li>เป็นโรคเรื้อรังหรือมีภาวะผิดปกติของระบบต่าง ๆ ดังต่อไปนี้
+          ระบบโลหิต เช่น ภาวะเลือดออกง่ายหยุดยาก ธาลัสซีเมีย ไขกระดูกฝ่อ ระบบ
+          หัวใจและหลอดเลือด เช่น หัวใจพิการแต่กำเนิด โรคหัวใจรูมาติก ระบบไต เช่น
+          โรคเนโฟรติก โรคไตเรื้อรัง ระบบประสาท เช่น อัมพาต สมองพิการ ลมชัก ระบบ
+          หายใจ เช่น หอบหืดโรคปอด ระบบภูมิคุ้มกันและภูมิแพ้ เช่น ข้ออักเสบ-รูมา
+          ตอยด์, SLE (เอส แอล อี) ระบบต่อไร้ท่อ เช่น โรคเบาหวาน แคระ หรือโต
+          ผิดปกติ ระบบผิวหนัง เช่น เด็กดักแด้ เป็นต้น</li>
+          </dd>
+      </dl>
+       </disability-choice>
+     </div>
+
+     <div slot="evaluation">
+      <div class="layout vertical">
+       <span>ด้านร่างกาย</span>
+       <span class="result">{{_resultp1}}</span>
+       <span>ด้านการเคลื่อนไหว</span>
+       <span class="result">{{_resultp2}}</span>
+       <span>ด้านสุขภาพ</span>
+       <span class="result">{{_resultp3}}</span>
+      </div>
+     </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'disability-health-form',
+      listeners : {
+      },
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบคัดกรองบุคคลที่มีความบกพร่องทางร่างกาย หรือการเคลื่อนไหว หรือสุขภาพ"
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers:[
+        '_result(document.value.form_result)'
+      ],
+      _tap:function(e) {
+        if(e.detail.type == "save") {
+          this.$.control.save();
+        }
+      },
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score = {};
+        for(var q in values) {
+          var p = q.split('_')[0];
+          if(!score[p]) score[p] = {'y':0,'n':0};
+          score[p][values[q]]++;
+        }
+        for(var key in score) {
+          if(score[key].y >= 1) {
+           score['_risk'] = true;
+          } 
+        }
+        return score;
+      },
+      _validate:function() {
+        var eles =Polymer.dom(this.root)
+         .querySelectorAll('disability-choice');
+         //var checkLength = this.showNextSection?eles.length:11;
+         //console.log(checkLength);
+        for(var i=0;i<eles.length;i++) {
+          if(!eles[i].value)  {
+        /*for(var i=0;i<checkLength;i++) {
+          if(!eles[i].value)  {
+            var str = eles[i].innerHTML;
+            str = str.replace(/<{1}[^<>]{1,}>{1}/g," ");
+            this.$.control.setInvalidateMessage({'text':str});*/
+            this.$.control.setInvalidateMessage({'text':'ยังทำแบบประเมินไม่ครบถ้วน'});
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            this.$.control.setInvalidateMessage({'text':''});
+            eles[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});
+      },
+      _result:function(score) {
+        for(var key in score) {
+          if(score[key].y >= 1) {
+            this.set('_result'+key,'พบความบกพร่อง');
+          } else {
+            this.set('_result'+key,'ไม่พบความบกพร่อง');
+          }
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,502 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../screening-form/homevisit-query.html">
+<link rel="import" href="studentcare-sdq-query.html">
+<link rel="import" href="studentcare-eq-query.html">
+<link rel="import" href="studentcare-screening-query.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link href="https://fonts.googleapis.com/css?family=Itim&amp;subset=thai" rel="stylesheet">
+
+<dom-module id="studentcare-report">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      /* ---font---- */
+      .font-face-big {
+        font-family: 'Itim', cursive;
+        font-size: 120%;
+        text-decoration: underline;
+      }
+
+      .font-face-big-bold {
+        font-family: 'Itim', cursive;
+        font-size: 120%;
+        font-weight: bold;
+      }
+
+      .font-face {
+        font-family: 'Itim', cursive;
+        font-size: 120%;
+      }
+
+      .student-info {
+        padding: 10px;
+        height:40px;
+      }
+
+      /* ---image---- */
+      #example-full-width-container {
+        width: 40px;
+      }
+
+      #example-full-width {
+        width: 100%;
+        --iron-image-width: 100%;
+      }
+
+      /* ---table---- */
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      .center-layout{
+
+         @apply --layout-center;
+         @apply --layout;
+      }
+
+      .horizontal {
+         @apply --layout-horizontal;
+      }
+      
+      .vertical {
+         @apply --layout-vertical;
+
+      }
+        
+      .header {
+        background-color: #F44336;
+        text-align:left;
+        color: #fff;
+        font-family: 'Itim', cursive;
+        font-size: 16px;
+        height:60px;
+      }
+
+      .caption {
+        text-align:left;
+        color: #000;
+        opacity: 0.87;
+        height:48px;
+        border-bottom-width:1px;
+        border-bottom-style:solid;
+        border-bottom-color: var(--divider-color);
+      }
+
+      .content {
+        text-align:left;
+        color: #000;
+        font-family: 'Itim', cursive;
+        font-size: 14px;
+        height:50px;
+        opacity: 0.70;
+      }
+
+      .margin-left-style{
+        margin-left:24px;
+      }
+
+      .margin-right-style{
+        margin-right:24px;
+      }
+
+      .flex-2 {
+         @apply --layout-flex-2; 
+      }
+      .flex-5 {
+         @apply --layout-flex-5; 
+      }
+      .flex-8 {
+         @apply --layout-flex-8; 
+      }
+      .flex-10 {
+         @apply --layout-flex-10; 
+
+      }    
+    </style>
+
+    <studentcare-sdq-query host="{{host}}" 
+       cid="{{cid}}" 
+       year="{{year}}"
+       lavel="{{lavel}}"
+       document="{{report}}">
+    </studentcare-sdq-query>
+
+    <studentcare-eq-query host="{{host}}" 
+       cid="{{cid}}" 
+       year="{{year}}"
+       lavel="{{lavel}}"
+       document="{{eq}}">
+    </studentcare-eq-query>
+
+    <studentcare-screening-query host="{{host}}" 
+       cid="{{cid}}" 
+       year="{{year}}"
+       lavel="{{lavel}}"
+       document="{{screening}}">
+    </studentcare-screening-query>
+
+    <homevisit-query host="{{host}}" 
+       cid="{{cid}}" 
+       document="{{homevisit}}">
+    </homevisit-query>
+   
+    <template is="dom-if" if="{{hasPlan}}">
+      <!-- แสดงรายละเอียด -->    
+      <div class="student-info">
+        <span class="font-face-big-bold"> เลขประจำตัวประชาชน  &nbsp;&nbsp;</span>
+        <span class="font-face-big">{{cid}}</span>
+        <span class="font-face-big-bold">&nbsp;&nbsp;&nbsp;ชื่อ - นามสกุล &nbsp;&nbsp;</span>
+        <span class="font-face-big">{{report.student.name}}</span>
+      </div>
+
+      <paper-material>
+        <div class="vertical">
+          <div class="horizontal header center-layout">
+              <div class="margin-left-style font-face">แบบคัดกรอง SDQ</div>
+          </div>
+          <!-- ถ้ามีผลการประเมิน SDQ --> 
+          <template is="dom-if" if="{{hasSDQ}}"> 
+            <!--<div class="horizontal caption center-layout">
+              <div class="flex-10 center-layout margin-left-style font-face-big-bold">ด้าน</div>
+              <div class="flex-5 center-layout margin-left-style font-face-big-bold">ผลการประเมิน</div>
+            </div>-->
+            <!-- head -->
+                <div class="horizontal content center-layout">
+                  <div class="flex-10 center-layout margin-left-style font-face">{{sdq.head.0.label}}</div>
+                  <div class="center-layout margin-right-style font-face">&nbsp;</div>
+                  <div class="flex-5 center-layout margin-left-style font-face">
+                    <template is="dom-if" if="{{!sdq.head.0.chk}}">
+                      {{sdq.head.0.result}}
+                    </template>
+                    <div id="example-full-width-container">
+                      <template is="dom-if" if="{{sdq.head.0.chk}}">
+                        <iron-image id="example-full-width" src="{{sdq.head.0.result}}"></iron-image>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+            <!-- data -->
+            <template is="dom-repeat" items="{{sdq.data}}" as="data">
+                <div class="horizontal content center-layout">
+                  <div class="center-layout margin-right-style font-face">&nbsp;</div>
+                  <div class="flex-10 center-layout margin-left-style font-face">- {{data.label}}</div>
+                  <div class="flex-5 center-layout margin-left-style font-face">
+                    <template is="dom-if" if="{{!data.chk}}">
+                      {{data.result}}
+                    </template>
+                    <div id="example-full-width-container">
+                      <template is="dom-if" if="{{data.chk}}">
+                        <iron-image id="example-full-width" src="{{data.result}}"></iron-image>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+            </template>
+            <!-- summary -->
+                <div class="horizontal content center-layout">
+                  <div class="flex-10 center-layout margin-left-style font-face">{{sdq.summary.0.label}}</div>
+                  <div class="center-layout margin-right-style font-face">&nbsp;</div>
+                  <div class="flex-5 center-layout margin-left-style font-face">
+                    <template is="dom-if" if="{{!sdq.summary.0.chk}}">
+                      {{sdq.summary.0.result}}
+                    </template>
+                    <div id="example-full-width-container">
+                      <template is="dom-if" if="{{sdq.summary.0.chk}}">
+                        <iron-image id="example-full-width" src="{{sdq.summary.0.result}}"></iron-image>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+          </template>
+           <!-- ถ้าไม่มีผลการประเมิน SDQ --> 
+          <template is="dom-if" if="{{!hasSDQ}}">
+             <div class="content center-layout margin-left-style font-face">ยังไม่มีการประเมิน</div>
+          </template>
+        </div>
+
+        <div class="vertical">
+          <div class="horizontal header center-layout">
+              <div class="margin-left-style font-face">แบบคัดกรองนักเรียนรายบุคคล</div>
+          </div>
+          <template is="dom-if" if="{{hasPersonal}}">
+            <!--<div class="horizontal caption center-layout">
+              <div class="flex-10 center-layout margin-left-style font-face-big-bold">ด้าน</div>
+              <div class="flex-5 center-layout margin-left-style font-face-big-bold">ผลการประเมิน</div>
+            </div>-->
+          <div class="horizontal content center-layout">
+              <!--<div class="flex-10 center-layout margin-left-style font-face">{{result.0.name}}</div>-->
+              <div class="flex-10 center-layout margin-left-style font-face">ด้านการเรียน</div>
+              <!-- ถ้ามีผลการประเมินด้านการเรียน -->
+                <template is="dom-if" if="{{hasStudy}}">
+                  <div class="center-layout margin-right-style font-face">&nbsp;</div>
+                  <div class="flex-5 center-layout margin-left-style font-face">
+                  <div id="example-full-width-container">
+                    <iron-image id="example-full-width" src="{{result.0.img}}"></iron-image>
+                  </div>
+                  </div>
+                </template>
+              <!-- ถ้าไม่มีผลการประเมินด้านการเรียน -->
+                <template is="dom-if" if="{{!hasStudy}}">
+                  <div class="flex-5 center-layout margin-left-style font-face">ยังไม่มีการประเมิน</div>
+                </template>
+            </div>
+            <!-- ถ้ามีผลการประเมินแบบคัดกรองรายบุคคล -->
+            <template is="dom-repeat" items="{{homevisitResult.homevisit}}" as="home">
+              <div class="horizontal content center-layout">
+                <div  class="flex-10 center-layout margin-left-style font-face">ด้าน{{home.text}}</div>
+                <div class="center-layout margin-right-style font-face">&nbsp;</div>
+                <div class="flex-5 center-layout margin-left-style font-face">
+                    <div id="example-full-width-container">
+                      <iron-image id="example-full-width" src="{{home.type}}"></iron-image>
+                    </div>
+                </div>
+              </div>
+            </template>
+          </template>
+          <!-- ถ้าไม่มีผลการประเมินแบบคัดกรองรายบุคคล --> 
+          <template is="dom-if" if="{{!hasPersonal}}">
+            <div class="content center-layout margin-left-style font-face">ยังไม่มีการประเมิน</div>
+          </template>
+        </div>
+
+        <div class="vertical">
+          <div class="horizontal header center-layout">
+              <div class="margin-left-style font-face">แบบคัดกรอง EQ</div>
+          </div>
+          <!-- ถ้ามีผลการประเมิน EQ --> 
+          <template is="dom-if" if="{{hasEQ}}">
+              <div class="horizontal content center-layout">
+                <div class="flex-10 center-layout margin-left-style font-face">ความฉลาดทางอารมณ์</div>
+                <div class="center-layout margin-right-style font-face">&nbsp;</div>
+                <div class="flex-5 center-layout margin-left-style font-face">
+                  <div id="example-full-width-container">
+                    <iron-image id="example-full-width" src="{{eqResult.0.emo}}"></iron-image>
+                  </div>
+                </div>
+              </div>
+          </template>
+          <!-- ถ้าไม่มีผลการประเมิน EQ --> 
+          <template is="dom-if" if="{{!hasEQ}}">
+             <div class="content center-layout margin-left-style font-face">ยังไม่มีการประเมิน</div>
+          </template>
+        </div>
+      </paper-material>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'studentcare-report',
+      properties: {
+          homevisitResult:{
+            type:Object,
+            notify: true,
+            computed:'_evaluate(homevisit)'
+          },
+          sdq:{
+            type:Object,
+            notify: true,
+            computed:'___sdqResult(report)'
+          },
+          eqResult:{
+            type:Object,
+            notify: true,
+            computed:'___eqResult(eq)'
+          },
+          result:{
+            type:Object,
+            notify: true,
+            computed:'___result(screening)'
+          },
+          hasPlan: {
+            type:Boolean,
+            value: false,
+            notify:true
+          },
+          hasSDQ: {
+            type:Boolean,
+            value: false,
+            notify:true
+          },
+          hasEQ: {
+            type:Boolean,
+            value: false,
+            notify:true
+          },
+          hasPersonal: {
+            type:Boolean,
+            value: false,
+            notify:true
+          },
+          hasStudy: {
+            type:Boolean,
+            value: false,
+            notify:true
+          }
+      },
+      ___eqResult(eq){
+        var chkEQ = this.eq.form_result.score;
+        console.log(chkEQ);
+        var eq_score=[];
+        if(chkEQ > 56){
+          eq_score.push({"emo":'../images/green.png',"text":'ความฉลาดทางอารมณ์สูงกว่าปกติ'});
+        }else if(chkEQ >= 42 && chkEQ <= 56){
+          eq_score.push({"emo":'../images/yellow.png',"text":'ความฉลาดทางอารมณ์ปานกลาง'});
+        }else{
+          eq_score.push({"emo":'../images/red.png',"text":'ความฉลาดทางอารมณ์ต่ำกว่าปกติ'});
+        }
+        console.log(eq_score);
+        this.set('hasPlan',true);
+        this.set('hasEQ',true);
+        return eq_score;
+      },
+      ___result(screening){
+        console.log(this.screening);
+        var chk_result = screening.form_result.q2.result;
+        var screen_result = [];
+        if(chk_result == "มีปัญหา"){
+          screen_result.push({"name":screening.form_result.q2.name,"img":'../images/red.png'});
+          this.set('hasStudy',true);
+        }else if(chk_result == "เสี่ยง"){
+          screen_result.push({"name":screening.form_result.q2.name,"img":'../images/yellow.png'});
+          this.set('hasStudy',true);
+        }else{
+          screen_result.push({"name":screening.form_result.q2.name,"img":'../images/green.png'});
+          this.set('hasStudy',false);
+        }
+        console.log(screen_result);
+        this.set('hasStudy',true);
+        return screen_result;
+      },
+      ___sdqResult(report) {
+		  var emotion = this.report.form_result.emotion;
+      var behavior = this.report.form_result.behavior;
+      var behavior_active = this.report.form_result.behavior_active;
+      var friend = this.report.form_result.friend;
+      var social = this.report.form_result.social;
+      var weakness = this.report.form_result.weakness;
+      var back = this.report.form_result.back;
+      var tmp = [];
+      var head = [];
+      var summary = [];
+      var value = [];
+      var img;
+      var chk;
+      var data = [];
+      tmp.push({"label":emotion.label,"result":emotion.result},
+      {"label":behavior.label,"result":behavior.result},
+      {"label":behavior_active.label,"result":behavior_active.result},
+      {"label":friend.label,"result":friend.result},
+      {"label":social.label,"result":social.result});
+        if(weakness.result=="ปกติ"){
+          img="../images/green.png";
+          chk=true;
+          head.push({"label":weakness.label,"result":img,"chk":chk});
+        }else if(weakness.result=="เสี่ยง"){
+          img="../images/yellow.png";
+          chk=true;
+          head.push({"label":weakness.label,"result":img,"chk":chk});
+        }else if(weakness.result=="มีปัญหา"){
+          img="../images/red.png";
+          chk=true;
+          head.push({"label":weakness.label,"result":img,"chk":chk}); 
+        }else{
+          img=weakness.result;
+          chk=false;
+          head.push({"label":weakness.label,"result":img,"chk":chk});
+        }
+
+        if(back.result=="รุนแรงปานกลาง"){
+          img="../images/yellow.png";
+          chk=true;
+          summary.push({"label":back.label,"result":img,"chk":chk});
+        }else if(back.result=="รุนแรงมาก"){
+          img="../images/red.png";
+          chk=true;
+          summary.push({"label":back.label,"result":img,"chk":chk});
+        }else if(back.result=="ปกติ"){
+          img="../images/green.png";
+          chk=true;
+          summary.push({"label":back.label,"result":img,"chk":chk});
+        }else{
+          img=back.result
+          chk=false;
+          summary.push({"label":back.label,"result":img,"chk":chk});
+        }
+
+      for(var i=0;i<tmp.length;i++) {
+        var chkResult = tmp[i].result;
+        if(chkResult=="ปกติ"){
+          img="../images/green.png";
+          chk=true;
+        }else if(chkResult=="เสี่ยง"){
+          img="../images/yellow.png";
+          chk=true;
+        }else if(chkResult=="มีปัญหา"){
+          img="../images/red.png";
+          chk=true;
+        }else{
+          img=chkResult;
+          chk=false;
+        }
+        data.push({"label":tmp[i].label,"result":img,"chk":chk});
+		  }
+      console.log(data);
+      value["head"]=head;
+      value["data"]=data;
+      value["summary"]=summary;
+      console.log(value);
+      this.set('hasPlan',true);
+      this.set('hasSDQ',true);
+		  return value;
+	   },
+     _evaluate:function(homevisit) {
+        var values = this.homevisit;
+        var score = {};
+        var name_dict = {
+          'q2':'ด้านการเรียน'
+        };
+        var result_dict = {
+          'm':'เสี่ยง',
+          'p':'มีปัญหา'
+        };
+
+        for(var q in values) {
+          if(name_dict[q]) {
+            var obj = {'name':name_dict[q],'result':result_dict[values[q]]};
+            score[q] = obj;
+          }          
+        }
+        var result_homevisit = [];
+        var result_type;
+        var tmp_homevisit = this.homevisit;
+        for(var i=0;i<tmp_homevisit.length;i++) {
+            for(var j=0;j<tmp_homevisit[i].values.length;j++){
+              var chk_type = tmp_homevisit[i].values[j].type;
+              if(chk_type == "มีปัญหา"){
+                result_type = "../images/red.png";
+              }else{
+                result_type = "../images/yellow.png";
+              }
+            }
+            result_homevisit.push({
+              "text":tmp_homevisit[i].text,
+              "type":result_type
+            });   
+		    }
+        score["homevisit"] = result_homevisit;
+        console.log(score);
+        this.set('hasPersonal',true);
+        return score;
+      }
+    });
+  </script>
+</dom-module>

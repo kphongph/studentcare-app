@@ -1,0 +1,406 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="disability-choice.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<dom-module id="disability-learning-elementary-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply --paper-font-display;
+        @apply --layout-vertical;
+        background-color: white;
+        font-family: 'Athiti', sans-serif;
+        display: block;
+      }
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+
+      paper-radio-group {
+        background:#efefef;
+      }
+
+      .formEntry .section {
+        margin:0px;
+        padding:0px;
+        background:#efefef;
+      }
+
+      .section-label {
+        @apply --paper-font-body2;
+        padding-left:10px;
+        font-weight:bold;
+      }
+
+      .section-head {
+        @apply --paper-font-display;
+        padding-left:10px;
+        font-weight:bold;
+      }
+
+      .description ol {
+        @apply --paper-font-display;
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+        .num {list-style-type: decimal;}
+      }
+
+      .evaluation {
+        padding:5px;
+      }
+
+      .result {
+        padding-left:20px;
+        font-weight:bold;
+      }
+
+      .font-face{
+        font-family: 'Athiti', sans-serif;
+      }
+
+      .font-face-bold{
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+        text-decoration: underline;;
+      }
+
+      dl {
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        margin-right: 0px;
+      }
+
+      disability-choice{
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+      }
+    </style>
+
+    <form-control id="control"
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div slot="description">
+        <ol class="num"><b> คำชี้แจง</b>
+          <li>แบบคัดกรองฉบับนี้เป็นแบบคัดกรองเพื่อประโยชน์ในทางการจัดการศึกษาเท่านั้น</li>
+          <li>วิเคราะห์ลักษณะ / พฤติกรรม ของเด็ก ซึ่งเป็นลักษณะหรือพฤติกรรม ที่เด็กแสดงออกบ่อย ๆ โดยให้เลือกติ๊กลงในช่อง  <b>“ใช่”</b> หรือ <b>“ไม่ใช่”</b> ที่ตรงกับลักษณะหรือพฤติกรรมนั้น ๆ ของเด็ก</li>
+          <li>ผู้ทำการคัดกรองเบื้องต้นต้องผ่านการอบรมวิธีการใช้ และการประเมิน ตามแบบคัดกรองนี้ และควรสอบถามข้อมูลเพิ่มเติมจากผู้ที่อยู่ใกล้ชิดเด็กมากที่สุด เช่น ผู้ปกครอง หรือ ครู เพื่อให้เกิดความชัดเจนถูกต้อง</li>
+          <li>ผู้คัดกรองควรจะมีอย่างน้อย 2 คนขึ้นไป</li>
+        </ol>
+        <ol class="num">
+          <b>เกณฑ์การพิจารณา</b>
+          <li><b>ด้านร่างกาย และด้านการเคลื่อนไหว</b>
+ถ้าตอบว่าใช่ตั้งแต่ 1 ข้อ ขึ้นไป
+แสดงว่ามีแนวโน้มที่จะเป็นบุคคลที่มีความบกพร่องทางร่างกายหรือการเคลื่อนไหว ให้จัดบริการ
+ช่วยเหลือทางการศึกษาพิเศษ และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+          <li><b>ด้านสุขภาพ</b>
+ถ้าตอบว่าใช่ข้อใดข้อหนึ่ง
+แสดงว่ามีแนวโน้มที่จะเป็นบุคคลที่มีแนวโน้มที่จะเป็นบุคคลที่มีความบกพร่องทางสุขภาพ ให้จัดบริการ
+ช่วยเหลือทางการศึกษาพิเศษ และส่งต่อให้แพทย์ตรวจวินิจฉัยต่อไป
+          </li>
+        </ol>
+     </div>
+     <div slot="formEntry">
+       <div class="section">
+         <div class="section-head">
+         การวิเคราะห์เบื้องต้น / ข้อมูลพื้นฐานของบุคคลที่มีความบกพร่องทางการเรียนรู้
+         </div>
+       </div>
+       <disability-choice value="{{document.value.form_value.p1_p1_1}}">
+        1. ดูฉลาดหรือปกติ ในด้านอื่น ๆ นอกจากในด้านการเรียน
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p1_p1_2}}">
+        <dl>
+          <dt>2. มีปัญหาทางการเรียน ซึ่งอาจทำไม่ได้เลยหรือทำได้ต่ำกว่า 2 ชั้นเรียน ในด้านใดด้านหนึ่ง หรือมากกว่า 1 ด้าน ต่อไปนี้</dt>
+          <dd>- ด้านการอ่าน</dd>
+          <dd>- ด้านการเขียน</dd>
+          <dd>- ด้านการคำนวณ</dd>
+        </dl>
+       </disability-choice>
+       <disability-choice value="{{document.value.form_value.p1_p1_3}}">
+        3. ไม่มีปัญหาทางด้านการเห็น การได้ยิน สติปัญญา หรือออทิสติก หรือจากการถูกละทิ้ง ละเลย หรือความด้อยโอกาสอื่น ๆ
+       </disability-choice>
+       <div hidden="{{!showNextSection}}">
+        <div class="section">
+         <div class="section-head">การวิเคราะห์ความบกพร่องทางการเรียนรู้ของเด็กในแต่ละด้าน</div>
+        </div>
+        <div class="section">
+         <div class="section-label font-face-bold">ด้านการอ่าน</div>
+        </div>
+        <disability-choice value="{{document.value.form_value.p2_p1_1}}">
+          1. อ่านช้า อ่านข้าม อ่านไม่หมด
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_2}}">
+          2. จำคำศัพท์คำเดิมไม่ได้ ทั้ง ๆ ที่เคยผ่านสายตามาแล้วหลายครั้ง
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_3}}">
+          3. อ่านเพิ่มคำ ซ้ำคำ อ่านผิดตำแหน่ง
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_4}}">
+          4. อ่านสลับตัวอักษรหรือออกเสียงสลับกัน เช่น บก อ่านเป็น กบ
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_5}}">
+          5. สับสนในพยัญชนะคล้ายกัน เช่น ก ภ ถ, ฦ ฎ ฏ, ด ต ค
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_6}}">
+          6. จำศัพท์ใหม่ไม่ค่อยได้
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_7}}">
+          7. มีปัญหาในการผสมคำ การอ่านออกเสียงคำ
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_8}}">
+          8. สับสนคำที่คล้ายกัน เช่น บาน/ บ้าน
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_9}}">
+          9. อ่านคำที่ไม่คุ้นเคยไม่ได้
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p1_10}}">
+          10. อ่านคำในระดับชั้นของตนเองไม่ได้
+        </disability-choice>
+        <div class="section">
+         <div class="section-label font-face-bold">ด้านการเขียน</div>
+        </div>
+        <disability-choice value="{{document.value.form_value.p2_p2_1}}">
+          1. ไม่ชอบและหลีกเลี่ยงการเขียน หรือการลอกคำ
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_2}}">
+          2. ไม่สามารถนั่งทรงตัวได้ด้วยตนเอง
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_3}}">
+          3. ไม่สามารถลุกขึ้นยืนได้ด้วยตนเอง
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_4}}">
+          4. ไม่สามารถยืนทรงตัวได้ด้วยตนเอง
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_5}}">
+          5. ไม่สามารถเดินได้ด้วยตนเอง
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_6}}">
+          6. เขียนสลับตำแหน่งระหว่างพยัญชนะ สระ ตโ
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_7}}">
+          7. เขียนตามคำบอกของคำในระดับชั้นตนเองไม่ได้
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_8}}">
+          8. เขียนตัวอักษรหรือตัวเลขกลับด้าน คล้ายมองกระจกเงา
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_9}}">
+          9. เขียนพยัญชนะหรือตัวเลขที่มีลักษณะคล้ายกันสลับกัน เช่น ม-น, ต-ค, พ-ย, b-d,p-q, 6-9
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p2_10}}">
+          10. เรียงลำดับตัวอักษรผิด เช่น สถิติ เป็น สติถิ
+        </disability-choice>
+        <div class="section">
+         <div class="section-label font-face-bold">ด้านการคำนวณ</div>
+        </div>
+        <disability-choice value="{{document.value.form_value.p2_p3_1}}">
+          1. นับเลขเรียงลำดับ นับเพิ่ม นับลดไม่ได้
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_2}}">
+          2. ยากลำบากในการบวก,ลบ จำนวนจริง
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_3}}">
+          3. ยากลำบากในการใช้เทคนิคการนับจำนวนเพิ่มทีละ 2, 5, 10, 100
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_4}}">
+          4. ยากลำบากในการประมาณจำนวนค่า
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_5}}">
+          5. ยากลำบากในการเปรียบเทียบ มากกว่า น้อยกว่า
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_6}}">
+          6. แก้โจทย์ปัญหาง่าย ๆ ไม่ได้
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_7}}">
+          7. สับสนไม่เข้าใจเรื่องเวลา ทิศทาง
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_8}}">
+          8. บอกความหมาย หรือสัญลักษณ์ทางคณิตศาสตร์ ไม่ได้ เช่น +, -, x, >, <, =
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_9}}">
+          9. เปรียบเทียบขนาด รูปทรง ระยะทาง ตำแหน่งไม่ได้
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p3_10}}">
+          10. เขียนตัวเลขกลับ เช่น 5 S , 6 9
+        </disability-choice>
+        <div class="section">
+         <div class="section-label font-face-bold">ด้านพฤติกรรมทั่วไป</div>
+        </div>
+        <disability-choice value="{{document.value.form_value.p2_p4_1}}">
+          1. ไม่ทำตามคำสั่ง ทำงานไม่เสร็จ
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_2}}">
+          2. มีความยากลำบากในการจัดระบบงาน
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_3}}">
+          3. ทำของหายบ่อย ๆ เป็นประจำ เช่น ของเล่น ดินสอ หนังสือ อุปกรณ์การเรียน
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_4}}">
+          4. ลืมทำกิจกรรมที่เป็นกิจวัตรประจำวัน
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_5}}">
+          5. สับสนด้านซ้าย ขวา
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_6}}">
+          6. วางสิ่งของเครื่องใช้ไม่เป็นระเบียบ
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_7}}">
+          7. เสียสมาธิง่ายมาองไปยังทุกสิ่งที่เคลื่อนไหวผ่านสายตา
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_8}}">
+          8. มีอาการเครียดขณะอ่าน
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_9}}">
+          9. ใจไม่ค่อยจดจ่ออยู่กับงาน มองโน่นมองนี่บ่อย ๆ
+        </disability-choice>
+        <disability-choice value="{{document.value.form_value.p2_p4_10}}">
+          10. หลีกเลี่ยง ไม่ชอบ หรือลังเลใจที่จะทำงานหรือการบ้านที่ต้องมีระเบียบและใส่ใจในงาน
+        </disability-choice>
+       </div>
+     </div>
+
+     <div slot="evaluation">
+      <div class="layout vertical">
+       <span>ความบกพร่องทางการเรียนรู้</span>
+       <span class="result">{{_resultp1p1}}</span>
+       <div hidden$="{{!showNextSection}}">
+        <div class="layout vertical">
+         <span>ด้านการอ่าน</span>
+         <span class="result">{{_resultp2p1}}</span>
+         <span>ด้านการเขียน</span>
+         <span class="result">{{_resultp2p2}}</span>
+         <span>ด้านการคำนวณ</span>
+         <span class="result">{{_resultp2p3}}</span>
+         <span>ด้านพฤติกรรมทั่วไป</span>
+         <span class="result">{{_resultp2p4}}</span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </form-control>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'disability-learning-elementary-form',
+      listeners : {
+      },
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบคัดกรองบุคคลที่มีความบกพร่องทางการเรียนรู้ (ประถมศึกษา)"
+        },
+        showNextSection:{
+          type:Boolean,
+          notify:true,
+          value:false
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers:[
+        '_result(document.value.form_result)',
+        '_nextSection(document.value.form_value.p1_p1_1,document.value.form_value.p1_p1_2,document.value.form_value.p1_p1_3)',
+      ],
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score = {};
+        for(var q in values) {
+          var _p = q.split('_');
+          var p = _p[0]+_p[1];
+          if(!score[p]) score[p] = {'y':0,'n':0};
+          score[p][values[q]]++;
+        }
+        var dict = {
+          'p1p1':2,
+          'p2p1':7,
+          'p2p2':7,
+          'p2p3':6,
+          'p2p4':4
+        };
+        if(score==null) return;
+        for(var key in dict) {
+          if(score[key]) {
+            if(score[key].y >= dict[key]) {
+              score['_risk']= true;
+            }
+          }
+        }
+        return score;
+      },
+      _validate:function() {
+        var eles =Polymer.dom(this.root)
+          .querySelectorAll('disability-choice');
+        //var checkLength = this.showNextSection?eles.length:3;
+        //console.log(checkLength);
+
+        /*for(var i=0;i<checkLength;i++) {
+          if(!eles[i].value)  {
+            //console.log('text',eles[i].innerHTML);
+            var str = eles[i].innerHTML;
+            str = str.replace(/<{1}[^<>]{1,}>{1}/g," ");
+            console.log('text2',str);
+            this.$.control.setInvalidateMessage({'text':eles[i].innerHTML});
+            this.$.control.setInvalidateMessage({'text':str});*/
+        for(var i=0;i<eles.length;i++) {
+          if(!eles[i].value)  {
+            this.$.control.setInvalidateMessage({'text':'ยังทำแบบประเมินไม่ครบถ้วน'});
+            eles[i].classList.add('invalid');
+            return false;
+          } else {
+            this.$.control.setInvalidateMessage({'text':''});
+            eles[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});
+      },
+      _result:function(score) {
+        var dict = {
+          'p1p1':2,
+          'p2p1':7,
+          'p2p2':7,
+          'p2p3':6,
+          'p2p4':4
+        };
+        if(score==null) return;
+        for(var key in dict) {
+          if(score[key]) {
+            if(score[key].y >= dict[key]) {
+              this.set('_result'+key,'พบความบกพร่อง');
+            } else {
+              this.set('_result'+key,'ไม่พบความบกพร่อง');
+            }
+          }
+        }
+      },
+      _nextSection:function(p1,p2,p3) {
+        var count = 0;
+        if(p1 == 'y') count++;
+        if(p2 == 'y') count++;
+        if(p3 == 'y') count++;
+        if(count >= 2) {
+          this.set('showNextSection',true);
+        } else {
+          this.set('showNextSection',false);
+        }
+      }
+    });
+  </script>
+</dom-module>

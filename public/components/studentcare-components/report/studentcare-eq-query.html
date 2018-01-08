@@ -1,0 +1,72 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="studentcare-eq-query">
+ <template>
+
+   <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+   </app-localstorage-document>
+
+   <iron-ajax 
+     method="POST"
+     id="query"
+     url="https://maas.nuqlis.com:9000/api/query/students_care/cid_year_type"
+     content-type="application/json"
+     handle-as="json"
+     headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+     body='{"match":["{{cid}}","{{year}}","{{Lavel}}"],"include_doc":true}'
+     on-response="handleResponse">
+   </iron-ajax>
+
+ </template>
+ <script>
+   Polymer({
+     is:'studentcare-eq-query',
+     properties:{
+       cid:String,
+       host:String,
+       year:String,
+     Lavel:{
+      type:String,
+      notify:true,
+      computed:'__chkLavel(lavel)'
+     },
+	   Report:{
+      type:Boolean,
+      notify:true,
+      computed:'__computedIsReport(document)'
+    },
+       document: {
+         type:Object,
+         notify:true
+       }
+     },
+     observers:[
+       'executeQuery(host,cid,jwtToken.token)'
+     ],
+     executeQuery:function(host,cid,token) {
+       this.$.query.generateRequest();
+     },
+     handleResponse:function(e) {
+       var res = e.detail.response;
+       if(res.length == 0) return;
+       var form = res[0].value.doc;
+	   this.set('document',form);
+     },
+     __computedIsReport(document) {
+	   console.log(document);
+	  },
+     __chkLavel(lavel){
+       //console.log(lavel);
+       var chkLavel;
+       if((lavel=="10")||(lavel=="11")||(lavel=="12")){
+        chkLavel="eq-student-form";
+       }else{
+        chkLavel="eq-teacher-form";
+       }
+       return chkLavel;
+     }
+   });
+ </script>
+</dom-module>

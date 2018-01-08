@@ -1,0 +1,76 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../summary-report-behavior.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="dl2-host-level">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host{
+        background-color: white;
+      }
+      paper-tabs {
+        background: #20acbb;
+        color: white;
+        height: 40px;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+      }
+
+    #title {
+      --paper-input-container-input: {
+        /*font-size: 24px;*/
+        font-family: 'Athiti', sans-serif;
+      };
+      --paper-input-container-label:{
+        font-family: 'Athiti', sans-serif;
+      };
+
+        /*--paper-input-container-color:red;*/
+
+        --paper-input-container-focus-color:#e94a60;
+
+       /*--paper-input-container-input-color:var blue;*/
+     }
+
+    </style>
+    
+  </template>
+  <script>
+    Polymer({
+      is: 'dl2-host-level',
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        SummaryReportBehavior
+      ],
+      properties: {
+        name: {
+          type: String,
+          reflectToAttribute: true,
+          readOnly:true,
+          value: "แบบประเมินพฤติกรรมเด็ก (SDQ) ฉบับครูเป็นผู้ประเมินนักเรียน"
+        },
+        part: {
+          type: Number,
+          value: 0
+        },
+        _result: {
+          type: Array,
+          computed: '__computeResult(document.value.form_result)',
+          value: function () {
+            return [];
+          }
+        },
+        invalidMessage:{
+          type:String,
+          notify:true,
+          value:''
+        }
+      }
+    });
+  </script>
+</dom-module>

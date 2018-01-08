@@ -138,9 +138,9 @@
       <div class="form_group font-face" hidden$="{{_isEmpty(group.forms)}}">{{group.name}}</div>
       <template is="dom-repeat" items="{{group.forms}}" sort="_sortByStatus">
         <div class="layout-chkrisk">
-          <div class="flex-11"><assignment-card data="{{item}}"></assignment-card></div>
-          <div class="flex-1">
-            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.0.forms_name)]]">
+          <div class="flex-5"><assignment-card data="{{item}}"></assignment-card></div>
+          <div class="flex-12">{{group.forms}} , {{chkrisk}} , {{imgSDQRisk}}
+            <!--<template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.0.forms_name)]]">
               <iron-icon src="{{imgSDQRisk}}"></iron-icon>
             </template>
             <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.1.forms_name)]]">
@@ -151,7 +151,7 @@
             </template>
             <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.3.forms_name)]]">
               <iron-icon src="{{imgST5Risk}}"></iron-icon>
-            </template>
+            </template>-->
           </div>
       </div>
       </template>
@@ -201,7 +201,7 @@
           type:String,
           notify:true,
           computed:'_imgSDQRisk(chkrisk)'
-        },
+        }/*,
         imgScreeningRisk:{
           type:String,
           notify:true,
@@ -216,7 +216,7 @@
           type:String,
           notify:true,
           computed:'_imgST5Risk(chkrisk)'
-        }
+        }*/
       },
       listeners: {
         'delete-assignment':'_onAssignmentDelete',
@@ -246,9 +246,10 @@
         return this.resolveUrl("./images/note.png");
       },
       _imgSDQRisk:function(chkrisk){
+        console.log(chkrisk);
         return this.resolveUrl(chkrisk[0]._risk);
       },
-      _imgScreeningRisk:function(chkrisk){
+      /*_imgScreeningRisk:function(chkrisk){
         return this.resolveUrl(chkrisk[1]._risk);
       },
       _imgEQRisk:function(chkrisk){
@@ -256,7 +257,7 @@
       },
       _imgST5Risk:function(chkrisk){
         return this.resolveUrl(chkrisk[3]._risk);
-      },
+      },*/
       _sortByTime: function (a, b) {
         return a.key[4][1] - b.key[4][1];
       },
@@ -431,7 +432,7 @@
           _risk.push({ 'forms_name':formList[i].forms[0].form_type,'_risk': chkImgrisk });
         }
 
-        console.log('chk ',_risk);
+        //console.log('chk ',_risk);
         return _risk;
       }
     });

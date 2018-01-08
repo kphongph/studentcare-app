@@ -138,8 +138,8 @@
       <div class="form_group font-face" hidden$="{{_isEmpty(group.forms)}}">{{group.name}}</div>
       <template is="dom-repeat" items="{{group.forms}}" sort="_sortByStatus">
         <div class="layout-chkrisk">
-          <div class="flex-5"><assignment-card data="{{item}}"></assignment-card></div>
-          <div class="flex-12"><!--{{group.forms}} , {{chkrisk}} , {{imgSDQRisk}}-->
+          <div class="flex-11"><assignment-card data="{{item}}"></assignment-card></div>
+          <div class="flex-1"><!--{{group.forms}} , {{chkrisk}} , {{imgSDQRisk}}-->
             <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.0.forms_name)]]">
               <iron-icon src="{{chkrisk.0._risk}}"></iron-icon>
             </template>
@@ -197,11 +197,11 @@
           notify: true,
           computed: '__chkrisk(formList)'
         },
-        imgSDQRisk:{
+        /*imgSDQRisk:{
           type:String,
           notify:true,
           computed:'_imgSDQRisk(chkrisk)'
-        }/*,
+        },
         imgScreeningRisk:{
           type:String,
           notify:true,
@@ -245,11 +245,11 @@
       _imgNote:function(){
         return this.resolveUrl("./images/note.png");
       },
-      _imgSDQRisk:function(chkrisk){
+      /*_imgSDQRisk:function(chkrisk){
         console.log(chkrisk);
         return this.resolveUrl(chkrisk[0]._risk);
       },
-      /*_imgScreeningRisk:function(chkrisk){
+      _imgScreeningRisk:function(chkrisk){
         return this.resolveUrl(chkrisk[1]._risk);
       },
       _imgEQRisk:function(chkrisk){

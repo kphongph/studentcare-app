@@ -386,20 +386,30 @@
           //console.log(formList[i].forms[0].form_type);
           forms_name.push({'name':formList[i].forms[0].form_type});
           if(formList[i].forms[0].form_type == "dl2-form"){
-            if(formList[0].forms[0].form_result.behavior.result != "ปกติ"){
-              risk.push({ '_risk': formList[0].forms[0].form_result.behavior.result });
+            if('behavior' in formList[i].forms[0].form_result){
+              if(formList[0].forms[0].form_result.behavior.result != "ปกติ"){
+                risk.push({ '_risk': formList[0].forms[0].form_result.behavior.result });
+              }
             }
-            if(formList[0].forms[0].form_result.behavior_active.result != "ปกติ"){
-              risk.push({ '_risk': formList[0].forms[0].form_result.behavior_active.result });
+            if('behavior_active' in formList[i].forms[0].form_result){
+              if(formList[0].forms[0].form_result.behavior_active.result != "ปกติ"){
+                risk.push({ '_risk': formList[0].forms[0].form_result.behavior_active.result });
+              }
             }
-            if(formList[0].forms[0].form_result.emotion.result != "ปกติ"){
-              risk.push({ '_risk': formList[0].forms[0].form_result.emotion.result });
+            if('emotion' in formList[i].forms[0].form_result){
+              if(formList[0].forms[0].form_result.emotion.result != "ปกติ"){
+                risk.push({ '_risk': formList[0].forms[0].form_result.emotion.result });
+              }
             }
-            if(formList[0].forms[0].form_result.friend.result != "ปกติ"){
-              risk.push({ '_risk': formList[0].forms[0].form_result.friend.result });
+            if('friend' in formList[i].forms[0].form_result){
+              if(formList[0].forms[0].form_result.friend.result != "ปกติ"){
+                risk.push({ '_risk': formList[0].forms[0].form_result.friend.result });
+              }
             }
-            if(formList[0].forms[0].form_result.social.result != "ปกติ"){
-              risk.push({ '_risk': formList[0].forms[0].form_result.social.result });
+            if('social' in formList[i].forms[0].form_result){
+              if(formList[0].forms[0].form_result.social.result != "ปกติ"){
+                risk.push({ '_risk': formList[0].forms[0].form_result.social.result });
+              }
             }
 
             if(risk.length!=0){

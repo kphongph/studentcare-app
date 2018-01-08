@@ -164,7 +164,7 @@
     }
     </style>
 
-      <app-drawer-layout>
+      <app-drawer-layout fullbleed force-narrow> 
         <app-drawer swipe-open slot="drawer" id="startDrawer" align="start">
           <app-header-layout has-scrolling-region class="drawer-content">
             <app-header class="whiteHeader" waterfall fixed slot="header">
@@ -192,7 +192,6 @@
                     name="assignment"
                     header="แบบประเมิน"
                     class="paper-collapse-styled">
-                    <!--opened="{{_opened}}"-->
                     <paper-listbox selected="{{_assignment}}" on-iron-select="_changePageToAssignment">
                     <template is="dom-repeat" items="{{assignments}}">
                       <paper-item class="font-face-normal">{{item.label}}</paper-item>
@@ -237,21 +236,22 @@
         </app-drawer>
 
         <app-header-layout>
-          <app-header class="blueHeader" condenses reveals effects="waterfall" slot="header">
-            <paper-icon-button icon="menu" on-tap="openDrawer"></paper-icon-button>
+          <app-header class="blueHeader" reveals effects="waterfall" slot="header">
+            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
           </app-header>
-            <iron-pages selected="{{page}}" attr-for-selected="name">
-              <div name="homepage">
-                <template is="dom-if" if="{{!signed}}">
-                  <login-box signed="{{signed}}" user="{{user}}" id="loginBox"></login-box>
-                </template>
-                <template is="dom-if" if="{{signed}}">
-                <homepage-app></homepage-app>
-                  <db-classteacher tid="{{role.profile._teacher}}"
-                      classteacher="{{classteacher}}">
-                  </db-classteacher>
-                </template>
-                <role-assign user="{{user}}" role="{{role}}"></role-assign>
+          <div>
+          <iron-pages selected="{{page}}" attr-for-selected="name">
+            <div name="homepage">
+              <template is="dom-if" if="{{!signed}}">
+                <login-box signed="{{signed}}" user="{{user}}" id="loginBox"></login-box>
+              </template>
+              <template is="dom-if" if="{{signed}}">
+              <homepage-app></homepage-app>
+                <db-classteacher tid="{{role.profile._teacher}}"
+                    classteacher="{{classteacher}}">
+                </db-classteacher>
+              </template>
+              <role-assign user="{{user}}" role="{{role}}"></role-assign>
               </div>
               <div name="login">
                 <login-box signed="{{signed}}" user="{{user}}" id="loginBox"></login-box>
@@ -308,7 +308,9 @@
                 </template>
               </div>
             </iron-pages>
+            </div>
         </app-header-layout>
+
       </app-drawer-layout>
  </template>
 

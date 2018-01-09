@@ -261,9 +261,15 @@
                   <template is="dom-repeat" items="[[row.content]]">
                     <div class="flex-1 font-face layout horizontal center-justified">
                       <div class="layout horizontal cell center-justified">
-                      <template is="dom-if" if="{{item}}">
+                        <template is="dom-if" if="{{item}}">
+                          <iron-icon src="{{imgRedRisk}}"></iron-icon>
+                        </template>
+                        <template is="dom-if" if="{{!item}}">
+                          <iron-icon src="{{imgGreenRisk}}"></iron-icon>
+                        </template>
+                      <!--<template is="dom-if" if="{{item}}">
                         <iron-icon icon="check"></iron-icon>
-                      </template>
+                      </template>-->
                       </div>
                     </div>
                   </template>
@@ -308,11 +314,53 @@
               type: String,
               notify: true,
               computed: '_imgNote()'
-            }
+            },
+            imgGreenRisk: {
+              type: String,
+              notify: true,
+              computed: '_imgGreenRisk()'
+            },
+            imgRedRisk: {
+              type: String,
+              notify: true,
+              computed: '_imgRedRisk()'
+            },
+            /*imgRisk: {
+              type: String,
+              notify: true,
+              computed: '_imgRisk(list)'
+            }*/
+          },
+          _equal: function(value1, value2) {
+            return value1 === value2;
           },
           _imgNote: function () {
             return this.resolveUrl("./../images/note.png");
           },
+          _imgGreenRisk: function () {
+            return this.resolveUrl("./../images/green.png");
+          },
+          _imgRedRisk: function () {
+            return this.resolveUrl("./../images/red.png");
+          },
+          /*_imgRisk: function (list) {
+            //console.log(list);
+            if (!list) return;
+            var img = "";
+            var _risk = [];
+            list.forEach(function(chk) {
+              chk.content.forEach(function(risk) {
+                if(risk == true){
+                  img ="./../images/red.png";
+                }else{
+                  img = "./../images/green.png";
+                }
+                _risk.push({'name':chk.name,'img': img});
+              }); 
+            });
+            console.log(_risk);
+            return _risk;
+          },*/
           observers: [
             '_execute(jwtToken.token,hostid)',
             '_queryRoom(jwtToken.token,year,hostid,level,room)'
@@ -329,7 +377,7 @@
             this.set('page', this.page - 1);
           },
           _formSelected: function (e) {
-            console.log(e);
+            //console.log(e);
             var node = this.$.formEntry;
             while (node.firstChild) {
               node.removeChild(node.firstChild);
@@ -437,9 +485,8 @@
             list.forEach(function(item) {
               tmp.push({'name':item[0],'content':item.splice(2),'doc':item[1]});
             });
-            console.log(tmp);
+            //console.log(tmp);
             this.set('list', tmp);
-
           }
         });
       </script>

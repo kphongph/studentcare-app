@@ -196,27 +196,7 @@
           type: Array,
           notify: true,
           computed: '__chkrisk(formList)'
-        },
-        /*imgSDQRisk:{
-          type:String,
-          notify:true,
-          computed:'_imgSDQRisk(chkrisk)'
-        },
-        imgScreeningRisk:{
-          type:String,
-          notify:true,
-          computed:'_imgScreeningRisk(chkrisk)'
-        },
-        imgEQRisk:{
-          type:String,
-          notify:true,
-          computed:'_imgEQRisk(chkrisk)'
-        },
-        imgST5Risk:{
-          type:String,
-          notify:true,
-          computed:'_imgST5Risk(chkrisk)'
-        }*/
+        }
       },
       listeners: {
         'delete-assignment':'_onAssignmentDelete',
@@ -245,19 +225,6 @@
       _imgNote:function(){
         return this.resolveUrl("./images/note.png");
       },
-      /*_imgSDQRisk:function(chkrisk){
-        console.log(chkrisk);
-        return this.resolveUrl(chkrisk[0]._risk);
-      },
-      _imgScreeningRisk:function(chkrisk){
-        return this.resolveUrl(chkrisk[1]._risk);
-      },
-      _imgEQRisk:function(chkrisk){
-        return this.resolveUrl(chkrisk[2]._risk);
-      },
-      _imgST5Risk:function(chkrisk){
-        return this.resolveUrl(chkrisk[3]._risk);
-      },*/
       _sortByTime: function (a, b) {
         return a.key[4][1] - b.key[4][1];
       },

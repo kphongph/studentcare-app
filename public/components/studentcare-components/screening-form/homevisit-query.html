@@ -7,7 +7,7 @@
    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
    </app-localstorage-document>
 
-   <iron-ajax
+   <!--<iron-ajax
      method="POST"
      id="query"
      url="https://thaieduforall.org:8000/v2/obec/form_record_homevisit/query"
@@ -15,6 +15,17 @@
      handle-as="json"
      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
      body='{"query":{"hostid":"1035430078","cid":"1139700059691"}}'
+     on-response="handleResponse">
+   </iron-ajax>-->
+
+   <iron-ajax
+     method="POST"
+     id="query"
+     url="https://thaieduforall.org:8000/v2/obec/form_record_homevisit/query"
+     content-type="application/json"
+     handle-as="json"
+     headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+     body='{"query":{"hostid":"{{host}}","cid":"{{cid}}"}}'
      on-response="handleResponse">
    </iron-ajax>
 
@@ -42,7 +53,7 @@
        'executeQuery(host,cid,jwtToken.token)'
      ],
      executeQuery:function(host,cid,token) {
-       if(token == null) return;
+       if(host == null || cid == null || token == null) return;
        this.$.query.generateRequest();
      },
      handleResponse:function(e) {

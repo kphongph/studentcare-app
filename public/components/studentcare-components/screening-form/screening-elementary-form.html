@@ -172,10 +172,19 @@
       document="{{disability}}">
     </disability-query>
 
-    <grade-query
+    <!--<grade-query
       cid="1417100037098"
       year="2558"
       semester="6"
+	    is-gpax-lessthan-one="{{document.value.form_value.q2_1_p}}"
+	    is-gpax-between="{{document.value.form_value.q2_1_m}}"
+      document="{{gradedoc}}">
+    </grade-query>-->
+
+    <grade-query
+      cid="{{document.value.student.cid}}"
+      year="{{document.value.student.year}}"
+      semester="{{document.value.student.semester}}"
 	    is-gpax-lessthan-one="{{document.value.form_value.q2_1_p}}"
 	    is-gpax-between="{{document.value.form_value.q2_1_m}}"
       document="{{gradedoc}}">

@@ -66,17 +66,17 @@
       var res = e.detail.response;
       if(res.length == 0) return;
       var form = res[0];
-      //console.log(form);
+      //console.log('grade',form);
       this.set('document',form);
     },
     __computedIsGpaxLessThanOne(document) {
-      //console.log(document);
+      //console.log('LessThanOne',document);
       var gpaxN = Number(document.GPAX);
       //console.log(gpaxN);
       return (gpaxN / 100.0) < 1.0;
     },
     __computedIsGpaxBetween(document) {
-      //console.log(document);
+      //console.log('Between',document);
       var gpaxN = Number(document.GPAX);
       //console.log(gpaxN);
       var gpaxC = gpaxN / 100.0;

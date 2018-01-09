@@ -387,38 +387,38 @@
           forms_name.push({'name':formList[i].forms[0].form_type});
           if(formList[i].forms[0].form_type == "dl2-form"){
             if('behavior' in formList[i].forms[0].form_result){
-              if(formList[0].forms[0].form_result.behavior.result != "ปกติ"){
-                risk.push({ '_risk': formList[0].forms[0].form_result.behavior.result });
+              if(formList[i].forms[0].form_result.behavior.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.behavior.result });
               }
             }
             if('behavior_active' in formList[i].forms[0].form_result){
-              if(formList[0].forms[0].form_result.behavior_active.result != "ปกติ"){
-                risk.push({ '_risk': formList[0].forms[0].form_result.behavior_active.result });
+              if(formList[i].forms[0].form_result.behavior_active.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.behavior_active.result });
               }
             }
             if('emotion' in formList[i].forms[0].form_result){
-              if(formList[0].forms[0].form_result.emotion.result != "ปกติ"){
-                risk.push({ '_risk': formList[0].forms[0].form_result.emotion.result });
+              if(formList[i].forms[0].form_result.emotion.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.emotion.result });
               }
             }
             if('friend' in formList[i].forms[0].form_result){
-              if(formList[0].forms[0].form_result.friend.result != "ปกติ"){
-                risk.push({ '_risk': formList[0].forms[0].form_result.friend.result });
+              if(formList[i].forms[0].form_result.friend.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.friend.result });
               }
             }
             if('social' in formList[i].forms[0].form_result){
-              if(formList[0].forms[0].form_result.social.result != "ปกติ"){
-                risk.push({ '_risk': formList[0].forms[0].form_result.social.result });
+              if(formList[i].forms[0].form_result.social.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.social.result });
               }
             }
 
             if(risk.length!=0){
               for(var i=0;i<risk.length;i++){
-                if(SDQrisk[i]._risk=="มีปัญหา"){
+                if(risk[i]._risk=="มีปัญหา"){
                   chkImgrisk="./images/red.png";
                   break;
                 }
-                if(SDQrisk[i]._risk=="เสี่ยง"){
+                if(risk[i]._risk=="เสี่ยง"){
                   chkImgrisk="./images/yellow.png";
                 }
               } //end for
@@ -441,8 +441,8 @@
 
           _risk.push({ 'forms_name':formList[i].forms[0].form_type,'_risk': this.resolveUrl(chkImgrisk) });
         }
-
-        //console.log('chk ',_risk);
+        /*console.log('risk ',risk);
+        console.log('_risk ',_risk);*/
         return _risk;
       }
     });

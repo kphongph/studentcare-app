@@ -245,7 +245,7 @@
                 </template>
               </div>
             </div>
-
+            <!--chkrisk : {{chkRisk}}-->
             <template is="dom-repeat" as="row" items="[[list]]">
               <div class="layout horizontal">
                 <div class="flex-2 font-face row-content cell">
@@ -325,11 +325,11 @@
               notify: true,
               computed: '_imgRedRisk()'
             },
-            /*imgRisk: {
-              type: String,
+            chkRisk: {
+              type: Array,
               notify: true,
-              computed: '_imgRisk(list)'
-            }*/
+              computed: '_chkRisk(list)'
+            }
           },
           _equal: function(value1, value2) {
             return value1 === value2;
@@ -343,24 +343,35 @@
           _imgRedRisk: function () {
             return this.resolveUrl("./../images/red.png");
           },
-          /*_imgRisk: function (list) {
+          _chkRisk: function (list) {
             //console.log(list);
             if (!list) return;
-            var img = "";
+            var contents = "";
             var _risk = [];
+            var _contents = [];
+
             list.forEach(function(chk) {
               chk.content.forEach(function(risk) {
                 if(risk == true){
-                  img ="./../images/red.png";
+                  contents ="2";
                 }else{
-                  img = "./../images/green.png";
+                  contents = "1";
                 }
-                _risk.push({'name':chk.name,'img': img});
+                _contents.push({'name':chk.name,'_content': contents});
               }); 
+              _risk.push({'name':chk.name,'content': _contents});
             });
-            console.log(_risk);
+
+            /*for(var i=0;i<_risk.length;i++){
+              for(var j=0;j<_risk[i].content.length;j++){
+                if(_risk[i].name == _risk[i].content[j].name){
+                  dhk.push({'name':_risk[i].name,'_contents': _risk[i].content[j]._content});
+                }
+              }
+            }*/
+
             return _risk;
-          },*/
+          },
           observers: [
             '_execute(jwtToken.token,hostid)',
             '_queryRoom(jwtToken.token,year,hostid,level,room)'

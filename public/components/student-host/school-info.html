@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
@@ -17,6 +18,25 @@
 
     paper-input{
       margin-left: 5px;
+    }
+
+    iron-image{
+      width: 400px;
+      height: 400px;
+      border: 1px;
+      border-color: brown;
+    }
+
+    .font-face-normal{
+      margin-left: 5px;
+      font-family: 'Athiti', sans-serif;
+      /*font-size: 110%;*/
+      color: #000;
+    }
+
+    .center-justified{
+      @apply --layout-horizontal;
+      @apply --layout-center-justified;
     }
   </style>
 
@@ -63,6 +83,8 @@
     <div class="flex"><paper-input label="โทรศัพท์" value=""></div>
     <div class="flex"><paper-input label="โทรสาร" value=""></div>
   </div>
+    <div class="flex font-face-normal">ตราสัญลักษณ์โรงเรียน</div>
+    <div class="flex center-justified"><iron-image sizing="cover" src="{{imgHost}}"></iron-image></div>
  </template>
  <script>
   Polymer({
@@ -79,11 +101,19 @@
       value:{
         type:Object,
         value:{}
-      }
+      },
+      imgHost:{
+        type:String,
+        notify:true,
+        computed:'_imgHost()'
+      },
     },
     observers:[
      '__executeQuery(token.token)'
     ],
+    _imgHost:function(){
+      return this.resolveUrl("../images/logo_host.png");
+    },
     __executeQuery:function(token) {     
       if(token == null) return;
       this.$.getHostInfo.headers = {

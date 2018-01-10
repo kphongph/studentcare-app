@@ -64,7 +64,8 @@
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.1",
     "paper-radio-group": "PolymerElements/paper-radio-group#^2.0.0",
     "paper-toolbar": "PolymerElements/paper-toolbar#^2.0.0",
-    "iron-image": "PolymerElements/iron-image#^2.1.2"
+    "iron-image": "PolymerElements/iron-image#^2.1.2",
+    "iron-selector": "PolymerElements/iron-selector#^2.0.1"
   },
   "resolutions": {
     "webcomponentsjs": "^1.0.0",

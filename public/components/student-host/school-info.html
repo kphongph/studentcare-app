@@ -14,6 +14,12 @@
       display:block;
       @apply --layout-vertial;
       font-family: 'Athiti', sans-serif;
+      --paper-input-container-label: {
+          font-family: 'Athiti', sans-serif;
+        };
+        --paper-input-container-input: {
+          font-family: 'Athiti', sans-serif;
+        }
     }
 
     paper-input{
@@ -21,15 +27,18 @@
     }
 
     iron-image{
+      margin-top: 20px;
+      margin-bottom: 20px;
       width: 400px;
       height: 400px;
-      border: 1px;
-      border-color: brown;
+      border-style: solid;
+      border-color: black;
     }
 
     .font-face-normal{
       margin-left: 5px;
       font-family: 'Athiti', sans-serif;
+      font-weight: bold;
       /*font-size: 110%;*/
       color: #000;
     }
@@ -55,33 +64,33 @@
   </iron-ajax>
 
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="รหัสโรงเรียน" value="{{value.hostid}}"></div>
+    <div class="flex"><paper-input label="รหัสโรงเรียน" value="{{value.hostid}}"></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="ชื่อโรงเรียน" value="{{value.host}}"></div>
-    <div class="flex"><paper-input label="อักษรย่อ" value=""></div>
+    <div class="flex"><paper-input label="ชื่อโรงเรียน" value="{{value.host}}"></paper-input></div>
+    <div class="flex"><paper-input label="อักษรย่อ" value=""></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="ประเภทโรงเรียน" value=""></div>
-    <div class="flex"><paper-input label="สังกัด" value=""></div>
+    <div class="flex"><paper-input label="ประเภทโรงเรียน" value=""></paper-input></div>
+    <div class="flex"><paper-input label="สังกัด" value=""></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="ระดับชั้นที่เปิดสอน" value=""></div>
+    <div class="flex"><paper-input label="ระดับชั้นที่เปิดสอน" value=""></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="ที่อยู่โรงเรียน เลขที่" value=""></div>
-    <div class="flex"><paper-input label="หมู่ที่" value=""></div>
-    <div class="flex"><paper-input label="ถนน" value=""></div>
-    <div class="flex"><paper-input label="ตำบล" value=""></div>
+    <div class="flex"><paper-input label="ที่อยู่โรงเรียน เลขที่" value=""></paper-input></div>
+    <div class="flex"><paper-input label="หมู่ที่" value=""></paper-input></div>
+    <div class="flex"><paper-input label="ถนน" value=""></paper-input></div>
+    <div class="flex"><paper-input label="ตำบล" value=""></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="อำเภอ" value=""></div>
-    <div class="flex"><paper-input label="จังหวัด" value="{{value.province}}"></div>
-    <div class="flex"><paper-input label="รหัสไปรษณีย์" value=""></div>
+    <div class="flex"><paper-input label="อำเภอ" value=""></paper-input></div>
+    <div class="flex"><paper-input label="จังหวัด" value="{{value.province}}"></paper-input></div>
+    <div class="flex"><paper-input label="รหัสไปรษณีย์" value=""></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="โทรศัพท์" value=""></div>
-    <div class="flex"><paper-input label="โทรสาร" value=""></div>
+    <div class="flex"><paper-input label="โทรศัพท์" value=""></paper-input></div>
+    <div class="flex"><paper-input label="โทรสาร" value=""></paper-input></div>
   </div>
     <div class="flex font-face-normal">ตราสัญลักษณ์โรงเรียน</div>
     <div class="flex center-justified"><iron-image sizing="cover" src="{{imgHost}}"></iron-image></div>

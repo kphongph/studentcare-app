@@ -7,6 +7,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="school-info.html">
+<link rel="import" href="school-garb.html">
 
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
@@ -17,6 +18,12 @@
         @apply --layout-vertial;
         font-family: 'Athiti', sans-serif;
         /*background-color: white;*/
+        --paper-input-container-label: {
+          font-family: 'Athiti', sans-serif;
+        };
+        --paper-input-container-input: {
+          font-family: 'Athiti', sans-serif;
+        }
       }
       app-toolbar {
         /*background-color: var(--paper-red-500);*/
@@ -40,7 +47,8 @@
       }
       .font-face-big {
         font-family: 'Athiti', sans-serif;
-        font-size: 120%;
+        font-weight: bold;
+        /*font-size: 120%;*/
       }
     </style>
 
@@ -60,7 +68,7 @@
         </paper-tabs>
         <iron-pages selected="{{page}}" class="bg">
           <div><school-info host-id="{{hostId}}"></school-info></div>
-          <div>ข้อมูลอัตลักษณ์เครื่องแบบ</div>
+          <div><school-garb host-id="{{hostId}}"></school-garb></div>
         </iron-pages>
     </paper-material>
   </template>
@@ -75,7 +83,7 @@
         },
         page: {
           type: Number,
-          value: 0
+          value: 1
         }
       }
     });

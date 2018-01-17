@@ -29,7 +29,8 @@ app.post('/login',function(req,res) {
   //console.log(req.body.user,req.body.pass);
   request({
    'method':'POST',
-   'url':'https://maas.nuqlis.com:9000/login',
+    // 'url':'https://maas.nuqlis.com:9000/login',
+   'url':'https://thaieduforall.org:9000/login',
    'headers':{
     'user':req.body.user,
     'pass':req.body.pass

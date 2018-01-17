@@ -57,13 +57,37 @@
     <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
     </app-localstorage-document>
 
-    <iron-ajax id="listAjax"
+    <app-localstorage-document
+      key="role"
+      data="{{role}}">
+    </app-localstorage-document>
+
+    <!--<iron-ajax id="listAjax"
       method="POST"
       url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
       content-type="application/json"
       headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
       last-response="{{students}}"
       body='{"query":{"cid":"1800701290847"}}'>
+    </iron-ajax>-->
+
+    <iron-ajax id="listAjax"
+      method="POST"
+      url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
+      content-type="application/json"
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+      last-response="{{students}}"
+      body$='{"query":{"cid":"{{cid}}"}}'>
+    </iron-ajax>
+
+    <iron-ajax
+      id="getTeacher"
+      url="https://thaieduforall.org:8000/v2/obec/teacher_db/query"
+      method="POST"
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+      on-response="_onTeacherResponse"
+      content-type="application/json"
+      body='{"query":{"_id":"{{role.profile._teacher}}"}}'>
     </iron-ajax>
 
     <paper-material elevation="0">
@@ -90,7 +114,7 @@
           </div>
         </div>
         <div class="flex layout horizontal bg">
-          <div class="flex-6 font-face">ผู้ทำแผน: นางภรณี ทัด</div>
+          <div class="flex-6 font-face">ผู้ทำแผน: {{teacher.title}}{{teacher.firstname}} {{teacher.lastname}}</div>
           <div class="flex-6">ตำแหน่ง: ผู้ดูแลระบบ</div>
         </div>
         <paper-tabs selected="{{page}}" no-slide>
@@ -120,15 +144,36 @@
         page: {
           type: Number,
           value: 0
+        },
+        teacher:{
+          type:Object,
+          notify:true,
+          value:function() {
+            return {};
+          }
         }
       },
       observers: [
         '__execute(jwtToken,cid)',
+        '__executeTeacher(jwtToken,role.profile._teacher)',
       ],
       __execute: function (jwtToken, cid) {
         if(!jwtToken || !jwtToken.token || cid == null) return;
         this.$.listAjax.generateRequest();
-      }
+      },
+      __executeTeacher: function (jwtToken,teacherId) {
+        if(!jwtToken || !teacherId) return;
+        this.$.getTeacher.generateRequest();
+      },
+      _onTeacherResponse:function(e) {
+        //console.log('test',e.detail.response);
+        var response = e.detail.response;
+        if(response.length == 1) {
+          var doc = response[0];
+          //console.log(doc);
+          this.set('teacher',doc);
+        }
+      },
     });
   </script>
 </dom-module>

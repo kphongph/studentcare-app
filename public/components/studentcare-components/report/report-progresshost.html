@@ -1,0 +1,150 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../forms.html">
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="report-progresshost">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply --layout-vertical;
+      }
+      
+      .container {
+        @apply --layout-horizontal;
+        @apply --layout-center-justified;
+      }
+      .form_group {
+        @apply --paper-font-subhead;
+        padding: 10px;
+        background: var(--paper-grey-100);
+      }
+      .header {
+        font-family: 'Athiti', sans-serif;
+        font-size: 25px;
+      }
+      .font-face {
+         @apply --paper-font-subhead;
+        font-family: 'Athiti', sans-serif;
+        font-size: 18px;
+      }
+      .line-style {
+        border-bottom: 1px solid #ddd;
+        height: 30px;
+        padding: 10px;
+      }
+      app-toolbar {
+        /*background-color: var(--paper-red-500);*/
+        background-color: #e65540;
+        color: white; 
+      }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+    
+    <iron-ajax 
+      id="listAjax" 
+      method="GET" 
+      url$="https://thaieduforall.org:8000/v2/obec/_studentcare_report/data/progress_{{year}}_{{hostid}}_{{form}}" 
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+      content-type="application/json"
+      handle-as ="json"
+      on-response="handleResponse">
+    </iron-ajax>
+    
+    <!-- <app-toolbar>
+        <div class="font-face">แบบรายงานความก้าวหน้า &nbsp; &nbsp;</div>
+    </app-toolbar> -->
+
+    <div class="layout horizontal">
+        <div class="flex-6 font-face form_group">ชั้นเรียน</div>
+        <div class="flex-2 font-face form_group">กำลังดำเนินการ (คน)</div>
+        <div class="flex-2 font-face form_group">เรียบร้อย (คน)</div>
+        <div class="flex-2 font-face form_group">รวม (คน)</div>
+    </div>
+
+    <template is="dom-repeat" items="[[class]]">
+      <div class="layout horizontal">
+          <div class="flex-6 font-face line-style">{{item.listclass}}</div>
+          <div class="flex-2 font-face line-style">{{item.content.working}}</div>
+          <div class="flex-2 font-face line-style">{{item.content.done}}</div>
+          <div class="flex-2 font-face line-style">{{item.content.total}}</div>
+      </div>
+    </template>
+    <!-- <div>{{form}}</div> -->
+  </template>
+  <script>
+    Polymer({
+      is: "report-progresshost",
+      properties:{
+        hostid:{
+          type:String,
+          notify:true
+        },
+        year:{
+          type:String,
+          notify:true
+        },
+        form:{
+          type:String,
+          notify:true
+        },
+        list: {
+          type:Array,
+          notify:true,
+          value:function() {
+              return [];
+          }
+        }   
+      },
+      observers:[
+        '_execute(jwtToken.token,year,hostid,form)'
+      ],
+      _execute(token,year,hostid,form) {        
+        if(token == null || year == null || hostid == null || form == null) return;                  
+        this.$.listAjax.generateRequest();
+      },
+      handleResponse(e) {
+        var doc = e.detail.response;
+        // console.log(doc.value);
+        var classroom = [];
+        var total = 0;
+        var status;
+        var status_new,status_work,status_done;
+        for(var val in doc.value){
+          status = doc.value[val];
+          status_new = status.new;
+          status_work = status.working;
+          status_done = status.done;
+          if(!status_new){
+            status_new = 0;
+          }
+          if(!status_work){
+            status_work = 0; 
+          }
+          if(!status_done){
+            status_done = 0;
+          }
+          // console.log(status_new) 
+          classroom.push({
+            listclass:val,
+            content:{
+              done: status_done,
+              working: status_work + status_new,
+              total: status_new + status_work + status_done
+            }
+          });          
+        }
+        this.set('class',classroom); 
+      }
+    });
+    
+  </script>
+</dom-module>

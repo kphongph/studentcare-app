@@ -1,0 +1,77 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-stepper/paper-stepper.html">
+<link rel="import" href="../../bower_components/paper-stepper/paper-step.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="./local/dl1-form-s1.html">
+
+<!--
+`dl1-form`
+Polymer Component for StudentCare project
+
+@demo demo/dl1-form.html 
+-->
+
+<dom-module id="dl1-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        @apply --layout-vertical;
+        display: block;
+      }
+    </style>
+
+    <studentcare-db
+      url="https://maas.nuqlis.com:9000/api"
+      id="leveldb"
+      remote-db="obec_students"
+      local-db="obec_students"
+      view-name="cid"
+      schema='{"index":"key,value.cid"}'
+      query="{{_obecStudentQuery}}"
+      db="{{obecDb}}"
+      jwt-token="{{jwtToken}}">
+    </studentcare-db>
+
+    <paper-stepper>
+      <paper-step label="{{localize('dl1_section1_label')}}">
+        <dl1-form-s1 
+          obec-db="{{obecDb}}"
+          dmc-student="{{dmcStudent}}">
+        </dl1-form-s1>
+      </paper-step>
+    </paper-stepper>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'dl1-form',
+      behaviors: [
+          Polymer.AppLocalizeBehavior
+      ],
+      properties: {
+        language: {
+          value:'th'
+        },
+        dmcStudent: {
+          type: Object
+        },
+        _obecStudentQuery: {
+          type: Object,
+          computed:'_computeObecStudentQuery(dmcStudent)'
+        }
+      },
+      attached: function() {
+        this.loadResources(this.resolveUrl('locales.json'));
+      },
+      _computeObecStudentQuery: function(dmc) {
+        if(dmc) {
+          console.log(dmc);
+          return {'start':[dmc.IDNO],limit:1};
+        }
+      }
+    });
+  </script>
+</dom-module>

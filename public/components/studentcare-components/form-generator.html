@@ -1,0 +1,185 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="./form-generators/generators.html">
+
+<dom-module id="form-generator">
+ <template>
+   <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+   </app-localstorage-document>
+
+   <iron-ajax
+     id="listFormAjax"
+     method="POST"
+     url="https://thaieduforall.org:8000/v2/obec/students_care/query"
+     content-type="application/json"
+     headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+     body='{"query":{"doc_type":"assignment","student.cid":"{{student.cid}}","dmc.year":"{{year}}"}}'
+     loading="{{loading}}"
+     last-response="{{forms}}">
+   </iron-ajax>
+
+   <dl2-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </dl2-generator>
+
+   <dl3-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </dl3-generator>
+
+   <eq-teacher-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </eq-teacher-generator>
+
+   <eq-student-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </eq-student-generator>
+
+   <screening-elementary-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </screening-elementary-generator>
+
+   <screening-secondary-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </screening-secondary-generator>
+
+   <disability-autistic-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-autistic-generator>
+
+   <disability-behavior-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-behavior-generator>
+
+   <disability-communication-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-communication-generator>
+
+   <disability-health-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-health-generator>
+
+   <disability-hearing-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-hearing-generator>
+
+   <disability-intelligence-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-intelligence-generator>
+
+   <disability-learning-elementary-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-learning-elementary-generator>
+
+   <disability-learning-secondary-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-learning-secondary-generator>
+
+   <disability-visual-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </disability-visual-generator>
+
+   <snap-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </snap-generator>
+
+   <st5-elementary-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </st5-elementary-generator>
+
+   <cdi-elementary-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </cdi-elementary-generator>
+
+   <suicide8q-elementary-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </suicide8q-elementary-generator>
+
+   <st5-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </st5-generator>
+
+   <cdi-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </cdi-generator>
+
+   <suicide8q-generator jwt-token="{{jwtToken.token}}"
+     year="{{year}}"
+     forms="{{forms}}"
+     student="{{student}}">
+   </suicide8q-generator>
+
+ </template>
+ <script>
+  Polymer({
+    is:"form-generator",
+    properties:{
+      student:Object,
+      year:String,
+      forms:{
+        type:Array,
+        notify:true
+      },
+      loading:{
+        type:Boolean,
+        notify:true
+      }
+    },
+    observers:[
+     '__listForm(jwtToken,student,year)'
+    ],
+    __listForm:function(jwtToken,student,year) {
+      if(!jwtToken || !jwtToken.token || student == null || year == null) return;
+      this.$.listFormAjax.generateRequest();
+    },
+    reload:function() {
+     this.$.listFormAjax.generateRequest();
+    }
+  });
+ </script>
+</dom-module>

@@ -1,0 +1,95 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="forms.html">
+
+<dom-module id="progress-report">
+  <template>
+   <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+      }
+
+      google-chart#table {
+        height:500px;
+        width:40em;
+      }
+   </style>
+
+   <iron-ajax 
+     auto
+     method="POST"
+     url="{{url}}"
+     content-type="application/json"
+     handle-as="json"
+     last-response="{{responses}}"
+     body$='{"match":["by_host","{{host}}"],"limit":-1}'>
+   </iron-ajax>
+
+   <div class="layout horizontal">
+   <google-chart type='table' id="table"
+     class="flex"
+     data="{{tableData}}"
+     options='{"title": "Progress Report"}'>
+   </google-chart>
+   <google-chart type='pie' id="pie"
+     class="flex"
+     data="{{pieData}}"
+     options='{"title": "Progress Report"}'>
+   </google-chart>
+   </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'progress-report',
+      properties: {
+        host:String,
+        url:String,
+        tableData:{
+          type:Array,
+          computed:'__computeTableData(responses)'
+        },
+        pieData:{
+          type:Array,
+          computed:'__computePieData(responses)'
+        }
+      },
+      __computeTableData:function(res) {
+        var data = [];
+        data.push(['Form','New','Working','Done']);
+        var dict = {};
+        res.forEach(function(item) {
+          if(item.key[2]) {
+            if(!dict[item.key[2]]) {
+              var ele = document.createElement(item.key[2]);
+              dict[item.key[2]] = ele.name;
+            }
+            data.push([dict[item.key[2]],item.value.new,
+              item.value.working,item.value.done]);
+          }
+        });
+        return data;
+      },
+      __computePieData:function(res) {
+        var data = [];
+        data.push(['Status','Count']);
+        var dict = {};
+        var status = {'new':0,'working':0,'done':0};
+        res.forEach(function(item) {
+          for(var k in item.value) {
+            status[k]+=item.value[k];
+          }
+        });
+        for(var k in status) {
+          data.push([k,status[k]]);
+        }
+        return data;
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,234 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../forms.html">
+<link rel="import" href="report-progresshost.html">
+
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="report-host">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply (--layout-vertical);
+      }
+
+      .font-face {
+        @apply --paper-font-subhead;
+        font-family: 'Athiti', sans-serif;
+      }
+
+      .header div {
+        @apply --paper-font-subhead;
+        font-family: 'Athiti', sans-serif;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+
+      .header {
+        font-family: 'Athiti', sans-serif;
+        font-size: 25px;
+        padding-left:16px;
+        padding-right:16px;
+        background: var(--paper-grey-100);
+      }
+      .font-face {
+        @apply --paper-font-subhead;
+        font-family: 'Athiti', sans-serif;
+        font-size: 18px;
+        margin:5px;
+      }
+      paper-item.iron-selected {
+        background-color:#efefef;
+      }
+      .line-style {
+        border-bottom: 1px solid #ddd;
+      }
+      paper-item {
+        cursor: pointer; cursor: hand;
+      }
+      paper-item.iron-selected {
+        background-color:#efefef;
+      }
+      app-toolbar {
+        /*background-color: var(--paper-red-500);*/
+        background-color: #e65540;
+        color: white;
+      }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+
+    <iron-ajax
+      id="listAjax"
+      method="GET"
+      url$="https://thaieduforall.org:8000/v2/obec/_studentcare_report/data/progresshost_{{year}}_{{hostid}}"
+      content-type="application/json"
+      handle-as ="json"
+      on-response="handleResponse">
+    </iron-ajax>
+
+    <app-toolbar>
+      <div class="layout horizontal center flex">
+        <paper-icon-button icon="arrow-back" on-tap="_back" hidden$="{{isFirstPage(page)}}">
+        </paper-icon-button>
+        <div class="font-face flex">แบบรายงานความก้าวหน้า {{_formName(form)}}</div>
+        <div class="font-face end-justified">ณ {{ts}}</div>
+      </div>
+    </app-toolbar>
+
+    <iron-pages selected="{{page}}" fallback-selection="0">
+      <div>
+       <div class="layout horizontal header">
+        <div class="flex-6 font-face">แบบประเมิน</div>
+        <div class="flex-2 font-face">กำลังดำเนินการ</div>
+        <div class="flex-2 font-face">เรียบร้อย</div>
+        <div class="flex-2 font-face">รวม</div>
+       </div>
+
+       <paper-listbox class="flex" attr-for-selected="name" selected="{{form}}">
+        <template is="dom-repeat" items="[[list]]">
+         <paper-item class="flex line-style" name="{{item.type}}">
+          <div class="layout horizontal flex">
+           <div class="flex-6 font-face">{{_formName(item.type)}}</div>
+           <div class="flex-2 font-face">{{item.content.working}}</div>
+           <div class="flex-2 font-face">{{item.content.done}}</div>
+           <div class="flex-2 font-face">{{item.content.total}}</div>
+          </div>
+         </paper-item>
+        </template>
+       </paper-listbox>
+      </div>
+
+      <div>
+        <report-progresshost year="2017" hostid="{{hostid}}" form="{{form}}"></report-progresshost>
+      </div>
+
+    </iron-pages>
+  </template>
+
+  <script>
+    Polymer({
+      is: "report-host",
+      properties:{
+        year:{
+          type:String,
+          notify:true
+        },
+        hostid:{
+          type:String,
+          notify:true
+        },
+        level:{
+          type:String,
+          notify:true
+        },
+        room:{
+          type:String,
+          notify:true
+        },
+        list: {
+          type:Array,
+          notify:true,
+          value:function() {
+              return [];
+          }
+        }
+      },
+      observers:[
+        '_execute(jwtToken)',
+        '_selectForm(form)'
+      ],
+      isFirstPage:function(page) {
+        return page == 0;
+      },
+      _back:function() {
+        var reset = "";
+        this.set('form',reset);
+        this.set('page',this.page - 1);
+      },
+      _formName:function(form) {
+        var obj = {
+          'dl2-form': 'SDQ (ฉบับครูประเมินนักเรียน)',
+          'dl3-form': 'SDQ (ฉบับนักเรียนประเมินตนเอง)',
+          'disability-visual-form': 'บกพร่องทางการมองเห็น',
+          'eq-teacher-form': 'EQ เด็กอายุ 6-11 ปี (ฉบับครูประเมินนักเรียน)',
+          'eq-student-form': 'EQ วัยรุ่นอายุ 12-17 ปี (ฉบับนักเรียนประเมินตนเอง)',
+          'disability-hearing-form':  'บกพร่องทางการได้ยิน' ,
+          'disability-intelligence-form':  'บกพร่องทางสติปัญญา' ,
+          'disability-health-form':  'บกพร่องทางร่างกาย หรือสุขภาพ' ,
+          'disability-learning-elementary-form':  'บกพร่องทางการเรียนรู้ (ประถมศึกษา)' ,
+          'disability-learning-secondary-form':  'บกพร่องทางการเรียนรู้ (มัธยมศึกษา)' ,
+          'disability-communication-form':  'บกพร่องทางการพูดและภาษา',
+          'disability-behavior-form':  'บกพร่องทางพฤติกรรม หรืออารมณ์',
+          'disability-autistic-form':  'แบบประเมินออทิสติก' ,
+          'snap-form': 'แบบประเมินสมาธิสั้น' ,
+          'st5-form':  'แบบประเมินความเครียด' ,
+          'cdi-form':  'แบบคัดกรองภาวะซึมเศร้าในเด็ก' ,
+          'suicide8q-form':  'แบบประเมินการฆ่าตัวตาย 8 คำถาม (8Q)' ,
+          'game-form': 'การติดเกม (ฉบับเด็กและวัยรุ่น)',
+          'screening-elementary-form':'แบบคัดกรองนักเรียนรายบุคคล ระดับประถม',
+          'screening-secondary-form':'แบบคัดกรองนักเรียนรายบุคคล ระดับมัธยม'
+        }
+        var result = obj[form]?obj[form]:form;
+        return result;
+      },
+      _execute(token) {
+        if(token == null || !token.token) return;
+        this.$.listAjax.headers = {
+          'Authorization':'JWT '+token.token
+        }
+        this.$.listAjax.generateRequest();
+      },
+      _selectForm:function(form) {
+        this.set('page',1);
+      },
+      handleResponse(e) {
+        var doc = e.detail.response;
+        var forms = [];
+        var total = 0;
+        var _forms_dict = {};
+        var ts;
+        for(var key in doc.value) {
+          if(key == 'ts') {
+            ts = new Date(doc.value[key]).toLocaleString('th');
+            continue;
+          }
+          //var cid = doc.value[key];
+          //total++;
+          //for(var form in cid)
+          if(!_forms_dict[key]) {
+            _forms_dict[key] = {'new':0,'done':0,'working':0,'total':0};
+          }
+          for(var attr in doc.value[key]) {
+            _forms_dict[key][attr]+=doc.value[key][attr];
+            _forms_dict[key]['total']+=doc.value[key][attr];
+          }
+
+        }
+        for(var key in _forms_dict) {
+          if(key != 'undefined')
+          forms.push({'type':key,'content':{
+            'working':_forms_dict[key]['new'] + _forms_dict[key]['working'],
+            'done':_forms_dict[key]['done'],
+            'total':_forms_dict[key]['total']
+          }});
+        }
+        this.set('total',total);
+        this.set('list',forms);
+        this.set('ts',ts);
+      }
+    });
+
+  </script>
+</dom-module>

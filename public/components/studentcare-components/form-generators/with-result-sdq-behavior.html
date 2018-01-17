@@ -1,0 +1,60 @@
+<link rel="import" href="../form-generator-behavior.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-request.html">
+<script>
+  WithResultSdqBehaviorImpl = {
+    properties : {
+      atLevel:{
+        type:Array
+      }
+    },
+    requireForm:function(cb) {
+      var result=false;
+      var exists=false;
+      var required=true;
+      if(this.atLevel.indexOf(this.student['class']) != -1) {
+        for(var i=0;i<this.forms.length;i++) {
+          if(this.forms[i].form_type==this.formType) {
+            exists=true;
+          }
+        }
+      } else {
+        required=false;
+      }
+      if(!exists && required) {
+        // check sdq
+        for(var i=0;i<this.forms.length;i++) {
+          if(this.forms[i].form_type == "dl2-form") {
+            if(this.forms[i].status == "done") {
+              var ele = document.createElement('iron-request');
+              ele.send({
+                method:'GET',
+                url:'https://thaieduforall.org:8000/v2/obec/students_care/data/'+
+                  this.forms[i]._id,
+                headers:{
+                 'Content-Type':'application/json',
+                 'Authorization':'JWT '+this.jwtToken
+                },
+                handleAs:'json'
+              }).then(function(res) {
+                var docValue = res.response;
+                if(docValue.form_result) {
+                  var weakness = docValue.form_result.weakness;
+                  if(weakness && weakness.score >= 17) {
+                    cb(true);
+                  } else {
+                    cb(false);
+                  }
+                } else {
+                  cb(false);
+                }
+              });
+            }
+          }
+        }
+      } else {
+        cb(false);
+      }
+    }
+  }
+  WithResultSdqBehavior = [FormGeneratorBehavior,WithResultSdqBehaviorImpl];
+</script>

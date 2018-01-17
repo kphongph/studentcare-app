@@ -1,0 +1,257 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../form-control.html">
+<link rel="import" href="../studentcare-form-behavior.html">
+<link rel="import" href="suicide8q-choice.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<dom-module id="suicide8q-form">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply --paper-font-display;
+        @apply --layout-vertical;
+        background-color: white;
+        display: block;
+      }
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+      paper-radio-group {
+        background:#efefef;
+      }
+      .formEntry div {
+        @apply --paper-font-title;
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+      }
+      .description ol {
+        @apply --paper-font-body1;
+        margin:3px;
+        padding:0px;
+        background:#efefef;
+        .num {list-style-type: decimal;}
+      }
+      table, td, th {
+        border: 1px solid black;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 50%;
+      }
+
+      td {
+        vertical-align: middle;
+      }
+
+      .mark {
+        font-weight:bold;
+      }
+      .evaluation {
+        padding:5px;
+      }
+
+      suicide8q-choice{
+        margin-left: 10px;
+        font-family: 'Athiti', sans-serif;
+      }
+    </style>
+
+    <form-control id="control"
+      doc-key="{{document.key}}"
+      doc-value="{{document.value}}">
+      <div slot="description">
+        <ul class="num"><b><u>คำชี้แจง</u></b>
+          <li>ใช้ประเมินร่วมกับแบบประเมินโรคซึมเศร้า 9 คำถาม (9Q) </li>
+        </ul>
+        <ul class="num"><b><u>การแปรผลและการจัดการใเฝ้าระวังโรคซึมเศร้าจากการประเมินการฆ่าตัวตาย</u></b>
+          <br>
+          <table>
+            <tr align="center">
+              <th width="10%">คะแนนรวม</th>
+              <th width="30%">แนวโน้มที่จะฆ่าตัวตายในปัจจุบัน</th>
+              <th width="60%">การจัดการ</th>
+            </tr>
+            <tr>
+              <td align="center">1-8</td>
+              <td align="center">น้อย</td>
+              <td>
+                <ul class="num">
+                  <li>ควรปรึกษาหรือส่งต่อผู้ชำนาญด้านให้การปรึกษาหรือผู้ทำงานด้านสุขภาพจิตที่ได้รับการฝึกอบรมมาดีแล้วเพื่อให้การช่วยเหลือทางสังคมจิตใจ และประเมินความเจ็บป่วยทางจิตใจ (ควรนัดติดตามเฝ้าระวัง) ถ้ามีโรคซึมเศร้าให้ดูแลตามแนวทางที่กำหนดไว้</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">9-16</td>
+              <td align="center">ปานกลาง</td>
+              <td>
+                <ul class="num">
+                  <li>ควรมีญาติดูแลอย่างใกล้ชิดและแนะนำญาติให้เข้าใจวิธีการช่วยเหลือเฝ้าระวังที่ถูกต้อง (ถ้าไม่มีญาติควรรับไว้รักษาในโรงพยาบาล)</li>
+                  <li>ประเมินโรคจิตเวช หากมีโรคซึมเศร้าให้ดูแลรักษาตามแนวทางที่กำหนดไว้</li>
+                  <li>ให้การช่วยเหลือทางสังคมจิตใจ ช่วยแก้ไขปัญหาทุกข์ใจที่เร่งด่วน  </li>
+                  <li>นัดติดตามทุกสัปดาห์เพื่อให้การช่วยเหลือทางสังคมจิตใจต่อเนื่อง </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">≥ 17</td>
+              <td align="center">สูง</td>
+              <td>
+                <ul class="num">
+                  <li>ควรรักษาในโรงพยาบาลและเฝ้าระวังอย่างใกล้ชิดตลอด 24 ชั่วโมง</li>
+                  <li>ให้การช่วยเหลือทางสังคมจิตใจ ช่วยแก้ไขปัญหาทุกข์ใจที่เร่งด่วน</li>
+                  <li>กรณีที่มีโรคซึมเศร้า ประเมินด้วย 9 คำถาม ได้คะแนน ≥13 ให้ส่งต่อโรงพยาบาลพระศรีมหาโพธิ์ทันที</li>
+                </ul>
+              </td>
+            </tr>
+          </table>
+          <br>
+        </ul>
+      </div>
+      <div slot="formEntry">
+        <suicide8q-choice id="q1" value="{{document.value.form_value.q1}}"
+          label="ในเดือนที่ผ่านมารวมวันนี้ คิดอยากตาย หรือ คิดว่าตายไปจะดีกว่า">
+        </suicide8q-choice>
+        <suicide8q-choice id="q2" value="{{document.value.form_value.q2}}"
+          label="ในเดือนที่ผ่านมารวมวันนี้ อยากทำร้ายตัวเอง หรือ ทำให้ตัวเองบาดเจ็บ">
+        </suicide8q-choice>
+        <suicide8q-choice id="q3" value="{{document.value.form_value.q3}}"
+          label="ในเดือนที่ผ่านมารวมวันนี้ คิดเกี่ยวกับการฆ่าตัวตาย">
+        </suicide8q-choice>
+        <suicide8q-choice id="q4" value="{{document.value.form_value.q4}}"
+          label="ในเดือนที่ผ่านมารวมวันนี้ ท่านสามารถควบคุมความอยากฆ่าตัวตายที่ท่านคิดอยู่นั้นได้หรือไม่ หรือ บอกได้ไหมว่าคงจะไม่ทำตามความคิดนั้นในขณะนี้">
+        </suicide8q-choice>
+        <suicide8q-choice id="q5" value="{{document.value.form_value.q5}}"
+          label="ในเดือนที่ผ่านมารวมวันนี้ มีแผนการที่จะฆ่าตัวตาย">
+        </suicide8q-choice>
+        <suicide8q-choice id="q6" value="{{document.value.form_value.q6}}"
+          label="ในเดือนที่ผ่านมารวมวันนี้ ได้เตรียมการที่จะทำร้ายตนเอง หรือ เตรียมการจะฆ่าตัวตายโดยตั้งใจว่าจะให้ตายจริงๆ">
+        </suicide8q-choice>
+        <suicide8q-choice id="q7" value="{{document.value.form_value.q7}}"
+          label="ในเดือนที่ผ่านมารวมวันนี้ ได้ทำให้ตนเองบาดเจ็บแต่ไม่ตั้งใจที่จะทำให้เสียชีวิต">
+        </suicide8q-choice>
+        <suicide8q-choice id="q8" value="{{document.value.form_value.q8}}"
+          label="ในเดือนที่ผ่านมารวมวันนี้ ได้พยายามฆ่าตัวตาย โดยคาดหวัง/ตั้งใจที่จะให้ตาย">
+        </suicide8q-choice>
+        <suicide8q-choice id="q9" value="{{document.value.form_value.q9}}"
+          label="ตั้งแต่เกิดมา ท่านเคยพยายามฆ่าตัวตาย">
+        </suicide8q-choice>
+      </div>
+      <div slot="evaluation">
+       <div class="layout horizontal">
+        <paper-input label="คะแนนรวมได้ (คะแนน)" class="flex"
+          readonly
+          value="[[document.value.form_result.score]]">
+        </paper-input>
+        <paper-input label="แนวโน้มที่จะฆ่าตัวตายในปัจจุบัน" class="flex"
+          readonly
+          value="[[_result(document.value.form_result.score)]]">
+        </paper-input>
+       </div>
+      </div>
+    </form-control>
+  </template>
+  <script>
+    Polymer({
+      is: 'suicide8q-form',
+      properties: {
+        name: {
+          type:String,
+          reflectToAttribute:true,
+          value:"แบบประเมินการฆ่าตัวตาย 8 คำถาม (8Q)"
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior,
+        StudentcareFormBehavior,
+      ],
+      observers: [
+        '_continue(document.value.form_value.q3)',
+      ],
+      _continue:function(q3choice){
+        if(q3choice){
+          var dict = {
+            'y': true,
+            'n': false
+          };
+          this.$.q4.hidden  = !dict[q3choice];
+          this.$.q5.hidden  = !dict[q3choice];
+          this.$.q6.hidden  = !dict[q3choice];
+          this.$.q7.hidden  = !dict[q3choice];
+          this.$.q8.hidden  = !dict[q3choice];
+          this.$.q9.hidden  = !dict[q3choice];
+        }
+      },
+      _evaluate:function() {
+        var values = this.document.value.form_value;
+        var score = 0;
+        var rik;
+        for(var key in values) {
+          if(key=='q1'  && values[key] == 'y'){
+            score+=1;
+          }
+          if(key=='q2'  && values[key] == 'y'){
+            score+=2;
+          }
+          if(key=='q3'  && values[key] == 'y'){
+            score+=6;
+          }
+          if((key=='q4' || key == 'q5')  && values[key] == 'y'){
+            score+=8;
+          }
+          if(key=='q6'  && values[key] == 'y'){
+            score+=9;
+          }
+          if((key=='q7' || key == 'q9')  && values[key] == 'y'){
+            score+=4;
+          }
+          if(key=='q8'  && values[key] == 'y'){
+            score+=10;
+          }
+        }
+        if(score >= 0){
+          if(score < 9){
+             risk = false;
+          }
+          if(score >= 9){
+            risk = true;
+          }
+        }    
+        return {'score':score,'risk_': risk };
+      },
+      _reset:function() {
+        this.set('document.value.form_value',{});
+        this.set('document.value.form_result',{});
+      },
+      _validate:function() {
+        var questions = this.document.value.form_value;
+        var required = this.document.value.form_value.q3 === 'y' ? ['q1','q2','q3','q5','q6','q7','q8','q9'] : ['q1','q2','q3'];
+        for(var i=0;i<required.length;i++) {
+          if(!questions[required[i]]) {
+            this.$.control.setInvalidateMessage({'text':'ยังทำแบบประเมินไม่ครบถ้วน'});
+            this.$$('#'+required[i]).classList.add('invalid');
+            return false;
+          } else {
+            this.$.control.setInvalidateMessage({'text':''});
+            this.$$('#'+required[i]).classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      _result:function(score) {
+        if(score>=0) {
+          if(score<9) return 'มีแนวโน้มที่จะฆ่าตัวตาย น้อย';
+          if(score<17) return 'มีแนวโน้มที่จะฆ่าตัวตาย ปานกลาง';
+          return 'มีแนวโน้มที่จะฆ่าตัวตาย สูง';
+        }
+        return '';
+      }
+    });
+  </script>
+</dom-module>

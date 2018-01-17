@@ -1,0 +1,148 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="forms.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<dom-module id="progress-by-room">
+  <template>
+   <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        @apply --paper-font-body1;
+        font-family: 'Athiti', sans-serif;
+      }
+      .name-cell {
+        border:1px solid var(--paper-grey-500);
+        height:30px;
+        margin:1px;
+        padding-left:15px;
+        @apply --layout-horizontal;
+        @apply --layout-center;
+      }
+
+      .mark-cell {
+        border:1px solid var(--paper-grey-500);
+        width:30px;
+        height:30px;
+        margin:1px;
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        @apply --layout-center-justified;
+      }
+      .done {
+        background-color:var(--paper-pink-500);
+        width:30px;
+        height:30px;
+      }
+      .working {
+        background-color:var(--paper-blue-500);
+        width:30px;
+        height:30px;
+      }
+      .new {
+        background-color:var(--paper-green-500);
+        width:30px;
+        height:30px;
+      }
+   </style>
+
+   <iron-ajax 
+     auto
+     method="POST"
+     url="{{url}}"
+     content-type="application/json"
+     handle-as="json"
+     last-response="{{response}}"
+     body$='{"match":["by_room","{{year}}","{{host}}","{{level}}","{{room}}"],"limit":1}'>
+   </iron-ajax>
+
+    <div class="layout vertical">
+     <div class="layout horizontal center">
+       <div class="flex-1 name-cell"><b>รายชื่อนักเรียน</b></div>
+       <div class="flex-6">
+         <div class="layout horizontal">
+         <template is="dom-repeat" items="{{data.0.forms}}">
+           <div class="mark-cell"><span>{{_plusOne(index)}}</span></div>
+         </template>
+         </div>
+       </div>
+     </div>
+     <template is="dom-repeat" items="{{data}}" as="student">
+       <div class="layout horizontal center">
+         <div class="flex-1 name-cell">{{student.name}}</div>
+         <div class="flex-6">
+           <div class="layout horizontal">
+            <template is="dom-repeat" items="{{student.forms}}">
+             <div class="mark-cell"> 
+               <div class$="{{item.status}}">
+               </div>
+             </div>
+            </template>
+           </div>
+         </div>
+       </div>
+     </template>
+     <template is="dom-repeat" items="{{data.0.forms}}">
+      <div>{{_plusOne(index)}} - {{item.name}}</div>
+     </template>
+   </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'progress-by-room',
+      properties: {
+        host:String,
+        year:String,
+        level:String,
+        room:String,
+        url:String,
+        data : {
+          type:Array,
+          computed:'__computeData(response)'
+        }
+      },
+      __computeData:function(res) {
+        var data = [];
+        if(res.length == 1) {
+           var obj = res[0];
+           var forms = {};
+           var dict = {};
+           for(var key in obj.value) {
+             var keys = key.split('!');
+             if(!dict[keys[1]]) {
+               dict[keys[1]] = {};
+             }
+             if(!forms[keys[2]]) {
+               var doc = document.createElement(keys[2]);
+               forms[keys[2]] = {'name':doc.name};
+             }
+             dict[keys[1]][forms[keys[2]].name] = obj.value[key];
+           };
+           
+           for(var key in dict) {
+             var student = {'name':key,'forms':[]};
+             for(var form in forms) {
+               student.forms.push({
+                 'name':forms[form].name,
+                 'status':dict[key][forms[form].name]
+               });
+             }
+             data.push(student);
+           }
+        }
+        return data;
+      },
+      _plusOne:function(idx) {
+        return idx+1;
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,116 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="disability-choice">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply --paper-font-display;
+        @apply --layout-vertical;
+        background-color:white;
+        font-family: 'Athiti', sans-serif;
+        display: block;
+        /*border-bottom:1px solid #bfbfbf;*/
+        padding:0px;
+      }
+
+      /*iron-icon {
+        margin:3px;
+        padding:0px;
+        background-color:white;
+      }*/
+
+      .invalid {
+        border: 1px solid #ee0000;
+      }
+      paper-radio-button {
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+        /*background:#efefef;*/
+      }
+    </style>
+
+    <div id="main" class="layout horizontal">
+      <slot></slot>
+    </div>
+    <div class="layout horizontal">
+      <paper-radio-group selected="{{value}}"
+        class="flex"
+        aria-labelledby="label">
+        <paper-radio-button name="y">ใช่</paper-radio-button>
+        <paper-radio-button name="n">ไม่ใช่</paper-radio-button>
+      </paper-radio-group>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'disability-choice',
+      listeners : {
+        'mouseover':'_onHovered',
+        'mouseout':'_onUnhovered'
+      },
+      properties: {
+        value:{
+          type:String,
+          notify:true,
+          observer:'_valueChanged'
+        },
+        hovered: {
+          type:Boolean,
+          readOnly:true,
+          value:false
+        },
+        label:{
+          type:String
+        },
+        disabled: {
+          type:Boolean,
+          value:false
+        },
+        required:{
+          type:Boolean,
+          value:false,
+          reflectToAttribute:true
+        }/*,
+        _valueStr:{
+          type:String,
+          computed:'_labelValue(value)'
+        }*/
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior
+      ],
+      _onHovered:function(e) {
+        this._setHovered(true);
+      },
+      _onUnhovered:function(e) {
+        this._setHovered(false);
+      },
+      _valueChanged:function() {
+        if(this.value == 'y' || this.value == 'm') {
+          this.type='check';
+        } else {
+          if(this.value) {
+            this.type='clear';
+          } else {
+            this.type='';
+          }
+        }
+      },
+      _labelValue:function(value) {
+        var dict = {
+          'y':'ใช่',
+          'n':'ไม่ใช่'
+        };
+        return dict[value];
+      }
+    });
+  </script>
+</dom-module>

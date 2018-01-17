@@ -1,0 +1,184 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="assignment-paginator">
+ <template>
+   <style include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      @apply --layout-vertical;
+      display: block;
+      margin-top:5px;
+    }
+    .content-wrapper {
+    }
+    .control-label {
+      margin-left:40px;
+    }
+    .control-panel {
+      background:var(--paper-grey-400);
+      margin:1px;
+      height:40px;
+    }
+
+    .info {
+      @apply --paper-font-body2;
+      font-weight:normal;
+      padding:10px;
+    }
+    @media (min-width: 400px) {
+      .info {
+        @apply --paper-font-body1;
+        font-weight:bold;
+      }
+    }
+   </style>
+
+   <paper-material elevation="1">
+     <div class="control-panel layout horizontal center">
+      <iron-pages selected="{{page}}" attr-for-selected="name">
+       <div name="list">
+        <div class="layout horizontal center">
+         <div class="control-label">
+           รายการแบบประเมิน 
+         </div>
+         <paper-icon-button icon="chevron-left" 
+           on-tap="_previous" 
+           disabled$="{{disablePrevious}}">
+         </paper-icon-button>
+         <paper-icon-button icon="chevron-right" 
+           on-tap="_next" 
+           disabled$="{{disableNext}}">
+         </paper-icon-button>
+        </div>
+       </div>
+       <div name="form" class="layout horizontal center">
+        <paper-icon-button icon="arrow-back" 
+          on-tap="_backPage">
+        </paper-icon-button>
+        <div>
+          แบบประเมิน
+        </div>
+       </div>
+      </iron-pages>
+     </div>
+     <iron-pages selected="{{page}}" attr-for-selected="name">
+       <div class="content-wrapper" name="list">
+         <content select=".assignment-list"></content>
+       </div>
+       <div class="content-wrapper" name="form" id="formDetail">
+       </div>
+     </iron-pages>
+   </paper-material>
+
+ </template>
+ <script>
+  Polymer({
+    is:'assignment-paginator',
+    properties : {
+      page:{
+        type:String,
+        readOnly:true,
+        value:"list"
+      },
+      perPage:{
+        type:Number,
+        value:10
+      },
+      items: {
+        type:Array,
+        notify:true,
+        value:function() {
+          return [];
+        }
+      },
+      pageCount:{
+        type:Number,
+        notify:true
+      },
+      currentPage: {
+        type:Number,
+        value:0,
+        notify:true
+      },
+      disableNext: {
+        type:Boolean,
+        computed:'_disableNext(currentPage,pageCount)'
+      },
+      disablePrevious: {
+        type:Boolean,
+        computed:'_disablePrevious(currentPage,pageCount)'
+      },
+      data: {
+        type:Array,
+        value:function() {
+          return [];
+        },
+        notify:true,
+        observer:'_dataChanged'
+      }
+    },
+    listeners:{
+      'select-assignment':'_onSelect'
+    },
+    observers:[
+      '_currentPageChanged(data,currentPage)'
+    ],
+    _onSelect:function(e) {
+      this._setPage("form");
+      var node = this.$.formDetail;
+      while(node.firstChild) {
+        node.removeChild(node.firstChild);
+      }
+      var formElement = e.detail.formElement;
+      this.$.formDetail.appendChild(formElement);
+      console.log(formElement.document);
+      this.set('_formDocument',formElement.document);
+    },
+    _dataChanged:function(n) {
+      /*
+      this.set('currentPage',0);
+      this.set('pageCount',this.getPageCount());
+      n.sort(function(a,b) {
+        if(a.key[8] >= b.key[8]) return 1;
+        return -1;
+      });
+      this.set('items',this.filterPage());
+      */
+    },
+    _next:function(e) {
+      this.set('currentPage',this.currentPage+1);
+    },
+    _previous:function(e) {
+      this.set('currentPage',this.currentPage-1);
+    },
+    _currentPageChanged:function(data,currentPage) {
+      this.set('items',this.filterPage());
+    },
+    _disableNext:function(currentPage,pageCount) {
+      return currentPage == pageCount || currentPage > pageCount;
+    },
+    _disablePrevious:function(currentPage,pageCount) {
+      return currentPage == 0;
+    },
+    filterPage:function() {
+      return this.data.slice(this.currentPage*this.perPage,
+       (this.currentPage*this.perPage)+this.perPage);
+    },
+    _backPage:function() {
+      if(this.page == "form") {
+        this._setPage('list');
+      }
+    },
+    getPageCount:function() {
+      return Math.ceil(this.data.length / this.perPage ) - 1;
+    }
+  });
+ </script>
+</dom-module>

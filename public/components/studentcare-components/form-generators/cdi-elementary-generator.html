@@ -1,0 +1,25 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="with-result-sdq-behavior.html">
+
+<dom-module is="cdi-elementary-generator">
+ <script>
+  Polymer({
+    is:"cdi-elementary-generator",
+    behaviors:[
+     WithResultSdqBehavior
+    ],
+    properties:{
+      formType:{
+        type:String,
+        value:'cdi-form'
+      },
+      atLevel:{
+        type:Array,
+        value:function() {
+          return ["ประถมศึกษาปีที่ 3"];
+        }
+      }
+    }
+  });
+ </script>
+</dom-module>

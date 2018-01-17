@@ -1,0 +1,208 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../forms.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="assignment-card">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        @apply --paper-font-body2;
+        @apply --layout-vertical;
+        cursor: pointer;
+        cursor: hand;
+        font-family: 'Athiti', sans-serif;
+      }
+
+      .content {
+        border-bottom:1px solid #efefef;
+      }
+
+      #studentInfo  {
+        color:#afafaf;
+      }
+
+      .marker-done {
+        background:var(--paper-green-500);
+      }
+
+      .marker-new {
+        background:#e3e3e3;
+      }
+
+      .marker-working {
+        background:#ffe680;
+      }
+
+      .info {
+        margin-left:5px;
+        padding-left:5px;
+        background:#ffffff;
+      }
+      .info:hover {
+        background:#efefef;
+      }
+      .font-face-big {
+        font-family: 'Athiti', sans-serif;
+        font-size: 120%;
+      }
+      .font-face-normal {
+        font-family: 'Athiti', sans-serif;
+      }
+    </style>
+
+   <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+   </app-localstorage-document>
+
+   <iron-ajax
+     id="deleteAjax"
+     method="DELETE"
+     handle-as="json"
+     url$="https://thaieduforall.org:8000/v2/obec/students_care/data/{{data._id}}"
+     headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+     on-response="_response">
+   </iron-ajax>
+
+    <div class$="marker-{{_info.status.type}} content" hidden$="{{hide}}">
+      <div class="layout horizontal center info">
+        <div class="flex" on-tap="_tap">
+          <div id="formName" class="font-face-big">{{_info.form.label}}</div>
+          <div id="studentInfo" class="font-face-normal">
+            {{_info.dateTime}} ({{_info.status.label}})
+          </div>
+        </div>
+        <paper-icon-button icon="delete" on-tap="_toggleDialog" hidden="{{_info.mandatory}}">
+        </paper-icon-button>
+      </div>
+    </div>
+
+
+  <paper-dialog id="dialog">
+    <h2>ยืนยัน</h2>
+    <paper-dialog-scrollable>
+      คุณต้องการลบ {{_info.form.label}} จริงหรือไม่?
+    </paper-dialog-scrollable>
+    <div class="buttons">
+      <paper-button dialog-dismiss>ยกเลิก</paper-button>
+      <paper-button dialog-confirm autofocus on-tap="_delete">ยืนยัน</paper-button>
+    </div>
+  </paper-dialog>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'assignment-card',
+      //listeners: {
+      //  'update':'_update',
+      //},
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+      ],
+      properties: {
+        showForm: {
+          type:Boolean,
+          reflectToAttribute: true,
+          value:false
+        },
+        data: {
+          type:Object,
+          reflectToAttribute: true,
+          notify:true
+        },
+        formElement: {
+          type:Object
+        },
+        _info : {
+          type:Object,
+          computed:'__computeInfo(data)'
+        },
+        hide:{
+          type:Boolean,
+          readOnly:true,
+          value:function() {
+            return false;
+          }
+        }
+      },
+      _toggleDialog:function(e) {
+        this.$.dialog.open();
+      },
+      _update:function(e) {
+        // force update
+        this.set('data',{});
+        this.set('data',e.detail.value);
+      },
+      _tap: function(e) {
+        //console.log('tap');
+        var ele = this._info.form.element;
+        var doc = {'key':this.data._id,'value':this.data};
+        ele.setAttribute('document',JSON.stringify(doc));
+        ele.addEventListener('update',this._update.bind(this));
+        this.fire('select-assignment',{
+          'formElement':ele
+        });
+      },
+      attached:function() {
+        this.loadResources(this.resolveUrl('../locales.json'));
+      },
+      __computeInfo:function(data) {
+        if(!data._id) return;
+        var tmp = {};
+        this._setHide(false);
+        var status_dict = {
+          'new':'ใหม่',
+          'working':'กำลังดำเนินการ',
+          'done':'ประเมินแล้ว'
+        }
+        //var keys = data.key[data.key.length-2];
+        //tmp['studentName']=keys[3];
+        tmp['status']={
+          'label':status_dict[data.status],
+          'type':data.status
+        };
+        var d = new Date();
+        d.setTime(data.ts*-1);
+        var str = ("0" + d.getDate()).slice(-2) + "-" +
+          ("0"+(d.getMonth()+1)).slice(-2) + "-" +
+          d.getFullYear() + " " +
+          ("0" + d.getHours()).slice(-2) + ":" +
+          ("0" + d.getMinutes()).slice(-2);
+        tmp['dateTime']=str;
+
+        var ele = document.createElement(data.form_type);
+        tmp['form']= {
+           'label':ele.name,
+           'element':ele
+        };
+        tmp['mandatory']=data.mandatory
+        return tmp;
+      },
+      _formName:function(name) {
+        var ele = document.createElement(name);
+        return ele.getAttribute('name');
+      },
+      _delete:function(e) {
+        this.$.deleteAjax.generateRequest();
+        this.fire('delete-assignment',{
+          'form':this.data
+        });
+      },
+      _response:function(e) {
+        if(e.detail.response.ok) {
+        //  this._setHide(true);
+        }
+      }
+    });
+  </script>
+</dom-module>

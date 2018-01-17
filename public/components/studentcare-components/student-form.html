@@ -1,0 +1,417 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="./local/assignment-card.html">
+<link rel="import" href="./form-generator.html">
+<link rel="import" href="./option-forms.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="student-form">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply --layout-vertical;
+        font-family: 'Athiti', sans-serif;
+        --paper-progress-active-color: #d14836;
+        /*สีตัวโหลด*/
+        --paper-progress-indeterminate-cycle-duration: 0.8s;
+        /*ระยะเวลาการโหลด*/
+      }
+
+      .iron-selected {
+        background: #eee;
+      }
+
+      .control {
+        padding: 5px;
+      }
+
+      .form_group {
+        @apply --paper-font-subhead;
+        padding: 10px;
+        background:var(--paper-grey-200);
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+      }
+
+      .option-style{
+       background-color: #fff;
+       height: 70px;
+      }
+
+      .note{
+        border:2px solid #44ada8;
+        font-family: 'Athiti', sans-serif;
+        background: #fff;
+        color: #000;
+      }
+
+      iron-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .marker-done {
+        width: 5px;
+        height: 40px;
+        background:var(--paper-green-500);
+      }
+
+      .marker-new {
+        width: 5px;
+        height: 40px;
+        background:#e3e3e3;
+      }
+
+      .marker-working {
+        width: 5px;
+        height: 40px;
+        background:#ffe680;
+      }
+
+      .layout-note {
+        @apply --layout-horizontal;
+        margin-bottom: 5px;
+        margin-top: 5px;
+      }
+
+      .font-layout{
+        @apply --layout-horizontal;
+        @apply --layout-center;
+      }
+
+      .layout-chkrisk {
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        background:#fff;
+      }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+
+    <iron-ajax id="getAjax"
+      method="GET"
+      url$="https://thaieduforall.org:8000/v2/obec/student_data_db/data/{{key}}"
+      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+      on-response="_handleStudentResponse"
+      last-response="{{student}}">
+    </iron-ajax>
+
+    <form-generator id="generator" student="{{student}}" loading="{{loading}}"
+      on-form-generated="_formGenerated"
+      on-required-form-checked="_formChecked"
+      forms="{{forms}}"
+      year="{{year}}">
+    </form-generator>
+
+    <div class="horizontal layout">
+      <paper-progress indeterminate hidden$="{{!loading}}" class="flex">
+      </paper-progress>
+    </div>
+
+      <div class="flex note">
+        <div class="layout-note font-layout">
+          <div><iron-icon src="{{imgNote}}"></iron-icon>หมายเหตุ&nbsp;&nbsp;</div>
+          <div class="marker-new"></div>
+          <div>&nbsp;&nbsp;สีเทา หมายถึง ฟอร์มใหม่&nbsp;&nbsp;</div>
+          <div class="marker-working"></div>
+          <div>&nbsp;&nbsp;สีเหลือง หมายถึง กำลังดำเนินการ&nbsp;&nbsp;</div>
+          <div class="marker-done"></div>
+          <div>&nbsp;&nbsp;สีเขียว หมายถึง ดำเนินการเสร็จสิ้น</div>
+        </div>
+      </div>
+
+    <template is="dom-repeat" as="group" items="{{formList}}" filter="isNotOption">
+      <div class="form_group font-face" hidden$="{{_isEmpty(group.forms)}}">{{group.name}}</div>
+      <template is="dom-repeat" items="{{group.forms}}" sort="_sortByStatus">
+        <div class="layout-chkrisk">
+          <div class="flex-11"><assignment-card data="{{item}}"></assignment-card></div>
+          <div class="flex-1"><!--{{group.forms}} , {{chkrisk}} , {{imgSDQRisk}}-->
+            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.0.forms_name)]]">
+              <iron-icon src="{{chkrisk.0._risk}}"></iron-icon>
+            </template>
+            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.1.forms_name)]]">
+              <iron-icon src="{{chkrisk.1._risk}}"></iron-icon>
+            </template>
+            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.2.forms_name)]]">
+              <iron-icon src="{{chkrisk.2._risk}}"></iron-icon>
+            </template>
+            <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.3.forms_name)]]">
+              <iron-icon src="{{chkrisk.3._risk}}"></iron-icon>
+            </template>
+          </div>
+      </div>
+      </template>
+    </template>
+
+    <div class="form_group font-face" hidden$="{{_isEmpty(group.forms)}}">แบบประเมินทางเลือก</div>
+    <div class="flex option-style">
+      <option-forms forms="{{forms}}" student="{{student}}"></option-forms>
+    </div>
+    <template is="dom-repeat" as="group" items="{{formList}}" filter="isOption">
+      <template is="dom-repeat" items="{{group.forms}}" sort="_sortByStatus">
+        <assignment-card data="{{item}}"></assignment-card>
+      </template>
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'student-form',
+      properties: {
+        db: String,
+        year: {
+          type:String,
+          reflectToAttribute:true
+        },
+        key: {
+          type:String,
+          reflectToAttribute:true
+        },
+        formList: {
+          type: Array,
+          notify: true,
+          computed: '__generateFormList(forms)'
+        },
+        imgNote:{
+          type:String,
+          notify:true,
+          computed:'_imgNote()'
+        },
+        chkrisk:{
+          type: Array,
+          notify: true,
+          computed: '__chkrisk(formList)'
+        }
+      },
+      listeners: {
+        'delete-assignment':'_onAssignmentDelete',
+        'form-generated':'_formGenerated'
+      },
+      observers: [
+        '__execute(jwtToken,key)',
+      ],
+      _equal: function(value1, value2) {
+        return value1 === value2;
+      },
+      isOption:function(item) {
+        return item.option;
+      },
+      _handleStudentResponse:function(e) {
+        //console.log(e.detail.response);
+        this.fire('student-response',{'value':e.detail.response});
+      },
+      isNotOption:function(item) {
+        return !item.option;
+      },
+      __execute: function (jwtToken, key) {
+        if(!jwtToken.token || key == null) return;
+        this.$.getAjax.generateRequest();
+      },
+      _imgNote:function(){
+        return this.resolveUrl("./images/note.png");
+      },
+      _sortByTime: function (a, b) {
+        return a.key[4][1] - b.key[4][1];
+      },
+      _sortByStatus: function (a, b) {
+        var _sort = ['new', 'working', 'done'];
+        return _sort.indexOf(a.status) - _sort.indexOf(b.status);
+      },
+      _isEmpty:function(list) {
+        return !list || list.length == 0;
+      },
+      _onAssignmentDelete:function(e) {
+        var d_form = e.detail.form;
+        //console.log(d_form);
+        var forms = this.forms;
+        var tmp = [];
+        forms.forEach(function(form) {
+          if(form._id != d_form._id) {
+            tmp.push(form);
+          }
+        });
+        this.set('forms',tmp);
+      },
+      _formGenerated: function (e) {
+        /* -------- Check time out ----------- */
+        this.$.generator.reload();
+      },
+      _formChecked: function (e) {
+        //console.log(e.detail);
+      },
+      _reload: function (e) {
+        this.$.generator.reload();
+        this.set('_requiredReload', false);
+      },
+      __generateFormList: function(forms) {
+        var data = [];
+        var group = [
+          {
+            'group': 'แบบคัดกรอง SDQ',
+            'names': [
+              'dl2-form',
+              'dl3-form'
+            ],
+            forms: []
+          },
+          {
+            'group': 'แบบคัดกรองนักเรียนรายบุคคล',
+            'names': [
+              'screening-elementary-form',
+              'screening-secondary-form'
+            ],
+            forms: []
+          },
+          {
+            'group': 'แบบคัดกรอง EQ',
+            'names': [
+              'eq-teacher-form',
+              'eq-student-form'
+            ],
+            forms: []
+          },
+          {
+             'group': 'แบบคัดกรองความบกพร่อง 9 ด้านของ สพฐ.',
+             'names': [
+               'disability-autistic-form',
+               'disability-behavior-form',
+               'disability-communication-form',
+               'disability-health-form',
+               'disability-hearing-form',
+               'disability-intelligence-form',
+               'disability-learning-elementary-form',
+               'disability-learning-secondary-form',
+               'disability-visual-form'
+             ],
+             'forms': []
+           },
+           {
+             'group': 'แบบคัดกรองอื่น ๆ ',
+             'names': [
+               'st5-form', 'snap-form', 'suicide8q-form', 'cdi-form', 'game-form'
+             ],
+             forms: []
+           },
+        ];
+
+        var option_group = JSON.parse(JSON.stringify(group));
+
+        for (var i = 0; i < forms.length; i++) {
+          if(forms[i].mandatory) {
+            for (var j = 0; j < group.length; j++) {
+              if (group[j].names.indexOf(forms[i].form_type) != -1) {
+                group[j].forms.push(forms[i]);
+                break;
+              }
+            }
+          } else {
+            for (var j = 0; j < option_group.length; j++) {
+              if (option_group[j].names.indexOf(forms[i].form_type) != -1) {
+                option_group[j].forms.push(forms[i]);
+                break;
+              }
+            }
+          }
+        }
+
+        for (var i = 0; i < group.length; i++) {
+          if (group[i].forms.length > 0) {
+            data.push({ 'name': group[i].group, 'forms': group[i].forms, 'option':false });
+          }
+        }
+
+        for (var i = 0; i < option_group.length; i++) {
+          if (option_group[i].forms.length > 0) {
+            data.push({ 'name': option_group[i].group, 'forms': option_group[i].forms, 'option':true });
+          }
+        }
+        //console.log(data);
+        return data;
+      },
+      __chkrisk(formList){
+        //console.log(formList);
+        var risk = [];
+        var _risk = [];
+        var chkImgrisk="";
+        var forms_name = [];
+        for(var i=0;i<formList.length;i++){
+          //console.log(formList[i].forms[0].form_type);
+          forms_name.push({'name':formList[i].forms[0].form_type});
+          if(formList[i].forms[0].form_type == "dl2-form"){
+            if('behavior' in formList[i].forms[0].form_result){
+              if(formList[i].forms[0].form_result.behavior.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.behavior.result });
+              }
+            }
+            if('behavior_active' in formList[i].forms[0].form_result){
+              if(formList[i].forms[0].form_result.behavior_active.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.behavior_active.result });
+              }
+            }
+            if('emotion' in formList[i].forms[0].form_result){
+              if(formList[i].forms[0].form_result.emotion.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.emotion.result });
+              }
+            }
+            if('friend' in formList[i].forms[0].form_result){
+              if(formList[i].forms[0].form_result.friend.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.friend.result });
+              }
+            }
+            if('social' in formList[i].forms[0].form_result){
+              if(formList[i].forms[0].form_result.social.result != "ปกติ"){
+                risk.push({ '_risk': formList[i].forms[0].form_result.social.result });
+              }
+            }
+
+            if(risk.length!=0){
+              for(var i=0;i<risk.length;i++){
+                if(risk[i]._risk=="มีปัญหา"){
+                  chkImgrisk="./images/red.png";
+                  break;
+                }
+                if(risk[i]._risk=="เสี่ยง"){
+                  chkImgrisk="./images/yellow.png";
+                }
+              } //end for
+            }else{
+              chkImgrisk="./images/green.png";
+            }//end if check SDQ risk
+          }//end if check dl-form
+
+          if(formList[i].forms[0].form_type == "screening-elementary-form"){
+            chkImgrisk="./images/green.png";
+          }//end if check screening-elementary-form
+
+          if(formList[i].forms[0].form_type == "eq-teacher-form"){
+            chkImgrisk="./images/green.png";
+          }//end if check eq-teacher-form
+
+          if(formList[i].forms[0].form_type == "snap-form"){
+            chkImgrisk="./images/green.png";
+          }//end if check snap-form
+
+          _risk.push({ 'forms_name':formList[i].forms[0].form_type,'_risk': this.resolveUrl(chkImgrisk) });
+        }
+        /*console.log('risk ',risk);
+        console.log('_risk ',_risk);*/
+        return _risk;
+      }
+    });
+  </script>
+</dom-module>

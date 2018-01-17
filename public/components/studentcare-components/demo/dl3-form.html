@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <title>แบบประเมินพฤติกรรมนักเรียน SDQ -DEMO</title>
+  <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+  <link rel="import" href="../../../bower_components/grid-element/grid-element.html">
+  <link rel="import" href="../student-room.html">
+  <link rel="import" href="../local/dl-profile.html">
+  <link rel="import" href="../dl3-form.html">
+</head>
+
+<body>  
+  <h3>dl3-form Demo</h3>
+  <template is="dom-bind">
+    <app-localstorage-document
+      key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+    
+    <grid-element mq="(min-width: 600px)">
+      <grid-col>
+        <student-room 
+          jwt-token="{{jwtToken.token}}" 
+          host="30070132" level="02" room="1" 
+          selected-student="{{student}}">
+        </student-room>
+      </grid-col>
+
+      <grid-col s="3">
+        <dl-profile dmc-student="{{student.value}}"></dl-profile>
+        <dl3-form class="flex"
+          form-type = "dl3form_student"
+          dmc-student="{{student.value}}" >
+        </dl3-form>
+      </grid-col>
+    </grid-element>
+
+  </template>
+</body>
+</html>

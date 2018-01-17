@@ -1,0 +1,144 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="sdq-radio.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+<dom-module id="sdqself-form-choice">
+  <template>
+  <style include="iron-flex iron-flex-alignment iron-flex-factors">
+    .paper-font-headline {
+      /*@apply --paper-font-body2;*/
+      background-color: white;
+    }
+    .idx {
+      width:10px;
+    }
+    sdq-radio {
+      /*margin-top:2px;
+      margin-bottom:2px;*/
+      margin-left:5px;
+      font-family: 'Athiti', sans-serif;
+      /*font-size: 100%;*/
+    }
+    @media (min-width:400px) {
+      :host {
+        /*@apply --paper-font-body1;*/
+        display: block;
+        width: 100%;
+        --paper-radio-group-item-padding: 5px 12px 5px 12px;
+      }
+      .paper-font-headline {
+        @apply --paper-font-headline;
+      }
+    }
+
+    .bg-white{
+      background-color: white;
+    }
+
+  </style>
+  <div class="layout vertical bg-white">
+    <sdq-radio required value="{{value.f_q1}}">
+      1. ฉันพยายามทำตัวดีกับคนอื่น ฉันใส่ใจความรู้สึกของคนอื่น
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q2}}">
+      2. ฉันอยู่ไม่นิ่ง ฉันนั่งนิ่ง ๆ ไม่ได้
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q3}}">
+      3. ฉันปวดศีรษะ ปวดท้อง หรือไม่สบายบ่อย ๆ
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q4}}">
+      4. ฉันเต็มใจแบ่งปันสิ่งของให้เพื่อน (ขนม, ของเล่น, ดินสอ เป็นต้น)
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q5}}">
+      5. ฉันโกรธแรง และมักอารมณ์เสีย
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q6}}">
+      6. ฉันชอบอยู่กับตัวเอง ฉันชอบเล่นคนเดียวหรืออยู่ตามลำพัง
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q7}}">
+      7. ฉันมักทำตามที่คนอื่นบอก
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q8}}">
+      8. ฉันขี้กังวล
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q9}}">
+      9. ใคร ๆ ก็พึ่งฉันได้ ถ้าเขาเสียใจ อารมณ์ไม่ดี หรือไม่สบายใจ
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q10}}">
+      10. ฉันอยู่ไม่สุข วุ่นวาย
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q11}}">
+      11. ฉันมีเพื่อนสนิท
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q12}}">
+      12. ฉันมีเรื่องทะเลาะวิวาทบ่อย ฉันทำให้คนอื่นทำอย่างที่ฉันต้องการได้
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q13}}">
+      13. ฉันไม่มีความสุข ท้อแท้ ร้องไห้บ่อย ๆ
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q14}}">
+      14. เพื่อน ๆ ส่วนมากชอบฉัน
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q15}}">
+      15. ฉันวอกแวกง่าย ฉันรู้สึกว่าไม่มีสมาธิ
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q16}}">
+      16. ฉันกังวลเวลาอยู่ในสถานการณ์ที่ไม่คุ้น และเสียความมั่นใจในตนเองง่าย
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q17}}">
+      17. ฉันใจดีกับเด็กที่เล็กกว่า
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q18}}">
+      18. มีคนว่าฉันโกหก หรือขี้โกงบ่อย ๆ
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q19}}">
+      19. เด็กๆ คนอื่นล้อเลียน หรือรังแกฉัน
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q20}}">
+      20. ฉันมักจะอาสาช่วยเหลือผู้อื่น (พ่อแม่, ครู, เพื่อน, เด็กคนอื่น ๆ เป็นต้น)
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q21}}">
+      21. ฉันคิดก่อนทำ
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q22}}">
+      22. ฉันเอาของคนอื่นในบ้าน ที่โรงเรียนหรือที่อื่น
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q23}}">
+      23. ฉันเข้ากับผู้ใหญ่ได้ดีกว่ากับเด็กในวัยเดียวกัน
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q24}}">
+      24. ฉันขี้กลัว รู้สึกหวาดกลัวได้ง่าย
+    </sdq-radio>
+    <sdq-radio required value="{{value.f_q25}}">
+      25. ฉันทำงานได้จนเสร็จ ความตั้งใจในการทำงานของฉันดี
+    </sdq-radio>
+  </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'sdqself-form-choice',
+      properties: {
+        value:{
+          type:Object
+        }
+      },
+      validate:function() {
+        var els = Polymer.dom(this.root).querySelectorAll('sdq-radio');
+        for(var i=0;i<els.length;i++) {
+          if(!els[i].validate()) {
+            els[i].classList.add('invalid');
+            return false;
+          } else {
+            els[i].classList.remove('invalid');
+          }
+        }
+        return true;
+      }
+    });
+  </script>
+</dom-module>

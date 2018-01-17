@@ -1,0 +1,185 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="forms.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="repoert-school">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        @apply (--layout-vertical);
+      }
+      
+      .container {
+        @apply (--layout-horizontal);
+        @apply (--layout-center-justified);
+      }
+      .form_group {
+        @apply (--paper-font-subhead);
+        padding: 10px;
+        background: var(--paper-grey-100);
+      }
+      .content{
+        background :white;
+      }
+      .header {
+        font-family: 'Athiti', sans-serif;
+        font-size: 25px;
+        font-weight: bold;
+      }
+      .font-face {
+         @apply --paper-font-subhead;
+        font-family: 'Athiti', sans-serif;
+        font-size: 18px;
+      }
+      .line-style {
+        border-bottom: 1px solid #ddd;
+        height: 35px;
+        padding: 10px;
+      }
+      app-toolbar {
+        /*background-color: var(--paper-red-500);*/
+        background-color: #e65540;
+        color: white; 
+      }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+      
+    <iron-ajax 
+      id="listAjax" 
+      method="GET" 
+      url$="https://thaieduforall.org:8000/v2/obec/_report_host/data/{{hostid}}" 
+      content-type="application/json"
+      handle-as ="json"
+      on-response="handleResponse">
+    </iron-ajax>
+
+    <app-toolbar>
+        <div class="header">รายงานโรงเรียน {{hostid}} &nbsp; &nbsp;</div>
+        <span class="header">จำนวน {{total}} คน ข้อมูล ณ วันที่ {{ts}}</span>
+    </app-toolbar>
+
+    <div class="layout horizontal">
+      <div class="flex-6 font-face form_group">แบบประเมิน</div>
+      <div class="flex-1 font-face form_group">กำลังดำเนินการ</div>
+      <div class="flex-1 font-face form_group">เรียบร้อย</div>
+      <div class="flex-1 font-face form_group">รวม</div>
+      <div class="flex-1 font-face form_group">เสี่ยง</div>
+  </div>
+
+  <template is="dom-repeat" items="[[list]]" >
+  <div class="layout horizontal content">
+      <div class="flex-6 font-face line-style">{{_formName(item.type)}}</div>
+      <div class="flex-1 font-face line-style">{{item.content.working}}</div>
+      <div class="flex-1 font-face line-style">{{item.content.done}}</div>
+      <div class="flex-1 font-face line-style">{{item.content.total}}</div>
+      <div class="flex-1 font-face line-style">0</div>
+  </div>
+</template>
+  </template>
+  
+  <script>
+    Polymer({
+      is: "report-host",
+      properties:{
+        hostid:{
+          type:String,
+          notify:true
+        },
+        level:{
+          type:String,
+          notify:true
+        },
+        room:{
+          type:String,
+          notify:true
+        },
+        list: {
+          type:Array,
+          notify:true,
+          value:function() {
+              return [];
+          }
+        }   
+      },
+      observers:[
+        '_execute(jwtToken)'
+      ],
+      _formName:function(form) {
+        var obj = {   
+          'dl2-form': 'แบบประเมินพฤติกรรมนักเรียน ฉบับครูประเมินนักเรียน',
+          'dl3-form': 'แบบประเมินพฤติกรรมนักเรียน ฉบับนักเรียนประเมินตนเอง',
+          'disability-visual-form': 'แบบคัดกรองบุคคลที่มีความบกพร่องทางการเห็น',
+          'eq-teacher-form': 'แบบประเมินความฉลาดทางอารมณ์เด็กอายุ 6-11 ปี (ฉบับครูประเมินนักเรียน)', 
+          'eq-student-form': 'แบบประเมิน ความฉลาดทางอารมณ์สำหรับวัยรุ่น (อายุ 12-17 ปี) (ฉบับนักเรียนประเมินตนเอง)',    
+          'disability-hearing-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางการได้ยิน' ,
+          'disability-intelligence-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางสติปัญญา' ,
+          'disability-health-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางร่างกาย หรือการเคลื่อนไหว หรือสุขภาพ' , 
+          'disability-learning-elementary-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางการเรียนรู้ (ประถมศึกษา)' , 
+          'disability-learning-secondary-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางการเรียนรู้ (มัธยมศึกษา)' ,
+          'disability-communication-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางการพูดและภาษา', 
+          'disability-behavior-form':  'แบบคัดกรองบุคคลที่มีความบกพร่องทางพฤติกรรม หรืออารมณ์', 
+          'disability-autistic-form':  'แบบคัดกรองบุคคลออทิสติก' ,
+          'snap-form': 'แบบประเมินพฤติกรรม SNAP-IV (Shot Form)' , 
+          'st5-form':  'แบบประเมินความเครียดกรมสุขภาพจิต ( ST – 5 ) รายบุคคล' , 
+          'cdi-form':  'แบบคัดกรองภาวะซึมเศร้าในเด็ก Children’s Depression Inventory (CDI) ฉบับภาษาไทย' , 
+          'suicide8q-form':  'แบบประเมินการฆ่าตัวตาย 8 คำถาม (8Q) ใช้ประเมินร่วมกับแบบประเมินโรคซึมเศร้า 9 คำถาม' , 
+          'game-form': 'แบบทดสอบการติดเกม ฉบับเด็กและวัยรุ่น (Game Addiction Screening Test – GAST Child and Adolescent Version)', 
+          'screening-elementary-form':'แบบคัดกรองนักเรียนรายบุคคล ระดับประถม',
+          'screening-secondary-form':'แบบคัดกรองนักเรียนรายบุคคล ระดับมัธยม'
+        }     
+        var result = obj[form]?obj[form]:form;
+        return result;
+      },
+      _execute(token) {
+        if(token == null || !token.token) return;  
+        this.$.listAjax.headers = {
+          'Authorization':'JWT '+token.token
+        }
+        this.$.listAjax.generateRequest();
+      },
+      handleResponse(e) {
+        var doc = e.detail.response;
+        var forms = [];
+        var total = 0;
+        var _forms_dict = {};
+        var ts;
+        for(var key in doc.value) {
+          if(key == 'ts') {
+            ts = new Date(doc.value[key]).toLocaleString('th');
+            continue;
+          }
+          var cid = doc.value[key];
+          total++;
+          for(var form in cid) {
+            if(!_forms_dict[form]) {
+              _forms_dict[form] = {'new':0,'done':0,'working':0,'total':0};
+            }
+            _forms_dict[form][cid[form]]++;
+            _forms_dict[form]['total']++;
+          }
+        }
+        for(var key in _forms_dict) {
+          forms.push({'type':key,'content':{
+            'working':_forms_dict[key]['new'] + _forms_dict[key]['working'],
+            'done':_forms_dict[key]['done'],
+            'total':_forms_dict[key]['total']
+          }});
+        }
+        this.set('total',total);
+        this.set('list',forms);
+        this.set('ts',ts);          
+      }
+    });
+    
+  </script>
+</dom-module>

@@ -1,0 +1,98 @@
+<link rel="import" href="../../bower_components/app-leveldb/app-leveldb.html">
+<link rel="import" href="../../bower_components/app-leveldb/app-leveldb-query.html">
+<link rel="import" href="../../bower_components/app-leveldb/app-leveldb-sync.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="./local/obecstudent-card.html">
+
+<!--
+`studentcare-db`
+Polymer Component for StudentCare Database project
+
+@demo demo/index.html 
+-->
+
+<dom-module id="studentcare-db">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        @apply --layout-vertical;
+      }
+
+      .iron-selected {
+        background: #eee;
+      }
+
+      paper-dropdown-menu {
+        margin-right:20px;
+      }
+
+    </style>
+
+    <div class="layout horizontal">
+      <paper-progress value="{{synced}}"
+         class="flex"
+         max="{{total}}">
+      </paper-progress>
+    </div>
+
+    <app-leveldb
+      url="{{url}}"
+      db-name="{{remoteDb}}"
+      app="{{app}}"
+      jwt-token="{{jwtToken}}">
+    </app-leveldb>
+
+    <app-leveldb-query
+      app="{{app}}"
+      view-name="{{viewName}}"
+      query="{{query}}"
+      data="{{data}}">
+    </app-leveldb-query>
+
+    <app-leveldb-sync
+      name="{{localDb}}"
+      app="{{app}}"
+      total="{{total}}"
+      index="{{data}}"
+      on-ready="_localDbReady"
+      schema="{{schema}}"
+      synced="{{synced}}">
+    </app-leveldb-sync>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'studentcare-db',
+      properties: {
+        jwtToken:{
+          type:String
+        },
+        schema:Object,
+        query:Object,
+        db:{
+          type:Object,
+          readOnly:true,
+          notify:true
+        },
+        ready:{
+          type:Boolean,
+          readOnly:true,
+          notify:true,
+          value:false
+        }
+      },
+      _localDbReady:function(e) {
+        this._setDb(e.detail.db);
+        this._setReady(true);
+      }
+    });
+  </script>
+</dom-module>

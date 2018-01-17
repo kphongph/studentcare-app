@@ -1,0 +1,167 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="sdq-radio">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+
+      :host {
+        @apply --layout-vertical;
+        /*@apply --paper-font-caption;*/
+        background-color: white;
+        display: block;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        /*font-size: 100%;*/
+      }
+
+      paper-radio-button {
+        font-family: 'Athiti', sans-serif;
+        /*font-size: 100%;*/
+      }
+
+      /*iron-icon {
+        margin:3px;
+        padding:0px;
+        background-color:white
+      }*/
+
+      .invalid {
+        border: 1px solid red;
+      }
+      .valueText {
+        margin-right:10px;
+      }
+
+      @media (min-width:400px) {
+      :host {
+        /*@apply --paper-font-body1;*/
+        display: block;
+      }
+
+      .bg-white{
+        background-color: white;
+      }
+      /*iron-icon {
+        padding:2px;
+        background-color:white
+      }
+      iron-icon.y {
+        fill:green;
+      }
+      iron-icon.m {
+        fill:grey;
+      }
+      iron-icon.n {
+        fill:red;
+      }
+      div {
+        background-color:var(--paper-grey-100);
+      }
+      div.y {
+        background-color:var(--paper-green-100);
+      }
+      div.m {
+        background-color:var(--paper-yellow-100);
+      }
+      div.n {
+        background-color:var(--paper-red-100);
+      }
+      .invalid {
+        border: 1px solid #ee0000;
+      }*/
+    }
+    </style>
+    <div class="layout vertical bg-white" id="main">
+      <slot class="font-face"></slot>
+      <paper-radio-group selected="{{value}}">
+        <paper-radio-button name="y">จริง</paper-radio-button>
+        <paper-radio-button name="m">ค่อนข้างจริง</paper-radio-button>
+        <paper-radio-button name="n">ไม่จริง</paper-radio-button>
+      </paper-radio-group>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'sdq-radio',
+      listeners : {
+        'tap':'regularTap'
+      },
+      properties: {
+        value:{
+          type:String,
+          notify:true,
+          observer:'_valueChanged'
+        },
+        label:{
+          type:String
+        },
+        disabled: {
+          type:Boolean,
+          value:false
+        },
+				no: {
+					type:String
+				},
+        required:{
+          type:Boolean,
+          value:false,
+          reflectToAttribute:true
+        },
+        _valueStr:{
+          type:String,
+          computed:'_labelValue(value)'
+        }
+      },
+      behaviors:[
+        Polymer.IronValidatableBehavior
+      ],
+      validate:function() {
+        if(this.required) {
+          this.invalid = this.value?false:true;
+          if(this.invalid) {
+            this.$.main.classList.add('invalid');
+            return false;
+          } else {
+            this.$.main.classList.remove('invalid');
+          }
+        }
+        return true;
+      },
+      regularTap:function(e) {
+        if(!this.disabled) {
+          var value_list = ['y','m','n'];
+          var idx = value_list.indexOf(this.value)+1;
+          this.set('value',idx<3?value_list[idx]:value_list[0]);
+          this.fire('change',{});
+        }
+      },
+      _valueChanged:function() {
+        if(this.value == 'y' || this.value == 'm') {
+          this.type='check';
+        } else {
+          if(this.value) {
+            this.type='clear';
+          } else {
+            this.type='';
+          }
+        }
+       // this.validate();
+      },
+      _labelValue:function(value) {
+        var dict = {'m':'ค่อนข้างจริง','y':'จริง','n':'ไม่จริง'};
+        return dict[value];
+      }
+    });
+  </script>
+</dom-module>

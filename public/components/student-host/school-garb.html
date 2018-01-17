@@ -1,0 +1,264 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="school-garb">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply --layout-vertial;
+        font-family: 'Athiti', sans-serif;
+        /*background-color: white;*/
+        --paper-input-container-label: {
+          font-family: 'Athiti', sans-serif;
+        };
+        --paper-input-container-input: {
+          font-family: 'Athiti', sans-serif;
+        }
+      }
+      .font-face {
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+        margin-left: 20px;
+      }
+      .font-face-big {
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+      }
+      .font-face-line {
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+        text-decoration: underline;
+      }
+
+      .margin-bottom{
+        @apply --layout-horizontal;
+        @apply --layout-end;
+      }
+
+      .margin-gen{
+        @apply --layout-horizontal;
+        @apply --layout-end;
+        margin-bottom: 10px;
+      }
+
+      paper-input{
+        margin-left: 5px;
+      }
+      paper-dropdown-menu.custom {
+        --paper-input-container-label: {
+          font-family: 'Athiti', sans-serif;
+        };
+        --paper-input-container-input: {
+          font-family: 'Athiti', sans-serif;
+        }
+       }
+      paper-dropdown-menu.marginleft{
+       margin-left: 5px;
+       width: 90%;
+      }
+      paper-item{
+        width:150px;
+        font-family: 'Athiti', sans-serif;
+        font-size: 14px;
+      }
+      iron-image{
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 300px;
+        height: 300px;
+        border-style: solid;
+        border-color: black;
+      }
+      paper-checkbox{
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
+      }
+      .center-justified{
+        @apply --layout-horizontal;
+        @apply --layout-center-justified;
+      }
+    </style>
+    <div class="layout horizontal">
+      <div class="flex-4">
+      <paper-dropdown-menu label="ชุด" class="marginleft custom">
+        <paper-listbox class="dropdown-content"
+          slot="dropdown-content" 
+          selected="{{selected}}" 
+          attr-for-selected="value">
+          <template is="dom-repeat" items="{{suite}}">      
+            <paper-item value="{{item}}">
+              {{item}}
+            </paper-item>
+          </template>
+        </paper-listbox>
+      </paper-dropdown-menu>
+      </div>
+      <div class="flex-4">
+        <paper-dropdown-menu label="ระดับชั้นปี" class="marginleft custom">
+          <paper-listbox class="dropdown-content"
+            slot="dropdown-content" 
+            selected="{{selected}}" 
+            attr-for-selected="value">
+            <template is="dom-repeat" items="{{_class}}">      
+              <paper-item value="{{item}}">
+                {{item}}
+              </paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+        </div>
+        <div class="flex-1 font-face-big margin-gen">สำหรับเพศ</div>
+        <div class="flex-3 margin-bottom">
+          <paper-radio-group aria-labelledby="label1" selected="{{value.type}}">
+            <paper-radio-button name="หญิง" class ="font-face">หญิง</paper-radio-button>
+            <paper-radio-button name="ชาย" class ="font-face">ชาย</paper-radio-button>
+          </paper-radio-group>
+        </div>
+    </div>
+      <div class="layout horizontal">
+        <div class="flex-6 center-justified">
+          <iron-image sizing="contain" src="{{imgFull}}"></iron-image>
+        </div>
+        <div class="flex-6 center-justified">
+          <iron-image sizing="contain" src="{{imgMid}}"></iron-image>
+        </div>
+      </div>
+      <div class="layout horizontal">
+        <div class="flex-6 center-justified font-face-line">รูปถ่ายเต็มตัว</div>
+        <div class="flex-6 center-justified font-face-line">รูปถ่ายครึ่งตัว</div>
+      </div>
+      <div class="flex font-face-big font-face-line">คำบรรยายคุณลักษณะ</div>
+      <div class="flex font-face-big margin-bottom">เสื้อ</div>
+      <div class="layout horizontal ">
+        <div class="flex-4"><paper-input label="แบบ" value=""></paper-input></div>
+        <div class="flex-4"><paper-input label="เนื้อผ้า" value=""></paper-input></div>
+        <div class="flex-4"><paper-input label="สี" value=""></paper-input></div>
+      </div>
+      <div class="flex font-face-big margin-bottom">การปัก</div>
+        <div class="layout horizontal ">
+          <div class="flex-6">
+            <paper-checkbox>มีการปักชื่อนักเรียน</paper-checkbox>
+            <paper-input label="ที่ตำแหน่ง" value=""></paper-input>
+          </div>
+          <div class="flex-6">
+            <paper-checkbox>มีการปักรหัสประจำตัวนักเรียน</paper-checkbox>
+            <paper-input label="ที่ตำแหน่ง" value=""></paper-input>
+          </div>
+        </div>
+        <div class="layout horizontal ">
+          <div class="flex-6">
+            <paper-checkbox>มีการปักอักษรย่อโรงเรียน</paper-checkbox>
+            <paper-input label="ที่ตำแหน่ง" value=""></paper-input>
+          </div>
+          <div class="flex-6">
+            <paper-checkbox>มีการปักตราสัญลักษณ์โรงเรียน</paper-checkbox>
+            <paper-input label="ที่ตำแหน่ง" value=""></paper-input>
+          </div>
+        </div>
+        <div class="flex font-face-big margin-bottom">เครื่องหมายประดับ</div>
+        <div class="layout horizontal ">
+          <div class="flex">
+            <paper-checkbox>มีการติด/ปัก เครื่องหมายอื่น ๆ ได้แก่</paper-checkbox>
+            <paper-input label="โปรดระบุ" value=""></paper-input>
+            <paper-input label="ที่ตำแหน่ง" value=""></paper-input>
+          </div>
+        </div>
+        <div class="flex font-face-big margin-bottom">กางเกง/กระโปรง</div>
+        <div class="layout horizontal ">
+          <div class="flex-4"><paper-input label="แบบ" value=""></paper-input></div>
+          <div class="flex-4"><paper-input label="เนื้อผ้า" value=""></paper-input></div>
+          <div class="flex-4"><paper-input label="สี" value=""></paper-input></div>
+        </div>
+        <div class="layout horizontal ">
+          <div class="flex-6"><paper-input label="ถุงเท้าสี" value=""></paper-input></div>
+          <div class="flex-6"><paper-input label="รองเท้าสี" value=""></paper-input></div>
+        </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'school-garb',
+      properties: {
+        hostId: {
+          type:String,
+          notify:true
+        },
+        suite:{
+          type:Array,
+          notify: true,
+          computed:'_suiteList()'
+        },
+        _class:{
+          type:Array,
+          notify: true,
+          computed:'_classList()'
+        },
+        selected:{
+          type:String,
+          notify:true
+        },
+        imgFull:{
+          type:String,
+          notify:true,
+          computed:'_imgFull()'
+        },
+        imgMid:{
+          type:String,
+          notify:true,
+          computed:'_imgMid()'
+        }
+      },
+      _suiteList:function() {
+        var _suite=[];
+          _suite.push("นักเรียน",
+          "พละ",
+          "ผ้าไทย",
+          "กีฬา",
+          "ลูกเสือสำรอง",
+          "ลูกเสือสามัญ",
+          "ยุวกาชาด",
+          "เนตรนารี");
+          return _suite;
+      },
+      _classList() {
+        var _class=[];
+        _class.push("ประถมศึกษาปีที่ 1",
+        "ประถมศึกษาปีที่ 2",
+        "ประถมศึกษาปีที่ 3",
+        "ประถมศึกษาปีที่ 4",
+        "ประถมศึกษาปีที่ 5",
+        "ประถมศึกษาปีที่ 6",
+        "มัธยมศึกษาปีที่ 1",
+        "มัธยมศึกษาปีที่ 2",
+        "มัธยมศึกษาปีที่ 3",
+        "มัธยมศึกษาปีที่ 4",
+        "มัธยมศึกษาปีที่ 5",
+        "มัธยมศึกษาปีที่ 6");
+          return _class;
+      },
+      _imgFull:function(){
+        return this.resolveUrl("../images/img-full.png");
+      },
+      _imgMid:function(){
+        return this.resolveUrl("../images/img-mid.png");
+      },
+    });
+  </script>
+</dom-module>

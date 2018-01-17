@@ -1,0 +1,123 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link rel="import" href="progress-by-room.html">
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="student-room">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        @apply --layout-vertial;
+        font-family: 'Athiti', sans-serif;
+      }
+
+      paper-item {
+        border-bottom: 1px solid var(--paper-grey-500);
+        /*สีเส้นระหว่างกล่องสีเส้นด้ารล่าง*/
+      }
+
+      paper-item:hover{
+        cursor:hand;
+        cursor:pointer;
+      }
+
+      paper-item-body {
+        --paper-item-body-two-line-min-height: 48px;
+        /*ความกว้างของกล่องชื่อเด็กแต่ละคน*/
+      }
+
+      .icon-name {
+        display: inline-block;
+        height: 36px;
+        width: 36px;
+        border-radius: 50%;
+        background: #f44336;
+        line-height: 36px;
+        font-size: 18px;
+        color: #ffffff;
+        text-align: center;
+        margin-right: 15px;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+      }
+    </style>
+
+    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+    </app-localstorage-document>
+
+    <iron-ajax id="listAjax"
+       method="POST"
+       url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
+       content-type="application/json"
+       headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+       last-response="{{students}}"
+       body$='{"query":{"class":"{{level}}","room":"{{room}}","year":{{year}},"hostid":"{{host}}"}}'>
+    </iron-ajax>
+    <paper-listbox id="listbox"
+      selected="{{student}}"
+      on-iron-select="_selected" attr-for-selected="name">
+      <template is="dom-repeat" items="{{students}}">
+        <paper-item name="{{item._id}}">
+          <!--<div class="avatar" slot="item-icon"></div>-->
+          <div class="icon-name font-face">{{_firstLetter(item.name)}}</div>
+          <!--{{_firstLetter(item.key.4.2)}}-->
+          <paper-item-body two-line>
+            <div class="font-face">{{item.name}} {{item.lastname}}</div>
+            <div secondary class="font-face">{{item.cid}}</div>
+          </paper-item-body>
+          <!--<paper-icon-button icon="star" alt="favourite this!">
+          </paper-icon-button>-->
+        </paper-item>
+      </template>
+    </paper-listbox>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'student-room',
+      properties: {
+        host: {
+          type:String,
+          reflectToAttribute:true
+        },
+        level: {
+          type:String,
+          reflectToAttribute:true
+        },
+        room: {
+          type:String,
+          reflectToAttribute:true
+        },
+        year: {
+          type:String,
+          reflectToAttribute:true
+        }
+      },
+      observers: [
+        '__execute(jwtToken,host,level,room,year)',
+      ],
+      __execute: function (jwtToken, host, level, room,year) {
+	if(!jwtToken || !jwtToken.token || host == null || level == null
+           || year == null || level.length == 0 || room.length == 0
+	   || room == null) return;
+        this.$.listAjax.generateRequest();
+      },
+      _firstLetter: function (str) {
+        return str[0];
+      },
+      _selected: function (e) {
+        this.fire('student-selected', { '_id': e.detail.item.name});
+        this.$.listbox.selected=null;
+      }
+    });
+  </script>
+</dom-module>

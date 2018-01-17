@@ -15,7 +15,7 @@ app.use(cors());
 /*
 var stream = require('./stream');
 // logview.config({
-//   'url':'https://maas.nuqlis.com:9000/api/log/students_care',
+//   'url':'https://thaieduforall.org:9000/api/log/students_care',
 //   'jwtToken':config.token,
 //   'mainDb':stream.db,
 //   'streamHandler':stream.createStreamHandlers(config)
@@ -29,7 +29,10 @@ app.post('/login',function(req,res) {
   //console.log(req.body.user,req.body.pass);
   request({
    'method':'POST',
+<<<<<<< HEAD
     // 'url':'https://maas.nuqlis.com:9000/login',
+=======
+>>>>>>> 5edbd97420b92712ea186f1c8db142ef86b650f1
    'url':'https://thaieduforall.org:9000/login',
    'headers':{
     'user':req.body.user,

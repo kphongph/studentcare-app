@@ -1,0 +1,146 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="student-profile">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors">
+       :host {
+        /*@apply --layout-vertical;*/
+        font-family: 'Athiti', sans-serif;
+        display: block;
+      }
+
+      .font-face {
+        font-family: 'Athiti', sans-serif;
+        font-weight: bold;
+        text-decoration: underline;;
+      }
+
+      .user-style{
+        @apply --layout-horizontal;
+        @apply --layout-start-justified;
+        /*border-radius: 5px 5px 0px 0px;*/
+        border: 2px;
+        border-style: solid;
+        border-color: #e65540;
+        background-color: white;
+        height: 130px;
+      }
+
+      iron-image{
+        margin-top:5px;
+        border-radius: 50%;
+        margin-left: 10px;
+        width: 120px;
+        height: 120px;
+      }
+    </style>
+
+    <!--<app-localstorage-document
+      key="jwtToken"
+      data="{{token}}">
+    </app-localstorage-document>
+
+    <iron-ajax
+      id="getSchool"
+      url="https://thaieduforall.org:8000/v2/obec/school/query"
+      method="POST"
+      headers$='{"Authorization":"JWT {{token.token}}"}'
+      content-type="application/json"
+      on-response="_onSchoolResponse"
+      body$='{"query":{"hostid":"{{hostid}}"}}'>
+    </iron-ajax> slot="item-icon"-->
+
+    <div class="flex user-style">
+      <div class="flex layout horizontal">
+        <div class="flex-3">
+          <iron-image sizing="cover" src="{{imgDefault}}"></iron-image>
+        </div>
+        <div class="flex-9 layout vertical">
+          <div class="font-face">ข้อมูลนักเรียน</div>
+          <div>ชื่อ-นามสกุล: {{students.title}}{{students.name}} {{students.lastname}}</div>
+          <div>เลขประจำตัวประชาชน: {{students.cid}}</div>
+          <div>รหัสประจำตัวนักเรียน: {{students.studentid}} &nbsp;&nbsp;&nbsp; ชั้น: {{students.class}}/{{students.room}}</div>
+          <!--<div>โรงเรียน: {{school.host}}</div>-->
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'student-profile',
+      properties: {
+        token: {
+          type:Object,
+          value:{}
+        },
+        hostid: {
+          type:String,
+          notify:true,
+          reflectToAttribute:true
+        },
+        students: {
+          type:Object,
+          notify:true,
+          reflectToAttribute:true,
+          value:function() {
+            return {};
+          }
+        },
+        imgDefault:{
+          type:String,
+          notify:true,
+          computed:'_imgDefault(students.year,students.class,students.cid)'
+        }
+        /*school:{
+          type:Object,
+          notify:true,
+          value:function() {
+            return {};
+          }
+        }*/
+      },
+      _imgDefault:function(year,classroom,cid){
+        if(year==null || classroom==null || cid==null) return;
+        var url = "https://nuqlis.blob.core.windows.net/profile/"+year+classroom.substr(classroom.length - 1)+cid;
+        //var url = "https://nuqlis.blob.core.windows.net/profile/201710000031010199";
+
+        var request;
+        if(window.XMLHttpRequest){
+          request = new XMLHttpRequest();
+        }else{
+          request = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        request.open('GET', url, false);
+        request.send(); 
+        if (request.status === 404) {
+          return this.resolveUrl("./images/student_img.png");
+        }else{
+          return url;
+        }
+      },
+      /*_onSchoolResponse:function(e) {
+        //console.log('test',e.detail.response);
+        var response = e.detail.response;
+        if(response.length == 1) {
+          var doc = response[0];
+          //console.log('school',doc);
+          this.set('school',doc);
+        }
+      },
+      observers: [
+        '__execute(token.token,hostid)',
+      ],
+      __execute: function (token,hostid) {
+        if(!token || !hostid) return;
+        this.$.getSchool.generateRequest();
+      }*/
+    });
+  </script>
+</dom-module>

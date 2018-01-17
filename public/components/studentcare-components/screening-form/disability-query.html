@@ -1,0 +1,218 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="disability-query">
+ <template>
+
+   <app-localstorage-document
+     key="jwtToken"
+     data="{{jwtToken}}">
+   </app-localstorage-document>
+
+   <iron-ajax
+     id="listDisability"
+     url="https://thaieduforall.org:8000/v2/obec/students_care/query"
+     method="POST"
+     headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+     content-type="application/json"
+     body$='{"query":{"doc_type":"assignment","student.cid":"{{cid}}","dmc.year":"{{year}}"}}'
+     on-response="handleResponse">
+   </iron-ajax>
+
+ </template>
+ <script>
+  Polymer({
+    is:"disability-query",
+    properties:{
+      cid:{
+        type:String,
+        notify:true,
+        reflectToAttribute:true
+      },
+      year:{
+        type:String,
+        notify:true,
+        reflectToAttribute:true
+      },
+      document: {
+        type:Array,
+        notify:true
+      },
+      isVisual:{
+        type:Boolean,
+        notify:true,
+        reflectToAttribute:true,
+        computed:'__computedIsVisual(document)'
+      },
+      isHearing:{
+        type:Boolean,
+        notify:true,
+        reflectToAttribute:true,
+        computed:'__computedIsHearing(document)'
+      },
+      isHealth:{
+        type:Boolean,
+        notify:true,
+        reflectToAttribute:true,
+        computed:'__computedIsHealth(document)'
+      },
+      isAutistic:{
+        type:Boolean,
+        notify:true,
+        reflectToAttribute:true,
+        computed:'__computedIsAutistic(document)'
+      },
+      isLearning:{
+        type:Boolean,
+        notify:true,
+        reflectToAttribute:true,
+        computed:'__computedIsLearning(document)'
+      },
+      isIntelligence:{
+        type:Boolean,
+        notify:true,
+        reflectToAttribute:true,
+        computed:'__computedIsIntelligence(document)'
+      },
+      isCommunication:{
+        type:Boolean,
+        notify:true,
+        reflectToAttribute:true,
+        computed:'__computedIsCommunication(document)'
+      },
+      isBehavior:{
+        type:Boolean,
+        notify:true,
+        reflectToAttribute:true,
+        computed:'__computedIsBehavior(document)'
+      }
+    },
+    observers:[
+      'executeQuery(jwtToken.token,cid,year)'
+    ],
+    executeQuery:function(token,cid,year) {
+      //console.log(token,cid,year);
+      if(!token || !cid || !year) return;
+      this.$.listDisability.generateRequest();
+    },
+    handleResponse:function(e) {
+      var res = e.detail.response;
+      if(res.length == 0) return;
+      var _document = [];
+      for(var i=0;i<res.length;i++){
+        if((/^disability/i).test(res[i].form_type)) {
+          //console.log(res[i].form_type);
+          _document.push(res[i]);
+        }
+      }
+      //console.log(_document);
+      this.set('document',_document);
+    },
+     __computedIsVisual(visual) {
+       if(visual.length == 0) return;
+       for(var i=0;i<visual.length;i++){
+         if(visual[i].form_type=="disability-visual-form") {
+           if(!visual[i].form_result._risk) {
+             return false;
+           }else{
+             return true;
+           }
+         }
+       }
+     },
+     __computedIsHearing(hearing) {
+       //console.log('hearing',hearing);
+       if(hearing.length == 0) return;
+       for(var i=0;i<hearing.length;i++){
+         if(hearing[i].form_type=="disability-hearing-form") {
+           if(!hearing[i].form_result._risk){
+             return false;
+           }else{
+             return true;
+           }
+         }
+       }
+     },
+     __computedIsHealth(health) {
+       //console.log('health',health);
+       if(health.length == 0) return;
+       for(var i=0;i<health.length;i++){
+         if(health[i].form_type=="disability-health-form") {
+           if(!health[i].form_result._risk){
+             return false;
+           }else{
+             return true;
+           }
+         }
+       }
+     },
+     __computedIsAutistic(autistic) {
+       //console.log('autistic',autistic);
+       if(autistic.length == 0) return;
+       for(var i=0;i<autistic.length;i++){
+         if(autistic[i].form_type=="disability-autistic-form") {
+           if(!autistic[i].form_result._risk){
+             return false;
+           }else{
+             return true;
+           }
+         }
+       }
+     },
+     __computedIsLearning(learning) {
+       //console.log('learning',learning);
+       if(learning.length == 0) return;
+       for(var i=0;i<learning.length;i++){
+         if(learning[i].form_type=="disability-learning-elementary-form" ||
+            learning[i].form_type=="disability-learning-secondary-form") {
+           if(!learning[i].form_result._risk){
+             return false;
+           }else{
+             return true;
+           }
+         }
+       }
+     },
+     __computedIsIntelligence(intelligence) {
+       //console.log('intelligence',intelligence);
+       if(intelligence.length == 0) return;
+       for(var i=0;i<intelligence.length;i++){
+         if(intelligence[i].form_type=="disability-intelligence-form") {
+           if(!intelligence[i].form_result._risk){
+             return false;
+           }else{
+             return true;
+           }
+         }
+       }
+     },
+     __computedIsCommunication(communication) {
+       //console.log('communication',communication);
+       if(communication.length == 0) return;
+       for(var i=0;i<communication.length;i++){
+         if(communication[i].form_type=="disability-communication-form") {
+           if(!communication[i].form_result._risk){
+             return false;
+           }else{
+             return true;
+           }
+         }
+       }
+     },
+     __computedIsBehavior(behavior) {
+       //console.log('behavior',behavior);
+       if(behavior.length == 0) return;
+       for(var i=0;i<behavior.length;i++){
+         if(behavior[i].form_type=="disability-behavior-form") {
+           if(!behavior[i].form_result._risk){
+             return false;
+           }else{
+             return true;
+           }
+         }
+       }
+     },
+  });
+ </script>
+</dom-module>

@@ -1,0 +1,504 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<link rel="import" href="../forms.html">
+<link rel="import" href="form-link.html">
+
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+
+<dom-module id="report-room">
+    <template>
+        <style include="iron-flex iron-flex-alignment iron-flex-factors">
+           :host {
+            @apply --layout-vertical;
+            background-color: #fff;
+          }
+
+          .container {
+            @apply --layout-horizontal;
+            @apply --layout-center-justified;
+          }
+
+          .form_group {
+            @apply --paper-font-subhead;
+            padding: 10px;
+            background: var(--paper-grey-100);
+          }
+
+          .content {
+            background: white;
+          }
+
+          .header {
+            font-family: 'Athiti', sans-serif;
+            font-size: 25px;
+            font-weight: bold;
+          }
+
+          .header2 {
+            @apply --layout-center-justified;
+            font-family: 'Athiti', sans-serif;
+            /* font-size: 25px; */
+            /* font-weight: bold; */
+          }
+
+          .note {
+            border: 2px solid #44ada8;
+            font-family: 'Athiti', sans-serif;
+            background: #fff;
+            color: #000;
+          }
+
+          iron-icon {
+            width:25px;
+            height:25px;
+            color: var(--paper-red-500);
+          }
+
+          .row-content {
+            padding:10px;
+          }
+
+          .bottom-border {
+            border-bottom: 1px solid #efefef;
+          }
+
+          .layout-note {
+            @apply --layout-horizontal;
+            margin-bottom: 5px;
+          }
+
+          .font-face {
+            @apply --paper-font-subhead;
+            font-family: 'Athiti', sans-serif;
+            font-size: 18px;
+          }
+
+          .middle-text {
+            @apply --layout-horizontal;
+            @apply --layout-center-justified;
+            @apply --layout-flex-1;
+          }
+
+          .cell {
+            padding:5px;
+            min-height:30px;
+            width:100%;
+            margin:2px;
+            border:1px solid #efefef;
+          }
+
+          .header-hl {
+            background: var(--paper-grey-100);
+          }
+
+          app-toolbar {
+            background-color: #e65540;
+            color: white;
+          }
+
+          paper-dropdown-menu.custom {
+            --paper-input-container-focus-color: #000; 
+            --paper-input-container-label: {
+              margin-left: 10px;
+              color:#000;
+              font-family: 'Athiti', sans-serif;
+            };
+            --paper-input-container-input: {
+              margin-left: 10px;
+              color:#000;
+              font-family: 'Athiti', sans-serif;
+            }
+          }
+
+          paper-listbox{
+            /*width: 350px;*/
+            font-family: 'Athiti', sans-serif;
+            font-size: 14px;
+            color:#000;
+            /*background-color: #2c3ea1;*/
+          }
+
+          paper-item{
+            width: 120px;
+            font-family: 'Athiti', sans-serif;
+            font-size: 14px;
+            color:#000;
+          }
+        </style>
+
+        <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
+        </app-localstorage-document>
+
+
+        <iron-ajax id="getAjax"
+          method="GET"
+          headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+          url$="https://thaieduforall.org:8000/v2/obec/_studentcare_report/data/students_{{year}}_{{hostid}}_{{level}}_{{room}}"
+          content-type="application/json"
+          handle-as ="json"
+          on-response="handleResponse">
+        </iron-ajax>
+
+        <app-toolbar>
+          <paper-icon-button icon="arrow-back" on-tap="_back" hidden$="{{isFirstPage(page)}}">
+          </paper-icon-button>
+          <div class="font-face">ผลการประเมินรายห้อง {{sname}}</div>
+          <!-- <div class="font-face">ข้อมูล ณ วันที่ {{ts}}</div> -->
+        </app-toolbar>
+
+        <iron-ajax id="listLevel"
+          method="POST"
+          headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+          url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
+          content-type="application/json"
+          handle-as="json"
+          body='{"query":{"hostid":"{{hostid}}"},"distinct":"class"}'
+          last-response="{{levelList}}">
+        </iron-ajax>
+
+        <iron-ajax id="listRoom"
+          method="POST"
+          headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
+          url="https://thaieduforall.org:8000/v2/obec/student_data_db/query"
+          content-type="application/json"
+          handle-as="json"
+          body='{"query":{"hostid":"{{hostid}}","class":"{{level}}"},"distinct":"room"}'
+          last-response="{{roomList}}">
+        </iron-ajax>
+
+        <iron-pages selected="{{page}}" fallback-selection="0">
+          <div class="layout vertical font-face">
+
+            <div class="layout horizontal font-face">
+              <paper-dropdown-menu label="ระดับชั้น" class="custom">
+                <paper-listbox slot="dropdown-content" attr-for-selected="name" selected="{{level}}">
+                  <!--<template is="dom-repeat" items="{{levelList}}">
+                    <paper-item name="{{item}}">{{item}}</paper-item>
+                  </template>-->
+                  <template is="dom-repeat" items="{{levelList}}"
+                    sort="levelSorter">
+                  <paper-item name="{{item}}">{{item}}</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+
+              <paper-dropdown-menu label="ห้อง" class="custom">
+                <paper-listbox slot="dropdown-content" attr-for-selected="name" selected="{{room}}">
+                  <template is="dom-repeat" items="{{roomList}}">
+                    <paper-item name="{{item}}">{{item}}</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+
+            <div class="flex note">
+              <div class="layout vertical">
+                <div>
+                  <iron-icon src="{{imgNote}}"></iron-icon> หมายเหตุ
+                </div>
+                <div class="layout horizontal">
+                  <div class="flex-1">1 - ผลการเรียน</div>
+                  <div class="flex-1">4 - สภาพครอบครัว</div>
+                  <div class="flex-1">7 - ความพิการทางร่างกาย</div>
+                  <div class="flex-1">10 - เพศ</div>
+                </div>
+                <div class="layout horizontal">
+                  <div class="flex-1">2 - การเข้าเรียน</div>
+                  <div class="flex-1">5 - ค่า BMI</div>
+                  <div class="flex-1">8 - SDQ</div>
+                  <div class="flex-1">11 - พิการด้านการเรียนรู้</div>
+                </div>
+                <div class="layout horizontal">
+                    <div class="flex-1">3 - เศรษฐกิจ</div>
+                    <div class="flex-1">7 - โรคประจำตัว</div>
+                    <div class="flex-1">9 - EQ</div>
+                    <div class="flex-1">12 -บกพร่องทางการเรียนรู้</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="layout horizontal">
+              <template is="dom-if" if="[[list.0]]">
+                <div class="flex-2 font-face form_group cell">ชื่อ-นามสกุล</div>
+              </template>
+              <div class="flex-10 layout horizontal center">
+                <template is="dom-repeat" items="[[list.0.content]]">
+                  <div class="flex-1 font-face layout horizontal center-justified">
+                    <div class="layout horizontal cell center-justified header-hl">{{_plusOne(index)}}</div>
+                  </div>
+                </template>
+              </div>
+            </div>
+            <!--chkrisk : {{chkRisk}}-->
+            <template is="dom-repeat" as="row" items="[[list]]">
+              <div class="layout horizontal">
+                <div class="flex-2 font-face row-content cell">
+                  <template is="dom-if" if="{{row.doc}}">
+                    <form-link message="{{row.name}}" doc-id="{{row.doc}}">
+                    </form-link>
+                  </template>
+                  <template is="dom-if" if="{{!row.doc}}">
+                    <div style="padding:5px;">{{row.name}}</div>
+                  </template>
+                </div>
+                <div class="flex-10 layout horizontal center">
+                  <template is="dom-repeat" items="[[row.content]]">
+                    <div class="flex-1 font-face layout horizontal center-justified">
+                      <div class="layout horizontal cell center-justified">
+                        <template is="dom-if" if="{{item}}">
+                          <iron-icon src="{{imgRedRisk}}"></iron-icon>
+                        </template>
+                        <template is="dom-if" if="{{!item}}">
+                          <iron-icon src="{{imgGreenRisk}}"></iron-icon>
+                        </template>
+                      <!--<template is="dom-if" if="{{item}}">
+                        <iron-icon icon="check"></iron-icon>
+                      </template>-->
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div id="formEntry">
+            FormEntry
+          </div>
+        </iron-pages>
+      </template>
+
+      <script>
+        Polymer({
+          is: "report-room",
+          properties: {
+            hostid: {
+              type: String,
+              notify: true
+            },
+            level: {
+              type: String,
+              notify: true
+            },
+            room: {
+              type: String,
+              notify: true
+            },
+            year: {
+              type: String,
+              notify: true
+            },
+            list: {
+              type: Array,
+              notify: true,
+              value: function () {
+                return [];
+              }
+            },
+            imgNote: {
+              type: String,
+              notify: true,
+              computed: '_imgNote()'
+            },
+            imgGreenRisk: {
+              type: String,
+              notify: true,
+              computed: '_imgGreenRisk()'
+            },
+            imgRedRisk: {
+              type: String,
+              notify: true,
+              computed: '_imgRedRisk()'
+            },
+            chkRisk: {
+              type: Array,
+              notify: true,
+              computed: '_chkRisk(list)'
+            }
+          },
+          _equal: function(value1, value2) {
+            return value1 === value2;
+          },
+          _imgNote: function () {
+            return this.resolveUrl("./../images/note.png");
+          },
+          _imgGreenRisk: function () {
+            return this.resolveUrl("./../images/green.png");
+          },
+          _imgRedRisk: function () {
+            return this.resolveUrl("./../images/red.png");
+          },
+          _chkRisk: function (list) {
+            //console.log(list);
+            if (!list) return;
+            var contents = "";
+            var _risk = [];
+            var _contents = [];
+            //var dhk = [];
+
+            list.forEach(function(chk) {
+              chk.content.forEach(function(risk) {
+                if(risk == true){
+                  contents ="2";
+                }else{
+                  contents = "1";
+                }
+                _contents.push({'name':chk.name,'_content': contents});
+              }); 
+              _risk.push({'name':chk.name,'content': _contents});
+            });
+
+            /*for(var i=0;i<_risk.length;i++){
+              for(var j=0;j<_risk[i].content.length;j++){
+                if(_risk[i].name == _risk[i].content[j].name){
+                  dhk.push({'name':_risk[i].name,'_contents': _risk[i].content[j]._content});
+                }
+              }
+            }*/
+            return _risk;
+          },
+          observers: [
+            '_execute(jwtToken.token,hostid)',
+            '_queryRoom(jwtToken.token,year,hostid,level,room)'
+          ],
+          listeners: {
+            'form-linked': '_formSelected'
+          },
+          isFirstPage: function (page) {
+            return page == 0;
+          },
+          _back: function () {
+            var reset = "";
+            this.set('sname',reset);
+            this.set('page', this.page - 1);
+          },
+          _formSelected: function (e) {
+            //console.log(e);
+            var node = this.$.formEntry;
+            while (node.firstChild) {
+              node.removeChild(node.firstChild);
+            }
+            this.set('page', 1);
+            this.$.formEntry.appendChild(e.detail.form);
+          },
+          _execute(token, hostid) {
+            if (!token || !hostid) return;
+            this.$.listLevel.generateRequest();
+          },
+          levelSorter: function(a,b) {
+            var start = ['อนุบาล','ประถมศึกษาปีที่','มัธยมศึกษาปีที่'];
+            var _a = a.split(' ')[0]; var _b = b.split(' ')[0];
+            //console.log(_a,_b);
+            if(start.indexOf(_a) == start.indexOf(_b)) {
+              return a.localeCompare(b);
+              } else {
+                return start.indexOf(_a) - start.indexOf(_b);
+              }
+            },
+          _queryRoom(token, year, host, level, room) {
+            if (!token || !year || !host) return;
+            if (level != null) {
+              this.$.listRoom.generateRequest();
+              if (room != null) {
+                this.$.getAjax.generateRequest();
+              }
+            }
+          },
+          _doc: function (item) {
+            return item.hasOwnProperty('doc');
+          },
+          _select: function (e) {
+            console.log(e.detail);
+          },
+          _plusOne:function(i) {
+            return i+1;
+          },
+          handleResponse(e) {
+            var doc = e.detail.response;
+            var content = doc.value;
+            var list = [];
+            var arr_index = [
+              ['name'],
+              [ 'screening-elementary-form'],
+              [ 'screening-elementary-grade'], // ผลการเรียน
+              ['screening-elementary-absent'], // ขาดเรียน
+              [], // economic
+              [], // family
+              [], // น้ำหนักส่วนสูง
+              [], // โรคประจำตัว
+              [
+                'disability-visual-form',
+                'disability-hearing-form',
+                'disability-communication-form'
+              ],
+              [ 'dl2-form'],
+              [ 'eq-teacher-form'],
+              [],
+              [ 'disability-intelligence-form',
+                'disability-health-form',
+                'disability-learning-elementary-form',
+                'disability-autistic-form',
+                'disability-behavior-form'
+              ],
+              ['game-form', 'st5-form', 'suicide8q-form', 'cdi-form']
+            ];
+
+            // var message_dict = {
+            //   'dl2-form':['เสี่ยง','ไม่เสี่ยง'],
+            //   'game-form':['ติดเกม','ไม่ติดเกม'],
+            //   'disability-intelligence-form':['เสี่ยงด้านความเรียนรู้']
+            // };
+
+            for (var cid in content) {
+              var row = [];
+              for (var i = 0; i < arr_index.length; i++) {
+                row.push(false);
+              }
+              var student = content[cid];
+              for (var attr in content[cid]) {
+                var col = -1;
+                for (var i = 0; i < arr_index.length; i++) {
+                  if (arr_index[i].indexOf(attr) != -1) {
+                    col = i;
+                    break;
+                  }
+                }
+                if (col != -1) {
+                  if(content[cid][attr].doc) {
+                    if(col == 1) {
+                      row[col] = content[cid][attr].doc;
+                    } else {
+                      row[col] = row[col] || content[cid][attr].risk;
+                    }
+                  } else {
+                    row[col] = content[cid][attr];
+                  }
+                }
+              }
+              list.push(row);
+            }
+            var tmp = [];
+            list.forEach(function(item) {
+              tmp.push({'name':item[0],'content':item.splice(2),'doc':item[1]});
+            });
+            //console.log(tmp);
+            this.set('list', tmp);
+          }
+        });
+      </script>
+</dom-module>

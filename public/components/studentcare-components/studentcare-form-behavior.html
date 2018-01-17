@@ -1,0 +1,52 @@
+<script>
+  StudentcareFormBehavior = {
+    properties : {
+      formType: {
+        type:String
+      },
+      document: {
+        type:Object,
+        reflectToAttribute: true,
+        notify:true
+      }
+    },
+    listeners : {
+      'form-action':'_onFormAction'
+    },
+    _reset : function() {
+    },
+    _validate : function() {
+      return true;
+    },
+    _evaluate : function() {
+      return {};
+    },
+    _onFormAction : function(e) {
+      if(e.detail.type == "save") {
+        this.set('document.value.status',"working");
+        if(this._validate()) {
+          var _result = this._evaluate();
+          this.set('document.value.status',"done");
+          this.set('document.value.form_result',_result);
+        }
+        e.target.$.control.save();
+      }
+
+      if(e.detail.type == "undo") {
+        this.set('document.value.status',"new");
+        this._reset();
+        e.target.$.control.save();
+      }
+      /*
+      if(e.detail.type == "process") {
+        if(this._validate()) {
+          var _result = this._evaluate();
+          this.set('document.value.status',"done");
+          this.set('document.value.form_result',_result);
+          e.target.$.control.save();
+        }
+      }
+      */
+    }
+  }
+</script>

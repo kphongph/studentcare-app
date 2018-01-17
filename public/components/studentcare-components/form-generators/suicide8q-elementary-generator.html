@@ -1,0 +1,27 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="with-result-sdq-behavior.html">
+
+<dom-module is="suicide8q-elementary-generator">
+ <script>
+  Polymer({
+    is:"suicide8q-elementary-generator",
+    behaviors:[
+     WithResultSdqBehavior
+    ],
+    properties:{
+      formType:{
+        type:String,
+        value:'suicide8q-form'
+      },
+      atLevel:{
+        type:Array,
+        value:function() {
+          return [
+            "ประถมศึกษาปีที่ 4"
+          ];
+        }
+      }
+    }
+  });
+ </script>
+</dom-module>

@@ -1,27 +1,50 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="studentcare-components/user-profile.html">
 
 <dom-module id="homepage-app">
  <template>
   <style is="customer-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+        @apply --layout-vertical;
+      }
+
     .content {
       margin-top: 30px;
       margin-right: 30px;
       /*width: 95%;*/
     }
   </style>
-  <div class="layout vertical">
+  <!--<div class="layout vertical">-->
     <div class="layout horizontal content">
       <div class="flex-6">&nbsp;</div>
       <div class="flex-6 "><user-profile></user-profile></div>
     </div>
-  </div>
+  <!--</div>-->
+    <div class="layout horizontal content">
+      <div class="flex-6">
+          <paper-collapse-item src="{{imgHome}}" header="Item with an image">
+            Lots of very interesting content.
+          </paper-collapse-item>
+      </div>
+      <div class="flex-6 ">&nbsp;</div>
+    </div>
  </template>
  <script>
   Polymer({
-    is:"homepage-app"
+    is:"homepage-app",
+    properties : {
+      imgHome:{
+        type:String,
+        notify:true,
+        computed:'_imgHome()'
+      }
+    },
+    _imgHome:function(){
+      return this.resolveUrl("./images/home.png");
+    },
   });
  </script>
 </dom-module>

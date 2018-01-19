@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="studentcare-components/user-profile.html">
 
@@ -16,6 +17,11 @@
       margin-right: 30px;
       /*width: 95%;*/
     }
+
+    iron-image{
+      @apply --layout-horizontal;
+      @apply --layout-center-justified;
+    }
   </style>
   <!--<div class="layout vertical">-->
     <div class="layout horizontal content">
@@ -25,10 +31,19 @@
   <!--</div>-->
     <div class="layout horizontal content">
       <div class="flex-6">
-          <paper-collapse-item src="{{imgHome}}" header="Item with an image">
+          <iron-image src="{{imgAssignment}}"></iron-image>
+          <!--<paper-collapse-item src="{{imgHome}}" header="Item with an image">
             Lots of very interesting content.
-          </paper-collapse-item>
+          </paper-collapse-item>-->
       </div>
+      <div class="flex-6 "><iron-image src="{{imgReport}}"></iron-image></div>
+    </div>
+    <div class="layout horizontal content">
+      <div class="flex-6"><iron-image src="{{imgHomevisit}}"></iron-image></div>
+      <div class="flex-6 "><iron-image src="{{imgSchool}}"></iron-image></div>
+    </div>
+    <div class="layout horizontal content">
+      <div class="flex-6"><iron-image src="{{imgStudentCare}}"></iron-image></div>
       <div class="flex-6 ">&nbsp;</div>
     </div>
  </template>
@@ -40,10 +55,50 @@
         type:String,
         notify:true,
         computed:'_imgHome()'
+      },
+      imgAssignment:{
+        type:String,
+        notify:true,
+        computed:'_imgAssignment()'
+      },
+      imgReport:{
+        type:String,
+        notify:true,
+        computed:'_imgReport()'
+      },
+      imgHomevisit:{
+        type:String,
+        notify:true,
+        computed:'_imgHomevisit()'
+      },
+      imgSchool:{
+        type:String,
+        notify:true,
+        computed:'_imgSchool()'
+      },
+      imgStudentCare:{
+        type:String,
+        notify:true,
+        computed:'_imgStudentCare()'
       }
     },
     _imgHome:function(){
       return this.resolveUrl("./images/home.png");
+    },
+    _imgAssignment:function(){
+      return this.resolveUrl("./images/banner_assignment.png");
+    },
+    _imgReport:function(){
+      return this.resolveUrl("./images/banner_report.png");
+    },
+    _imgHomevisit:function(){
+      return this.resolveUrl("./images/banner_homevisit.png");
+    },
+    _imgSchool:function(){
+      return this.resolveUrl("./images/banner_school.png");
+    },
+    _imgStudentCare:function(){
+      return this.resolveUrl("./images/banner_careplan.png");
     },
   });
  </script>

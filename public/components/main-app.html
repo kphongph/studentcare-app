@@ -186,7 +186,7 @@
                   </paper-icon-item>
                 </template>
                 <template is="dom-if" if="{{signed}}">
-                  <paper-icon-item class="drawer-content" name="homepage">
+                  <paper-icon-item class="drawer-content" name="homepage" on-tap="_homepage">
                     <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
                     หน้าแรก
                   </paper-icon-item>
@@ -248,7 +248,9 @@
                 <login-box signed="{{signed}}" user="{{user}}" id="loginBox"></login-box>
               </template>
               <template is="dom-if" if="{{signed}}">
-              <homepage-app></homepage-app>
+              <homepage-app role="{{role}}"
+                classteacher="{{classteacher}}">
+              </homepage-app>
                 <db-classteacher tid="{{role.profile._teacher}}"
                     classteacher="{{classteacher}}">
                 </db-classteacher>
@@ -435,6 +437,9 @@
     },
     _signOut:function() {
       this.$.loginBox.signOut();
+    },
+    _homepage:function() {
+      this.set('page','homepage');
     },
     _signedChanged:function(n) {
       if(this.signed) {

@@ -1,16 +1,35 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="studentcare-components/user-profile.html">
+<link rel="import" href="db-classteacher.html">
+
+<link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
 <dom-module id="homepage-app">
  <template>
   <style is="customer-style" include="iron-flex iron-flex-alignment iron-flex-factors">
     :host {
         @apply --layout-vertical;
+        font-family: 'Athiti', sans-serif;
       }
+
+    .paper-collapse-styled {
+      --paper-collapse-item-header: {
+        font-family: 'Athiti', sans-serif;
+      }
+      --paper-collapse-item-icon{
+        height: 50px;
+      }
+      --paper-collapse-item-content{
+        font-family: 'Athiti', sans-serif;
+      }
+    }
 
     .content {
       margin-top: 30px;
@@ -22,35 +41,165 @@
       @apply --layout-horizontal;
       @apply --layout-center-justified;
     }
+
+    paper-item{
+      font-family: 'Athiti', sans-serif;
+      /*font-size: 100%;*/
+    }
+
+    paper-listbox{
+      background-color: #fff;
+      border-radius: 10px;
+      height: 30px;
+      width: 403px;
+    }
+
+    .align-center{
+      @apply --layout-horizontal;
+      @apply --layout-center-justified;
+    }
+
+    studentcare-app {
+      width: 96%;
+    }
+
+    student-room-list {
+      width: 96%;
+    }
+
+    student-room-query {
+      width: 96%;
+    }
   </style>
-  <!--<div class="layout vertical">-->
-    <div class="layout horizontal content">
-      <div class="flex-6">&nbsp;</div>
-      <div class="flex-6 "><user-profile></user-profile></div>
-    </div>
-  <!--</div>-->
-    <div class="layout horizontal content">
-      <div class="flex-6">
-          <iron-image src="{{imgAssignment}}"></iron-image>
-          <!--<paper-collapse-item src="{{imgHome}}" header="Item with an image">
-            Lots of very interesting content.
-          </paper-collapse-item>-->
-      </div>
-      <div class="flex-6 "><iron-image src="{{imgReport}}"></iron-image></div>
-    </div>
-    <div class="layout horizontal content">
-      <div class="flex-6"><iron-image src="{{imgHomevisit}}"></iron-image></div>
-      <div class="flex-6 "><iron-image src="{{imgSchool}}"></iron-image></div>
-    </div>
-    <div class="layout horizontal content">
-      <div class="flex-6"><iron-image src="{{imgStudentCare}}"></iron-image></div>
-      <div class="flex-6 ">&nbsp;</div>
-    </div>
+  <!--page {{page}}-->
+    <db-classteacher tid="{{role.profile._teacher}}"
+      classteacher="{{classteacher}}">
+    </db-classteacher>
+        <iron-pages selected="{{page}}" attr-for-selected="name">
+          <div name="homepage">
+            <div class="layout vertical">
+              <div class="layout horizontal content">
+                <div class="flex-6">&nbsp;</div>
+                <div class="flex-6 "><user-profile></user-profile></div>
+              </div>
+              <div class="layout horizontal content">
+                <div class="flex-6">
+                  <div><iron-image src="{{imgAssignment}}"></iron-image></div>
+                  <div class="align-center">
+                    <paper-listbox selected="{{_assignment}}" on-iron-select="_changePageToAssignment">
+                      <template is="dom-repeat" items="{{assignments}}">
+                        <paper-item>{{item.label}}</paper-item>
+                      </template>
+                    </paper-listbox>
+                  </div>
+                </div>
+                <div class="flex-6 "><iron-image src="{{imgReport}}"></iron-image></div>
+              </div>
+              <div class="layout horizontal content">
+                <div class="flex-6">
+                  <div><iron-image src="{{imgStudentCare}}"></iron-image></div>
+                  <div class="align-center">
+                    <paper-listbox selected="{{_studentCare}}" on-iron-select="_changePageToStudentCare">
+                      <template is="dom-repeat" items="{{studentcares}}">
+                        <paper-item class="font-face-normal">{{item.label}}</paper-item>
+                      </template>
+                    </paper-listbox>
+                  </div>
+                </div>
+                <div class="flex-6 "><iron-image src="{{imgSchool}}"></iron-image></div>
+              </div>
+              <div class="layout horizontal content">
+                <div class="flex-6">
+                  <div><iron-image src="{{imgHomevisit}}"></iron-image></div>
+                  <div class="align-center">
+                    <paper-listbox selected="{{_homevisit}}" on-iron-select="_changePageToHomevisit">
+                      <template is="dom-repeat" items="{{homevisits}}">
+                        <paper-item class="font-face-normal">{{item.label}}</paper-item>
+                      </template>
+                    </paper-listbox>
+                  </div>
+                </div>
+                <div class="flex-6 ">&nbsp;</div>
+              </div>
+            </div>
+          </div>
+          <div name="assignment" class="align-center">
+            <template is="dom-if" if="[[_equal(page, 'assignment')]]">
+              <studentcare-app
+                host="{{selectedAssignment.host}}"
+                level="{{selectedAssignment.level}}"
+                room="{{selectedAssignment.room}}"
+                year="{{selectedAssignment.year}}">
+              </studentcare-app>
+            </template>
+          </div>
+          <div name="report" class="align-center">
+            <template is="dom-if" if="[[_equal(page, 'report')]]">
+              <studentcare-report host-id="{{role.profile.hostid}}" year="2017">
+              </studentcare-report>
+            </template>
+          </div>
+          <div name="studentcare" class="align-center">
+            <template is="dom-if" if="[[_equal(page, 'studentcare')]]">
+              <student-room-list
+                year="{{selectedStudentCare.year}}"
+                host="{{selectedStudentCare.host}}"
+                level="{{selectedStudentCare.level}}"
+                room="{{selectedStudentCare.room}}">
+              </student-room-list>
+            </template>
+          </div>
+          <div name="school" class="align-center">
+            <template is="dom-if" if="[[_equal(page, 'school')]]">
+              <student-host host-id="{{role.profile.hostid}}"></student-host>
+            </template>
+          </div>
+          <div name="homevisit" class="align-center">
+            <template is="dom-if" if="[[_equal(page, 'homevisit')]]">
+              <student-room-query
+                year="{{selectedHomevisit.year}}"
+                host="{{selectedHomevisit.host}}"
+                level="{{selectedHomevisit.level}}"
+                room="{{selectedHomevisit.room}}">
+              </student-room-query>
+            </template>
+          </div>
+          <div name="plan" class="align-center">
+            <template is="dom-if" if="[[_equal(page, 'plan')]]">
+              <student-plan cid="{{key}}"></student-plan>
+            </template>
+          </div>
+          <div name="homevisitQuery" class="align-center">
+            <template is="dom-if" if="[[_equal(page, 'homevisitQuery')]]">
+              <student-homevisit cid="{{key}}"></student-homevisit>
+            </template>
+          </div>
+        </iron-pages>
  </template>
  <script>
   Polymer({
     is:"homepage-app",
     properties : {
+      page:{
+        type:String,
+        value: function() {
+          return 'homepage';
+        }
+      },
+      role:{
+        type:Object,
+        notify:true,
+        value:function() {
+          return {};
+        }
+      },
+      classteacher: {
+       type:Object,
+       notify:true,
+       value:function() {
+         return {};
+       }
+      },
       imgHome:{
         type:String,
         notify:true,
@@ -80,7 +229,99 @@
         type:String,
         notify:true,
         computed:'_imgStudentCare()'
+      },
+      _loadClass:{
+        type:Boolean,
+        computed:'_loadClassInfo(classteacher)'
+      },
+      assignments :{
+        type:Array,
+        notify:true,
+        value:function() {
+          return [];
+        }
+      },
+      studentcares :{
+        type:Array,
+        notify:true,
+        value:function() {
+          return [];
+        }
+      },
+      homevisits :{
+        type:Array,
+        notify:true,
+        value:function() {
+          return [];
+        }
+      },
+      selectedAssignment: {
+        type:Object,
+        notify:true,
+        computed:'_getSelectedAssignment(assignments,_assignment)'
+      },
+      selectedStudentCare: {
+        type:Object,
+        notify:true,
+        computed:'_getSelectedStudentCare(studentcares,_studentCare)'
+      },
+      selectedHomevisit: {
+        type:Object,
+        notify:true,
+        computed:'_getSelectedHomevisit(homevisits,_homevisit)'
       }
+    },
+    _equal: function(value1, value2) {
+      return value1 === value2;
+    },
+    _loadClassInfo:function(classteacher) {
+      if(!classteacher.classname) return;
+      this.set('assignments',[]);
+      this.set('studentcares',[]);
+      this.set('homevisits',[]);
+      var dict = {};
+      this.push('assignments',{
+        'label':classteacher.classname+'/'+classteacher.room,
+        'level':classteacher.classname,
+        'room':classteacher.room,
+        'host':classteacher.host,
+        'year':classteacher.year
+      });
+      this.push('studentcares',{
+        'label':classteacher.classname+'/'+classteacher.room,
+        'level':classteacher.classname,
+        'room':classteacher.room,
+        'host':classteacher.host,
+        'year':classteacher.year
+      });
+      this.push('homevisits',{
+        'label':classteacher.classname+'/'+classteacher.room,
+        'level':classteacher.classname,
+        'room':classteacher.room,
+        'host':classteacher.host,
+        'year':classteacher.year
+      });
+    },
+    _getSelectedAssignment:function(assignments,_assignment) {
+      if(!assignments || assignments.length == 0) return;
+      return assignments[_assignment];
+    },
+    _getSelectedStudentCare:function(studentcares,_studentCare) {
+      if(!studentcares || studentcares.length == 0) return;
+      return studentcares[_studentCare];
+    },
+    _getSelectedHomevisit:function(homevisits,_homevisit) {
+      if(!homevisits || homevisits.length == 0) return;
+      return homevisits[_homevisit];
+    },
+    _changePageToAssignment:function(e) {
+      this.set('page','assignment');
+    },
+    _changePageToStudentCare:function(e) {
+      this.set('page','studentcare');
+    },
+    _changePageToHomevisit:function(e) {
+      this.set('page','homevisit');
     },
     _imgHome:function(){
       return this.resolveUrl("./images/home.png");
@@ -99,7 +340,7 @@
     },
     _imgStudentCare:function(){
       return this.resolveUrl("./images/banner_careplan.png");
-    },
+    }
   });
  </script>
 </dom-module>

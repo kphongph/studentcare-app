@@ -186,7 +186,7 @@
                   </paper-icon-item>
                 </template>
                 <template is="dom-if" if="{{signed}}">
-                  <paper-icon-item class="drawer-content" name="homepage" on-tap="_homepage">
+                  <paper-icon-item class="drawer-content" name="homepage" on-tap="_homepage" drawer-toggle>
                     <iron-icon src="{{imgHome}}" slot="item-icon"></iron-icon>
                     หน้าแรก
                   </paper-icon-item>
@@ -196,11 +196,11 @@
                     class="paper-collapse-styled">
                     <paper-listbox selected="{{_assignment}}" on-iron-select="_changePageToAssignment">
                     <template is="dom-repeat" items="{{assignments}}">
-                      <paper-item class="font-face-normal">{{item.label}}</paper-item>
+                      <paper-item class="font-face-normal" drawer-toggle>{{item.label}}</paper-item>
                     </template>
                     </paper-listbox>
                   </paper-collapse-item>
-                  <paper-icon-item class="white-content" name="report">
+                  <paper-icon-item class="white-content" name="report" drawer-toggle>
                     <iron-icon src="{{imgReport}}" slot="item-icon"></iron-icon>
                     รายงาน
                   </paper-icon-item>
@@ -210,11 +210,11 @@
                     class="paper-collapse-styled">
                     <paper-listbox selected="{{_studentCare}}" on-iron-select="_changePageToStudentCare">
                     <template is="dom-repeat" items="{{studentcares}}">
-                      <paper-item class="font-face-normal">{{item.label}}</paper-item>
+                      <paper-item class="font-face-normal" drawer-toggle>{{item.label}}</paper-item>
                     </template>
                     </paper-listbox>
                   </paper-collapse-item>
-                  <paper-icon-item class="white-content" name="school">
+                  <paper-icon-item class="white-content" name="school" drawer-toggle>
                     <iron-icon src="{{imgSchool}}" slot="item-icon"></iron-icon>
                     ข้อมูลโรงเรียน
                   </paper-icon-item>
@@ -224,11 +224,11 @@
                     class="paper-collapse-styled">
                     <paper-listbox selected="{{_homevisit}}" on-iron-select="_changePageToHomevisit">
                     <template is="dom-repeat" items="{{homevisits}}">
-                      <paper-item class="font-face-normal">{{item.label}}</paper-item>
+                      <paper-item class="font-face-normal" drawer-toggle>{{item.label}}</paper-item>
                     </template>
                     </paper-listbox>
                   </paper-collapse-item>
-                  <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut">
+                  <paper-icon-item name="homepage" class="drawer-content" on-tap="_signOut" drawer-toggle>
                     <iron-icon src="{{imgLogout}}" slot="item-icon"></iron-icon>
                     ออกจากระบบ
                   </paper-icon-item>

@@ -100,10 +100,11 @@
         font-weight: bold;
         font-size: 120%;
       }
-      /*.label2{
- font-family: 'Itim', cursive;
+      .null_value{
+        margin-left: 5px;
+        font-family: 'Athiti', sans-serif;
         font-size: 120%;
-      }*/
+      }
       .font-face-underline {
         font-family: 'Athiti', sans-serif;
         /*font-weight: bold;*/
@@ -504,6 +505,7 @@
          <!--</li>-->
          <!-- ********************** homevisit ************************************** -->
           <label class="headQ">2. ด้านครอบครัว</label>
+          <template is="dom-if" if="{{!_isEqual(homevisit,'null value')}}">
            <template is="dom-repeat" items="{{homevisit}}" as="subject">
              <!--<li>-->
                <div>
@@ -518,6 +520,12 @@
                </div>
              <!--</li>-->
            </template>
+          </template>
+          <template is="dom-if" if="{{_isEqual(homevisit,'null value')}}">
+            <div>
+              <label class="null_value">ยังไม่มีการเก็บข้อมูลเยี่ยมบ้าน</label>
+             </div>
+          </template>
           <!-- ********************** homevisit ************************************** -->
 
          <!--<li>-->
@@ -838,6 +846,9 @@
         '_result(document.value.form_result)',
         '_monitor(document.value.form_value.*)',
       ],
+      _isEqual: function (value1, value2) {
+        return value1 == value2;
+      },
       ___GPAX:function(gpax){
         //console.log(gpax);
         return gpax/100;

@@ -58,8 +58,10 @@
      },
      handleResponse:function(e) {
        var res = e.detail.response;
-       //console.log(res);
-       if(res.length == 0) return;
+       //console.log('homevisit',res);
+       if(res.length == 0){
+        this.set('document',"null value");
+       }else{
        var form = res[0];
        var _document = [];
        var handle = function(group,question) {
@@ -101,6 +103,7 @@
        });
        this.set('document',_document);
        //console.log(_document);
+      }
      }
    });
  </script>

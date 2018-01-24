@@ -92,7 +92,7 @@
       <paper-listbox id="listbox"
         selected="{{student}}"
         on-iron-select="_selected" attr-for-selected="name">
-        <template is="dom-repeat" items="{{students}}">
+        <template is="dom-repeat" items="{{students}}" sort="orderByName">
           <paper-item name="{{item._id}}">
             <div class="icon-name font-face">{{_firstLetter(item.name)}}</div>
             <paper-item-body two-line>
@@ -147,6 +147,12 @@
         this.fire('studentcare-selected', { '_id': e.detail.item.name});
         this.$.listbox.selected=null;
       },
+      orderByName: function(a,b) {
+        //console.log(a,b);
+        var a_name = a.name+' '+a.lastname;
+        var b_name = b.name+' '+b.lastname;
+        return a_name.localeCompare(b_name);
+      }
       /*_computeTitle: function(page) {
         var title;
         if (page == 0) {

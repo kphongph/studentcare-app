@@ -83,7 +83,7 @@
         <paper-icon-button icon="arrow-back" on-tap="_back" hidden$="{{isFirstPage(page)}}">
         </paper-icon-button>
         <div class="font-face flex">แบบรายงานความก้าวหน้า {{_formName(form)}}</div>
-        <div class="font-face end-justified">ณ {{ts}}</div>
+        <!--<div class="font-face end-justified">ณ {{ts}}</div>-->
       </div>
     </app-toolbar>
 
@@ -143,6 +143,10 @@
           value:function() {
               return [];
           }
+        },
+        ts: {
+          type:String,
+          notify:true
         }
       },
       observers:[

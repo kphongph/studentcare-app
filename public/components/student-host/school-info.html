@@ -3,8 +3,11 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
 
 <dom-module id="school-info">
@@ -56,7 +59,7 @@
 
   <iron-ajax 
     id="getHostInfo"
-    url="https://thaieduforall.org:8000/v2/obec/school/query"
+    url="https://thaieduforall.org:8000/v2/obec/schoollocation/query"
     method="POST"
     on-response="_onHostInfoResponse"
     content-type="application/json"
@@ -68,6 +71,7 @@
   </div>
   <div class="layout horizontal">
     <div class="flex"><paper-input label="ชื่อโรงเรียน" value="{{value.host}}"></paper-input></div>
+    <div class="flex"><paper-input label="ชื่อโรงเรียนภาษาอังกฤษ" value="{{value.host(EN)}}"></paper-input></div>
     <div class="flex"><paper-input label="อักษรย่อ" value=""></paper-input></div>
   </div>
   <div class="layout horizontal">
@@ -78,22 +82,35 @@
     <div class="flex"><paper-input label="ระดับชั้นที่เปิดสอน" value=""></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="ที่อยู่โรงเรียน เลขที่" value=""></paper-input></div>
-    <div class="flex"><paper-input label="หมู่ที่" value=""></paper-input></div>
+    <div class="flex"><paper-input label="ที่อยู่โรงเรียน เลขที่" value="{{value.address}}"></paper-input></div>
+    <div class="flex"><paper-input label="หมู่ที่" value="{{value.moo}}"></paper-input></div>
     <div class="flex"><paper-input label="ถนน" value=""></paper-input></div>
-    <div class="flex"><paper-input label="ตำบล" value=""></paper-input></div>
+    <div class="flex"><paper-input label="ตำบล" value="{{value.tumbon}}"></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="อำเภอ" value=""></paper-input></div>
+    <div class="flex"><paper-input label="อำเภอ" value="{{value.amphor}}"></paper-input></div>
     <div class="flex"><paper-input label="จังหวัด" value="{{value.province}}"></paper-input></div>
-    <div class="flex"><paper-input label="รหัสไปรษณีย์" value=""></paper-input></div>
+    <div class="flex"><paper-input label="รหัสไปรษณีย์" value="{{value.postcode}}"></paper-input></div>
   </div>
   <div class="layout horizontal">
-    <div class="flex"><paper-input label="โทรศัพท์" value=""></paper-input></div>
-    <div class="flex"><paper-input label="โทรสาร" value=""></paper-input></div>
+    <div class="flex"><paper-input label="โทรศัพท์" value="{{value.tel_1}}"></paper-input></div>
+    <div class="flex"><paper-input label="โทรสาร" value="{{value.fax_1}}"></paper-input></div>
+  </div>
+  <div class="layout horizontal">
+    <div class="flex"><paper-input label="อีเมล" value="{{value.email}}"></paper-input></div>
+    <div class="flex"><paper-input label="เว็บไซต์" value="{{value.website}}"></paper-input></div>
   </div>
     <div class="flex font-face-normal">ตราสัญลักษณ์โรงเรียน</div>
     <div class="flex center-justified"><iron-image sizing="cover" src="{{imgHost}}"></iron-image></div>
+    <div class="flex font-face-normal">ตำแหน่งที่ตั้งโรงเรียน</div>
+    <div class="flex center-justified">
+      <google-map fit-to-markers api-key="AIzaSyAAeCpOThQyWuzlFhN0ehvkbDZUSiftgw8" 
+        latitude="{{value.Lat}}" longitude="{{value.Lng}}">
+        <google-map-marker latitude="{{value.Lat}}" longitude="{{value.Lng}}">
+          <img src="{{imgHost}}">
+        </google-map-marker>
+      </google-map>
+    </div>
  </template>
  <script>
   Polymer({

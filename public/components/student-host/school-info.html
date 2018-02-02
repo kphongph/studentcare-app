@@ -109,13 +109,12 @@
     <div class="flex center-justified"><iron-image sizing="cover" src="{{imgHost}}"></iron-image></div>
     <div class="flex font-face-normal">ตำแหน่งที่ตั้งโรงเรียน</div>
     <div class="flex center-justified">
-      <google-map fit-to-markers api-key="AIzaSyAAeCpOThQyWuzlFhN0ehvkbDZUSiftgw8" 
-        latitude="{{value.Lat}}" longitude="{{value.Lng}}">
-        <google-map-marker latitude="{{value.Lat}}" longitude="{{value.Lng}}">
-          <img src="{{imgHost}}">
-        </google-map-marker>
+      <!--<google-map fit-to-markers api-key="AIzaSyAAeCpOThQyWuzlFhN0ehvkbDZUSiftgw8" -->
+      <google-map latitude="{{value.Lat}}" longitude="{{value.Lng}}" fit-to-markers>
+        <google-map-marker latitude="{{value.Lat}}" longitude="{{value.Lng}}"></google-map-marker>
       </google-map>
     </div>
+    <div>&nbsp;</div>
  </template>
  <script>
   Polymer({

@@ -70,6 +70,14 @@
     student-room-query {
       width: 96%;
     }
+
+    student-host {
+      width: 96%;
+    }
+
+    studentcare-report {
+      width: 96%;
+    }
   </style>
   <!--page {{page}}-->
     <db-classteacher tid="{{role.profile._teacher}}"
@@ -93,7 +101,7 @@
                     </paper-listbox>
                   </div>
                 </div>
-                <div class="flex-6 "><iron-image src="{{imgReport}}"></iron-image></div>
+                <div class="flex-6 "><iron-image src="{{imgReport}}" name="report" on-tap="_report"></iron-image></div>
               </div>
               <div class="layout horizontal content">
                 <div class="flex-6">
@@ -106,7 +114,7 @@
                     </paper-listbox>
                   </div>
                 </div>
-                <div class="flex-6 "><iron-image src="{{imgSchool}}"></iron-image></div>
+                <div class="flex-6 "><iron-image src="{{imgSchool}}" name="school" on-tap="_school"></iron-image></div>
               </div>
               <div class="layout horizontal content">
                 <div class="flex-6">
@@ -340,6 +348,12 @@
     },
     _imgStudentCare:function(){
       return this.resolveUrl("./images/banner_careplan.png");
+    },
+    _school:function() {
+      this.set('page','school');
+    },
+    _report:function() {
+      this.set('page','report');
     }
   });
  </script>

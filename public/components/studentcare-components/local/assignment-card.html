@@ -5,6 +5,7 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
@@ -59,6 +60,11 @@
       .font-face-normal {
         font-family: 'Athiti', sans-serif;
       }
+
+      iron-icon {
+        width: 40px;
+        height: 40px;
+      }
     </style>
 
    <app-localstorage-document key="jwtToken" data="{{jwtToken}}">
@@ -72,20 +78,26 @@
      headers$='{"Authorization":"JWT {{jwtToken.token}}"}'
      on-response="_response">
    </iron-ajax>
-
+   <!--zzz {{data}}-->
     <div class$="marker-{{_info.status.type}} content" hidden$="{{hide}}">
       <div class="layout horizontal center info">
-        <div class="flex" on-tap="_tap">
+        <div class="flex-11" on-tap="_tap">
           <div id="formName" class="font-face-big">{{_info.form.label}}</div>
           <div id="studentInfo" class="font-face-normal">
             {{_info.dateTime}} ({{_info.status.label}})
           </div>
         </div>
+        <div class="flex-1">
+          <template is="dom-if" if="[[_equal(_info.status.type,'done')]]">
+            <template is="dom-if" if="[[_equal(_info.form.form_name,'dl2-form')]]">
+              <iron-icon src="{{imgRisk}}"></iron-icon>
+            </template>
+        </template>
+        </div>
         <paper-icon-button icon="delete" on-tap="_toggleDialog" hidden="{{_info.mandatory}}">
         </paper-icon-button>
       </div>
     </div>
-
 
   <paper-dialog id="dialog">
     <h2>ยืนยัน</h2>
@@ -127,16 +139,34 @@
           type:Object,
           computed:'__computeInfo(data)'
         },
+        chkForms : {
+          type:Object,
+          computed:'__chkForms(data)'
+        },
         hide:{
           type:Boolean,
           readOnly:true,
           value:function() {
             return false;
           }
+        },
+        imgRisk:{
+          type:String,
+          notify:true,
+          computed:'_imgRisk()'
         }
+      },
+      _imgRisk:function(){
+        return this.resolveUrl("../images/green.png");
+      },
+      _equal: function(value1, value2) {
+        return value1 === value2;
       },
       _toggleDialog:function(e) {
         this.$.dialog.open();
+      },
+      __chkForms:function(forms) {
+        console.log(forms.dmc.form_type);
       },
       _update:function(e) {
         // force update
@@ -183,9 +213,11 @@
         var ele = document.createElement(data.form_type);
         tmp['form']= {
            'label':ele.name,
-           'element':ele
+           'element':ele,
+           'form_name':ele.localName
         };
-        tmp['mandatory']=data.mandatory
+        //console.log(tmp['form'].form_name);
+        tmp['mandatory']=data.mandatory;
         return tmp;
       },
       _formName:function(name) {

@@ -139,7 +139,7 @@
       <template is="dom-repeat" items="{{group.forms}}" sort="_sortByStatus">
         <div class="layout-chkrisk">
           <div class="flex-11"><assignment-card data="{{item}}"></assignment-card></div>
-          <div class="flex-1"><!--{{group.forms}} , {{chkrisk}} , {{imgSDQRisk}}-->
+          <!--<div class="flex-1">
             <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.0.forms_name)]]">
               <iron-icon src="{{chkrisk.0._risk}}"></iron-icon>
             </template>
@@ -152,7 +152,7 @@
             <template is="dom-if" if="[[_equal(group.forms.0.form_type,chkrisk.3.forms_name)]]">
               <iron-icon src="{{chkrisk.3._risk}}"></iron-icon>
             </template>
-          </div>
+          </div>-->
       </div>
       </template>
     </template>
@@ -259,6 +259,7 @@
         this.set('_requiredReload', false);
       },
       __generateFormList: function(forms) {
+        //console.log(forms);
         var data = [];
         var group = [
           {
